@@ -19,6 +19,9 @@ before_script:
   - export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
   - export PATH=$PATH:$JAVA_HOME/bin
 
+  # Accept Android SDK licenses
+  - yes | sdkmanager --sdk_root=${ANDROID_SDK_ROOT} --licenses
+
   - chmod +x ./gradlew
 
 build-project-job:
