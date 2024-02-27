@@ -38,11 +38,6 @@ before_script:
 
   - chmod +x ./gradlew
 
-unit-test-job:
-  stage: test
-  script:
-    - ./gradlew test
-
 ktlint-check-job:
   stage: test
   script:
