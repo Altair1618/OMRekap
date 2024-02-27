@@ -34,14 +34,9 @@ before_script:
 
   # sdkmanager is located in the tools/bin folder which we have specified in our PATH $ANDROID_SDK_ROOT/cmdline-tools/tools/bin
   - sdkmanager --sdk_root=${ANDROID_SDK_ROOT} --update > update.log
-  - echo y | sdkmanager --sdk_root=${ANDROID_SDK_ROOT}
+  - echo y | sdkmanager --sdk_root=${ANDROID_SDK_ROOT} "platforms;android-${ANDROID_COMPILE_SDK}" "extras;google;m2repository" "extras;android;m2repository" > installPlatform.log
 
   - chmod +x ./gradlew
-
-build-project-job:
-  stage: build
-  script:
-    - ./gradlew assemble
 
 unit-test-job:
   stage: test
