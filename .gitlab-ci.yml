@@ -43,26 +43,3 @@ unit-test-job: # This job runs in the test stage.
   stage: test
   script:
     - ./gradlew test
-
-### Experimental AndroidTest execution
-android-test-job:
-  stage: test
-  script:
-    - apt-get --quiet update --yes
-    - apt-get --quiet install --yes libx11-dev libpulse0 libgl1 libnss3 libxcomposite-dev libxcursor1 libasound2
-    - wget --quiet --output-document=android-wait-for-emulator https://raw.githubusercontent.com/travis-ci/travis-cookbooks/0f497eb71291b52a703143c5cd63a217c8766dc9/community-cookbooks/android-sdk/files/default/android-wait-for-emulator
-    - chmod +x android-wait-for-emulator
-    - sdkmanager --update > update.log
-    - sdkmanager "platform-tools" "emulator" "system-images;android-${EMULATOR_VERSION};default;armeabi-v7a"  > installEmulator.log
-    
-    # create the emulator
-    - echo no | avdmanager create avd -n test -k "system-images;android-${EMULATOR_VERSION};default;armeabi-v7a"
-    
-    # for some reasons the emulator doesnt start automatically, so we have to start it
-    - adb start-server
-    
-    # run in the background without window and audio
-    - android-sdk-linux/emulator/emulator -avd test -no-window -no-audio &
-    - ./android-wait-for-emulator
-    - adb shell input keyevent 82
-    - ./gradlew connectedCheck      #or ./gradlew connectedAndroidTest
