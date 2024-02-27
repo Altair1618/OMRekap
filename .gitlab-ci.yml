@@ -1,3 +1,5 @@
+image: openjdk:11-jdk
+
 variables:
   ANDROID_COMPILE_SDK: "34"
   SDK_TOOLS: "9477386" #latest version from https://developer.android.com/studio/#command-tools
@@ -9,15 +11,11 @@ stages:
 
 before_script:
   - sudo apt-get --quiet update --yes
-  - sudo apt-get install -y openjdk-11-jdk unzip # Install OpenJDK 8 and unzip
+  - sudo apt-get install -y unzip
   - wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-${SDK_TOOLS}_latest.zip
   - unzip -q android-sdk.zip -d android-sdk-linux
   - rm android-sdk.zip
   - export ANDROID_SDK_ROOT=$PWD/android-sdk-linux
-
-  # set JAVA_HOME and update PATH
-  - export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
-  - export PATH=$PATH:$JAVA_HOME/bin
 
   # create a latest folder that will have the updated version of the dependencies
   - mkdir $ANDROID_SDK_ROOT/cmdline-tools/tools
