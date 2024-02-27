@@ -7,7 +7,7 @@ on:
       - dev
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
 
     env:
@@ -47,19 +47,6 @@ jobs:
 
       - name: Build project
         run: ./gradlew assemble
-
-  test:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up JDK
-        uses: actions/setup-java@v2
-        with:
-          distribution: 'adopt'
-          java-version: '17'
 
       - name: Run unit tests
         run: ./gradlew test
