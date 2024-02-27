@@ -11,6 +11,7 @@ stages:
 
 before_script:
   - sudo apt-get --quiet update --yes
+  - sudo apt install unzip
   - wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-${SDK_TOOLS}_latest.zip
   - unzip -q android-sdk.zip -d android-sdk-linux
   - rm android-sdk.zip
