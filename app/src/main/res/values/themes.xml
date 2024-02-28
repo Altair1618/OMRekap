@@ -3,6 +3,24 @@
     <style name="Base.Theme.Omrekap" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <style name="TextAppearance.Heading1">
+            <item name="android:textSize">30sp</item>
+            <item name="android:fontFamily">@font/inter_bold</item>
+            <item name="android:typeface">normal</item>
+            <item name="android:textColor">@color/white</item>
+        </style>
+        <style name="TextAppearance.Heading3">
+            <item name="android:textSize">16sp</item>
+            <item name="android:fontFamily">@font/inter_bold</item>
+            <item name="android:typeface">normal</item>
+            <item name="android:textColor">@color/white</item>
+        </style>
+        <style name="TextAppearance.Paragraph1">
+            <item name="android:textSize">10sp</item>
+            <item name="android:fontFamily">@font/inter</item>
+            <item name="android:typeface">normal</item>
+            <item name="android:textColor">@color/white</item>
+        </style>
     </style>
 
     <style name="Theme.Omrekap" parent="Base.Theme.Omrekap" />
