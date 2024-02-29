@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">omrekap</string>
+    <string name="app_name">OMRekap</string>
+    <string name="gallery_button">Gallery</string>
+    <string name="camera_button">Camera</string>
 </resources>
