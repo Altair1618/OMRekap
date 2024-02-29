@@ -13,5 +13,12 @@ git clone https://gitlab.informatika.org/k-02-09/omrekap
 
 ### Code Formatting
 ```bash
-./gradlew ktlintCheck
+./gradlew spotlessApply
 ```
+
+### Changing Formatting Configuration
+* Update spotless.gradle based on Ktlint rules [here](https://pinterest.github.io/ktlint/0.50.0/rules/configuration-ktlint/)
+* Clean gradle cache
+```bash
+./gradlew clean
+* ```

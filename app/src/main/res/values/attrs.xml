@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="RoundBackground">
+        <attr name="RoundBackgroundRadius" format="dimension" />
+        <attr name="RoundBackgroundColor" format="color" />
+    </declare-styleable>
+</resources>
