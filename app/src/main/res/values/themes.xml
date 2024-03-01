@@ -1,6 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.Omrekap" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:ambientShadowAlpha">0</item>
+        <item name="android:spotShadowAlpha">0.4</item>
     </style>
 
     <style name="Theme.Omrekap" parent="Base.Theme.Omrekap" />

@@ -4,15 +4,19 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/background_gradient_drawable">
 
     <!-- Fragment Container -->
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout="@layout/fragment_result_page">
-    </androidx.fragment.app.FragmentContainerView>
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout="@layout/fragment_result_page"
+        tools:layout_editor_absoluteX="-205dp"></androidx.fragment.app.FragmentContainerView>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
@@ -24,44 +28,63 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.9"
         app:layout_constraintVertical_bias="0.97">
-        <ImageButton
-            android:id="@+id/gallery_button"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/gallery_card_view"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:src="@drawable/ic_image"
-            android:scaleType="fitCenter"
-            android:background="@drawable/bg_round"
-            android:contentDescription="@string/gallery_button"
-            android:padding="14dp"
-            app:tint="@color/white"
+            android:layout_margin="5dp"
+            android:outlineAmbientShadowColor="@color/purplePrimary"
+            android:outlineSpotShadowColor="@color/purplePrimary"
+            app:cardCornerRadius="100dp"
+            app:cardElevation="2.5dp"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@id/guideline"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="0"
-            />
+            app:layout_constraintHorizontal_bias="0">
+            <ImageButton
+                android:id="@+id/gallery_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_image"
+                android:scaleType="fitCenter"
+                android:background="@drawable/bg_round"
+                android:contentDescription="@string/camera_button"
+                android:padding="14dp"
+                app:tint="@color/white" />
+        </androidx.cardview.widget.CardView>
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.5" />
-        <ImageButton
-            android:id="@+id/camera_button"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/camera_card_view"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:src="@drawable/ic_camera"
-            android:scaleType="fitCenter"
-            android:background="@drawable/bg_round"
-            android:contentDescription="@string/camera_button"
-            android:padding="14dp"
+            android:layout_margin="5dp"
+            android:outlineAmbientShadowColor="@color/purplePrimary"
+            android:outlineSpotShadowColor="@color/purplePrimary"
+            app:cardCornerRadius="100dp"
+            app:cardElevation="2.5dp"
             app:layout_constraintDimensionRatio="1:1"
-            app:tint="@color/white"
-            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintLeft_toRightOf="@id/guideline"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="1"/>
+            app:layout_constraintHorizontal_bias="1">
+            <ImageButton
+                android:id="@+id/camera_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_camera"
+                android:scaleType="fitCenter"
+                android:background="@drawable/bg_round"
+                android:contentDescription="@string/camera_button"
+                android:padding="14dp"
+                app:tint="@color/white" />
+        </androidx.cardview.widget.CardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
