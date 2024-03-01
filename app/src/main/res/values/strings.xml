@@ -4,4 +4,5 @@
     <string name="camera_button">Camera</string>
     <string name="result_page_title">Hasil</string>
     <string name="home_button">home</string>
+    <string name="img_omr_description">OMR Illustration</string>
 </resources>
