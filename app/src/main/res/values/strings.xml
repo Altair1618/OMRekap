@@ -2,4 +2,6 @@
     <string name="app_name">OMRekap</string>
     <string name="gallery_button">Gallery</string>
     <string name="camera_button">Camera</string>
+    <string name="result_page_title">Hasil</string>
+    <string name="home_button">home</string>
 </resources>
