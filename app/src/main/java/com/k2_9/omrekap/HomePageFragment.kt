@@ -23,15 +23,5 @@ class HomePageFragment: Fragment() {
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-
-		// Gradient for title shadow
-		val textView:TextView = view.findViewById(R.id.title_shadow)
-		val startColor = ContextCompat.getColor(requireContext(), R.color.white_opacity_16)
-		val endColor = ContextCompat.getColor(requireContext(), R.color.white_opacity_0)
-		val shader = LinearGradient(
-			0f, 0f, textView.width.toFloat(), textView.height.toFloat(),
-			startColor, endColor, Shader.TileMode.CLAMP
-		)
-		textView.paint.shader = shader
 	}
 }
