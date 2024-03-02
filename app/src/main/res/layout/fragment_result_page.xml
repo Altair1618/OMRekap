@@ -5,50 +5,144 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_gradient_main_background"
-    tools:context=".ResultPageFragment">
+    tools:context=".fragments.ResultPageFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/top_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        android:theme="@style/ThemeOverlay.Omrekap.MainPageButtonRoundBackground"
         >
+
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/result_page_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/result_page_title"
             android:theme="@style/TextAppearance.Heading1"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="TextContrastCheck" />
         <androidx.cardview.widget.CardView
-            android:id="@+id/gallery_card_view"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:id="@+id/home_card_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_margin="5dp"
             android:outlineAmbientShadowColor="@color/purplePrimary"
             android:outlineSpotShadowColor="@color/purplePrimary"
             app:cardCornerRadius="100dp"
-            app:cardElevation="2.5dp"
-            app:layout_constraintDimensionRatio="1:1"
+            app:cardElevation="3dp"
+            app:layout_constraintDimensionRatio="@string/ratio_square"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="1">
+
             <ImageButton
-                android:id="@+id/gallery_button"
+                android:id="@+id/home_button"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_home"
-                android:scaleType="fitCenter"
                 android:background="@drawable/bg_round"
                 android:contentDescription="@string/home_button"
-                android:padding="14dp"
-                app:tint="@color/white" />
+                android:padding="8dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_home"
+                app:tint="@color/white"
+                tools:ignore="TouchTargetSizeCheck" />
         </androidx.cardview.widget.CardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.cardview.widget.CardView
+        android:id="@+id/result_card_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        android:outlineAmbientShadowColor="@color/purplePrimary"
+        android:outlineSpotShadowColor="@color/purplePrimary"
+        app:cardCornerRadius="30dp"
+        app:cardElevation="10dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/top_layout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintWidth_percent="0.9"
+        app:layout_constraintHeight_percent="0.73"
+        app:layout_constraintVertical_bias="0">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:background="@drawable/bg_gradient_result_card"
+            android:paddingHorizontal="40dp"
+            android:paddingVertical="30dp">
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="0dp">
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/document_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:background="@color/purplePrimary"
+                        android:contentDescription="@string/document_photo"
+                        android:padding="20dp"
+                        android:scaleType="fitCenter"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:tint="@color/documentPhotoAlt"
+                        app:layout_constraintDimensionRatio="@string/ratio_image"
+                        tools:ignore="ImageContrastCheck" />
+                    <ImageButton
+                        android:id="@+id/expand_button"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/bg_round"
+                        android:contentDescription="@string/expand_button"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_expand"
+                        android:theme="@style/ThemeOverlay.Omrekap.ExpandButtonRoundBackground"
+                        android:layout_marginEnd="20dp"
+                        android:layout_marginTop="20dp"
+                        app:tint="@color/white"
+                        app:layout_constraintDimensionRatio="@string/ratio_square"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="TouchTargetSizeCheck" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+            <TextView
+                android:id="@+id/result_timestamp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/result_timestamp"
+
+                android:theme="@style/TextAppearance.Paragraph1" />
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="2" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/result_recycler_view"
+                android:theme="@style/TextAppearance.ResultText"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="20" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>
