@@ -6,4 +6,6 @@
     <color name="backgroundSecondary">#341369</color>
     <color name="purplePrimary">#8546ED</color>
     <color name="purpleSecondary">#6437A0</color>
+    <color name="white_opacity_16">#80FFFFFF</color>
+    <color name="white_opacity_0">#00FFFFFF</color>
 </resources>
