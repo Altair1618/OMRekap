@@ -1,10 +1,11 @@
-package com.k2_9.omrekap
+package com.k2_9.omrekap.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.k2_9.omrekap.R
 
 class HomePageFragment : Fragment() {
 	override fun onCreateView(
