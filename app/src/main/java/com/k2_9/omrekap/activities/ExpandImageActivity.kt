@@ -11,7 +11,7 @@ import com.k2_9.omrekap.R
 class ExpandImageActivity : AppCompatActivity() {
 	companion object {
 		const val EXTRA_NAME_DRAWABLE_RESOURCE = "DRAWABLE_RESOURCE"
-		const val EXTRA_NAME_IMAGE_RESOURCE = "IMAGE_RESOURRE"
+		const val EXTRA_NAME_IMAGE_RESOURCE = "IMAGE_RESOURCE"
 	}
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,15 +20,10 @@ class ExpandImageActivity : AppCompatActivity() {
 
 		val photoView: PhotoView = findViewById(R.id.fullscreen_content)
 
-		val imageResource =
-			if (VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-				intent.getParcelableExtra("DATA", Uri::class.java)
-			} else {
-				intent.getParcelableExtra<Uri>("DATA")
-			}
+		val imageResource = intent.getStringExtra(EXTRA_NAME_IMAGE_RESOURCE)
 
 		if (imageResource != null) {
-			photoView.setImageURI(imageResource)
+			photoView.setImageURI(Uri.parse(imageResource))
 		} else {
 			// Retrieve the image resource ID from the intent
 			val drawableResource = intent.getIntExtra(EXTRA_NAME_DRAWABLE_RESOURCE, 0)

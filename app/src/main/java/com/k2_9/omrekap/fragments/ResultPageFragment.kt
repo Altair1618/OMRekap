@@ -86,7 +86,7 @@ class ResultPageFragment : Fragment() {
 					intent.putExtra(ExpandImageActivity.EXTRA_NAME_DRAWABLE_RESOURCE, imageResource)
 				}
 				is Uri -> {
-					intent.putExtra(ExpandImageActivity.EXTRA_NAME_IMAGE_RESOURCE, imageResource)
+					intent.putExtra(ExpandImageActivity.EXTRA_NAME_IMAGE_RESOURCE, imageResource.toString())
 				}
 				else -> {
 					throw IllegalArgumentException("Unsupported resource type")
