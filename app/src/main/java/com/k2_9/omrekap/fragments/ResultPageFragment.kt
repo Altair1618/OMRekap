@@ -3,12 +3,14 @@ package com.k2_9.omrekap.fragments
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -59,6 +61,15 @@ class ResultPageFragment : Fragment() {
 				Pair("Key6", "Value6"),
 				// ... add more key-value pairs as needed
 			)
+
+		// remove shadow
+		val resultCardView: CardView = view.findViewById(R.id.result_card_view)
+		val homeCardView: CardView = view.findViewById(R.id.home_card_view)
+
+		if (Build.VERSION.SDK_INT == Build.VERSION_CODES.P) {
+			resultCardView.elevation = 0f
+			homeCardView.elevation = 0f
+		}
 
 		// Set up RecyclerView
 		recyclerView = view.findViewById(R.id.result_recycler_view)

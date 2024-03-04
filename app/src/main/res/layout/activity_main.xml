@@ -38,7 +38,7 @@
             android:layout_margin="5dp"
             android:outlineAmbientShadowColor="@color/purplePrimary"
             android:outlineSpotShadowColor="@color/purplePrimary"
-            app:cardCornerRadius="100dp"
+            app:cardCornerRadius="30dp"
             app:cardElevation="3dp"
             app:layout_constraintDimensionRatio="@string/ratio_square"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -57,12 +57,13 @@
                 tools:ignore="TouchTargetSizeCheck" />
         </androidx.cardview.widget.CardView>
         <androidx.cardview.widget.CardView
+            android:id="@+id/camera_card_view"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_margin="5dp"
             android:outlineAmbientShadowColor="@color/purplePrimary"
             android:outlineSpotShadowColor="@color/purplePrimary"
-            app:cardCornerRadius="100dp"
+            app:cardCornerRadius="30dp"
             app:cardElevation="3dp"
             app:layout_constraintDimensionRatio="@string/ratio_square"
             app:layout_constraintRight_toRightOf="parent"
