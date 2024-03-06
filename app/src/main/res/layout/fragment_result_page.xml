@@ -42,7 +42,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="1">
-
             <ImageButton
                 android:id="@+id/home_button"
                 android:layout_width="match_parent"
@@ -81,18 +80,19 @@
             android:paddingHorizontal="40dp"
             android:paddingVertical="30dp">
             <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:id="@+id/document_photo_card_view"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="47"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="0dp">
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
-
                     <ImageView
                         android:id="@+id/document_image"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
                         android:background="@color/purplePrimary"
                         android:contentDescription="@string/document_photo"
                         android:padding="20dp"
@@ -104,6 +104,19 @@
                         app:tint="@color/documentPhotoAlt"
                         app:layout_constraintDimensionRatio="@string/ratio_image"
                         tools:ignore="ImageContrastCheck" />
+                    <ProgressBar
+                        android:id="@+id/progress_loader"
+                        style="?android:attr/progressBarStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:indeterminate="true"
+                        android:indeterminateTintMode="src_atop"
+                        android:indeterminateTint="@color/documentPhotoAlt" />
                     <ImageButton
                         android:id="@+id/expand_button"
                         android:layout_width="30dp"
