@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
+import androidx.activity.OnBackPressedCallback
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,6 +29,12 @@ class ResultPageFragment : Fragment() {
 		fun onHomeButtonClick()
 	}
 
+	companion object {
+		const val ARG_NAME_IS_FROM_CAMERA = "IS_FROM_CAMERA"
+	}
+
+	private var isFromCamera: Boolean = false
+
 	private lateinit var recyclerView: RecyclerView
 	private lateinit var resultAdapter: ResultAdapter
 
@@ -41,6 +48,31 @@ class ResultPageFragment : Fragment() {
 		} else {
 			throw ClassCastException("$context must implement OnButtonClickListener")
 		}
+	}
+
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+
+		// Retrieve the arguments
+		val arguments = arguments
+
+		// Check if arguments are not null and retrieve values
+		if (arguments != null) {
+			isFromCamera = arguments.getBoolean(ARG_NAME_IS_FROM_CAMERA)
+		}
+
+		requireActivity().onBackPressedDispatcher.addCallback(
+			this,
+			object : OnBackPressedCallback(true) {
+				override fun handleOnBackPressed() {
+					if (isFromCamera) {
+						// TODO
+					} else {
+						buttonClickListener?.onHomeButtonClick()
+					}
+				}
+			},
+		)
 	}
 
 	override fun onCreateView(
