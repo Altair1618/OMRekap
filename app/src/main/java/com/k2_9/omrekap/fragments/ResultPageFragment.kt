@@ -28,6 +28,7 @@ import com.k2_9.omrekap.adapters.ResultAdapter
 class ResultPageFragment : Fragment() {
 	companion object {
 		const val ARG_NAME_IS_FROM_CAMERA = "IS_FROM_CAMERA"
+		// TODO: ADD IMAGE URI STRING ARG NAME AND ATTRIBUTE
 	}
 
 	private var isFromCamera: Boolean = false
@@ -115,6 +116,7 @@ class ResultPageFragment : Fragment() {
 		recyclerView.adapter = resultAdapter
 
 		// set default image
+		// TODO: LINK IMAGE URI WITH VIEW
 		val documentImageView: ImageView = view.findViewById(R.id.document_image)
 		val defaultDrawableId = R.drawable.ic_image
 

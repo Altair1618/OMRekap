@@ -103,6 +103,7 @@ class MainActivity : AppCompatActivity() {
 			val arguments =
 				Bundle().apply {
 					putBoolean(ResultPageFragment.ARG_NAME_IS_FROM_CAMERA, isFromCamera)
+					// TODO: PASS IMAGE URI STRING
 				}
 
 			// Set the arguments for the fragment
