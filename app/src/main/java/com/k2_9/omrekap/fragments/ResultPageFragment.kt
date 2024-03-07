@@ -1,6 +1,5 @@
 package com.k2_9.omrekap.fragments
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -16,7 +15,9 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.k2_9.omrekap.R
+import com.k2_9.omrekap.activities.CameraActivity
 import com.k2_9.omrekap.activities.ExpandImageActivity
+import com.k2_9.omrekap.activities.MainActivity
 import com.k2_9.omrekap.adapters.ResultAdapter
 
 /**
@@ -25,10 +26,6 @@ import com.k2_9.omrekap.adapters.ResultAdapter
  * create an instance of this fragment.
  */
 class ResultPageFragment : Fragment() {
-	interface OnButtonClickListener {
-		fun onHomeButtonClick()
-	}
-
 	companion object {
 		const val ARG_NAME_IS_FROM_CAMERA = "IS_FROM_CAMERA"
 	}
@@ -38,15 +35,27 @@ class ResultPageFragment : Fragment() {
 	private lateinit var recyclerView: RecyclerView
 	private lateinit var resultAdapter: ResultAdapter
 
-	private var buttonClickListener: OnButtonClickListener? = null
+	private fun onBackCamera() {
+		val intent = Intent(context, CameraActivity::class.java)
+		intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
 
-	override fun onAttach(context: Context) {
-		super.onAttach(context)
+		activity?.finish()
+		startActivity(intent)
+	}
 
-		if (context is OnButtonClickListener) {
-			buttonClickListener = context
+	private fun onHomeButtonClick() {
+		val intent = Intent(context, MainActivity::class.java)
+		intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+
+		activity?.finish()
+		startActivity(intent)
+	}
+
+	private fun handleBackNavigation() {
+		if (isFromCamera) {
+			onBackCamera()
 		} else {
-			throw ClassCastException("$context must implement OnButtonClickListener")
+			onHomeButtonClick()
 		}
 	}
 
@@ -65,11 +74,7 @@ class ResultPageFragment : Fragment() {
 			this,
 			object : OnBackPressedCallback(true) {
 				override fun handleOnBackPressed() {
-					if (isFromCamera) {
-						// TODO
-					} else {
-						buttonClickListener?.onHomeButtonClick()
-					}
+					handleBackNavigation()
 				}
 			},
 		)
@@ -142,7 +147,7 @@ class ResultPageFragment : Fragment() {
 		// set home button listener
 		val homeButton: ImageButton = view.findViewById(R.id.home_button)
 		homeButton.setOnClickListener {
-			buttonClickListener?.onHomeButtonClick()
+			onHomeButtonClick()
 		}
 
 		return view
