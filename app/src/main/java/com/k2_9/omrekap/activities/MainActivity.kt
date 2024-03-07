@@ -11,43 +11,59 @@ import com.k2_9.omrekap.R
 import com.k2_9.omrekap.fragments.HomePageFragment
 import com.k2_9.omrekap.fragments.ResultPageFragment
 
-class MainActivity : AppCompatActivity(), ResultPageFragment.OnButtonClickListener {
+class MainActivity : AppCompatActivity() {
 	companion object {
 		const val EXTRA_NAME_IS_RESULT = "IS_RESULT"
 		const val EXTRA_NAME_IS_FROM_CAMERA = "IS_FROM_CAMERA"
+		const val EXTRA_NAME_IMAGE_URI_STRING = "IMAGE_URI_STRING"
 	}
 
 	private var isResult: Boolean = false
 	private var isFromCamera: Boolean = false // must be false if isResult is false
-
-	override fun onHomeButtonClick() {
-		val intent = Intent(this, MainActivity::class.java)
-		intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-		startActivity(intent)
-	}
+	private var imageUriString: String? = null // can't be null if isResult is true
 
 	private fun onGalleryButtonClick() {
-		val intent = Intent(this, MainActivity::class.java)
-
 		if (isResult) {
-			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+			finish()
 		}
 
+		val intent = Intent(this, MainActivity::class.java)
+
 		intent.putExtra(EXTRA_NAME_IS_RESULT, true)
+		// TODO: pass image URI from gallery
+		intent.putExtra(EXTRA_NAME_IMAGE_URI_STRING, "")
 
 		startActivity(intent)
 	}
 
 	private fun onCameraButtonClick() {
-		startActivity(Intent(this, CameraActivity::class.java))
+		val intent = Intent(this, CameraActivity::class.java)
+
+		if (isResult) {
+			intent.putExtra(CameraActivity.EXTRA_NAME_IMAGE_URI_STRING, imageUriString)
+			intent.putExtra(CameraActivity.EXTRA_NAME_IS_FROM_CAMERA_RESULT, isFromCamera)
+		}
+
+		if (isResult) {
+			finish()
+		}
+		startActivity(intent)
 	}
 
 	override fun onNewIntent(intent: Intent?) {
 		super.onNewIntent(intent)
 
 		if (intent != null && (intent.getBooleanExtra(EXTRA_NAME_IS_RESULT, false) or isResult)) {
+			val newIntent = Intent(this, MainActivity::class.java)
+			intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+
 			finish()
+			startActivity(newIntent)
 		}
+
+		isResult = false
+		isFromCamera = false
+		imageUriString = null
 	}
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,6 +74,11 @@ class MainActivity : AppCompatActivity(), ResultPageFragment.OnButtonClickListen
 
 		if (isResult) {
 			isFromCamera = intent.getBooleanExtra(EXTRA_NAME_IS_FROM_CAMERA, false)
+			imageUriString = intent.getStringExtra(EXTRA_NAME_IMAGE_URI_STRING)
+
+			if (imageUriString == null) {
+				throw IllegalArgumentException("Image URI string is null")
+			}
 		}
 
 		assert(!isFromCamera || isResult)
