@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity(), ResultPageFragment.OnButtonClickListen
 	}
 
 	private fun onCameraButtonClick() {
-		// TODO
+		startActivity(Intent(this, CameraActivity::class.java))
 	}
 
 	override fun onNewIntent(intent: Intent?) {
