@@ -8,7 +8,9 @@ import android.graphics.Bitmap
 import android.media.AudioManager
 import android.media.MediaActionSound
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
@@ -21,9 +23,11 @@ import androidx.camera.view.CameraController
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.k2_9.omrekap.R
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -39,6 +43,7 @@ class CameraActivity : AppCompatActivity() {
 	private var isFromCameraResult: Boolean = false
 
 	private lateinit var previewView: PreviewView
+	private lateinit var imageView: ImageView
 	private lateinit var captureButton: ImageButton
 	private lateinit var imageCapture: ImageCapture
 	private lateinit var cameraController: CameraController
@@ -76,11 +81,19 @@ class CameraActivity : AppCompatActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_camera)
+	}
+
+	override fun onStart() {
+		super.onStart()
 		previewView = findViewById(R.id.preview_view)
+		imageView = findViewById(R.id.freeze_image_view)
+		imageView.visibility = View.GONE
+		previewView.visibility = View.VISIBLE
 		captureButton = findViewById(R.id.take_photo_button)
 		captureButton.setOnClickListener {
 			takePhoto()
 		}
+		captureButton.isEnabled = true
 
 		imageUriString = intent.getStringExtra(EXTRA_NAME_IMAGE_URI_STRING)
 		isFromCameraResult = intent.getBooleanExtra(EXTRA_NAME_IS_FROM_CAMERA_RESULT, false)
@@ -95,10 +108,6 @@ class CameraActivity : AppCompatActivity() {
 				}
 			},
 		)
-	}
-
-	override fun onStart() {
-		super.onStart()
 		requirePermission(Manifest.permission.CAMERA) {
 			imageCapture =
 				ImageCapture.Builder()
@@ -186,6 +195,16 @@ class CameraActivity : AppCompatActivity() {
 		}
 	}
 
+	private fun freezeImage(image: ImageProxy) {
+		runOnUiThread {
+			previewView.visibility = View.GONE
+			imageView.rotation = 90F
+			imageView.setImageBitmap(image.toBitmap())
+			imageView.visibility = View.VISIBLE
+			captureButton.isEnabled = false
+		}
+	}
+
 	private fun takePhoto() {
 		val cameraExecutor = Executors.newSingleThreadExecutor()
 		cameraController.takePicture(
@@ -198,10 +217,15 @@ class CameraActivity : AppCompatActivity() {
 
 				override fun onCaptureSuccess(image: ImageProxy) {
 					super.onCaptureSuccess(image)
-// 				Toast.makeText(this@CameraActivity, "hi", Toast.LENGTH_SHORT)
-					playShutterSound() // TODO Move to shutterCallback
-					GlobalScope.launch {
-						saveImageOnCache(image)
+					playShutterSound()
+					freezeImage(image)
+					runOnUiThread {
+						Toast.makeText(this@CameraActivity, "Photo taken", Toast.LENGTH_SHORT).show()
+					}
+					lifecycleScope.launch {
+						withContext(Dispatchers.IO) {
+							saveImageOnCache(image)
+						}
 					}
 				}
 			},
