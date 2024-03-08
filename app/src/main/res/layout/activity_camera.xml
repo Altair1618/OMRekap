@@ -6,14 +6,40 @@
     android:layout_height="match_parent"
     android:background="#000000">
 
-    <androidx.camera.view.PreviewView
-        android:id="@+id/preview_view"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/camera_image_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="59dp"
         android:layout_marginBottom="128dp"
+        android:padding="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.camera.view.PreviewView
+            android:id="@+id/preview_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/freeze_image_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:adjustViewBounds="false"
+            android:contentDescription="finished photo"
+            android:scaleType="centerInside"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <androidx.cardview.widget.CardView
         android:layout_width="63dp"
@@ -25,7 +51,7 @@
         app:layout_constraintDimensionRatio="@string/ratio_square"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/preview_view"
+        app:layout_constraintTop_toBottomOf="@id/camera_image_layout"
         android:background="@color/white"
         app:cardBackgroundColor="@color/white"
         >
