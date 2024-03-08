@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
@@ -19,9 +20,9 @@ import com.k2_9.omrekap.models.ImageSaveData
 import com.k2_9.omrekap.utils.SaveHelper
 import com.k2_9.omrekap.view_models.ImageDataViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
 	companion object {
@@ -91,6 +92,14 @@ class MainActivity : AppCompatActivity() {
 		saveFileJob = lifecycleScope.launch(Dispatchers.IO) {
 			SaveHelper().save(applicationContext, viewModel.data.value!!)
 			saveFileJobCompleted = true
+
+			withContext(Dispatchers.Main) {
+				Toast.makeText(
+					applicationContext,
+					"File saved in Documents/OMRekap",
+					Toast.LENGTH_SHORT
+				).show()
+			}
 		}
 	}
 
