@@ -1,0 +1,57 @@
+name: Android CI/CD
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+      - result-page
+      - home-page
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    env:
+      ANDROID_COMPILE_SDK: "34"
+      SDK_TOOLS: "9477386"
+      EMULATOR_VERSION: "33"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: '17'
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -qy
+          sudo apt-get install -y openjdk-17-jdk unzip
+          wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-${{ env.SDK_TOOLS }}_latest.zip
+          unzip -q android-sdk.zip -d android-sdk-linux
+          rm android-sdk.zip
+          export ANDROID_SDK_ROOT=$PWD/android-sdk-linux
+
+          mkdir $ANDROID_SDK_ROOT/cmdline-tools/tools
+          mv $ANDROID_SDK_ROOT/cmdline-tools/{lib,bin,source.properties,NOTICE.txt} $ANDROID_SDK_ROOT/cmdline-tools/tools
+          mkdir $ANDROID_SDK_ROOT/cmdline-tools/latest
+
+          export PATH=$PATH:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/cmdline-tools/tools/bin:$ANDROID_SDK_ROOT/platform-tools
+
+          sdkmanager --sdk_root=${ANDROID_SDK_ROOT} --update > update.log
+          echo y | sdkmanager --sdk_root=${ANDROID_SDK_ROOT} "platforms;android-${ANDROID_COMPILE_SDK}" "extras;google;m2repository" "extras;android;m2repository"
+
+          chmod +x ./gradlew
+
+      - name: Build project
+        run: ./gradlew assemble
+
+      - name: Run unit tests
+        run: ./gradlew test
+
+      - name: Code formatting
+        run: ./gradlew spotlessCheck

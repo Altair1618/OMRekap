@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_gradient_main_background">
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_container_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="45dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintWidth_percent="0.9"
+        tools:layout="@layout/fragment_result_page"
+        tools:layout_editor_absoluteX="-205dp"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:theme="@style/ThemeOverlay.Omrekap.MainPageButtonRoundBackground"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.9"
+        app:layout_constraintVertical_bias="0.97">
+        <androidx.cardview.widget.CardView
+            android:id="@+id/gallery_card_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
+            android:outlineAmbientShadowColor="@color/purplePrimary"
+            android:outlineSpotShadowColor="@color/purplePrimary"
+            app:cardCornerRadius="30dp"
+            app:cardElevation="3dp"
+            app:layout_constraintDimensionRatio="@string/ratio_square"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+            <ImageButton
+                android:id="@+id/gallery_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_round"
+                android:contentDescription="@string/gallery_button"
+                android:padding="14dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_image"
+                app:tint="@color/white"
+                tools:ignore="TouchTargetSizeCheck" />
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/camera_card_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
+            android:outlineAmbientShadowColor="@color/purplePrimary"
+            android:outlineSpotShadowColor="@color/purplePrimary"
+            app:cardCornerRadius="30dp"
+            app:cardElevation="3dp"
+            app:layout_constraintDimensionRatio="@string/ratio_square"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+            <ImageButton
+                android:id="@+id/camera_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_camera"
+                android:scaleType="fitCenter"
+                android:background="@drawable/bg_round"
+                android:contentDescription="@string/camera_button"
+                android:padding="14dp"
+                app:tint="@color/white" />
+        </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
