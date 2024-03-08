@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
 
 		intent.putExtra(EXTRA_NAME_IS_RESULT, true)
 		// TODO: pass image URI from gallery
-		intent.putExtra(EXTRA_NAME_IMAGE_URI_STRING, "")
+		intent.putExtra(EXTRA_NAME_IMAGE_URI_STRING, imageUriString)
 
 		startActivity(intent)
 	}
@@ -103,7 +103,7 @@ class MainActivity : AppCompatActivity() {
 			val arguments =
 				Bundle().apply {
 					putBoolean(ResultPageFragment.ARG_NAME_IS_FROM_CAMERA, isFromCamera)
-					// TODO: PASS IMAGE URI STRING
+					putString(ResultPageFragment.ARG_NAME_IMAGE_URI_STRING, imageUriString)
 				}
 
 			// Set the arguments for the fragment
