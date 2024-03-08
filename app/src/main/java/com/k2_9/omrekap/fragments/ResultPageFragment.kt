@@ -41,7 +41,7 @@ class ResultPageFragment : Fragment() {
 
 	private fun onBackCamera() {
 		val intent = Intent(context, CameraActivity::class.java)
-		intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+		intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_SINGLE_TOP)
 
 		activity?.finish()
 		startActivity(intent)
@@ -56,6 +56,7 @@ class ResultPageFragment : Fragment() {
 	}
 
 	private fun handleBackNavigation() {
+		// TODO: CLEAR VIEWMODEL
 		if (isFromCamera) {
 			onBackCamera()
 		} else {
@@ -67,12 +68,11 @@ class ResultPageFragment : Fragment() {
 		super.onCreate(savedInstanceState)
 
 		// Retrieve the arguments
-		val arguments = arguments
+		val args = arguments
 
 		// Check if arguments are not null and retrieve values
-		if (arguments != null) {
-			isFromCamera = arguments.getBoolean(ARG_NAME_IS_FROM_CAMERA)
-			imageUriString = arguments.getString(ARG_NAME_IMAGE_URI_STRING)
+		if (args != null) {
+			isFromCamera = args.getBoolean(ARG_NAME_IS_FROM_CAMERA)
 		}
 
 		requireActivity().onBackPressedDispatcher.addCallback(
