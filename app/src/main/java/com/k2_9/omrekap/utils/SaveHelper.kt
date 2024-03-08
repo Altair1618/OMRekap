@@ -23,8 +23,12 @@ class SaveHelper {
 	suspend fun save(context: Context, data: ImageSaveData) {
 		val folderName: String = generateFolderName()
 
+		if (data.rawImage.toString() == "") {
+			throw RuntimeException("The raw image URI is empty")
+		}
+
 		if (data.annotatedImage == null || data.data == null) {
-			throw RuntimeException("Annotated image and data must not be null")
+			throw RuntimeException("Image has not been processed yet")
 		}
 
 		val rawImageBitmap = uriToBitmap(context, data.rawImage)
