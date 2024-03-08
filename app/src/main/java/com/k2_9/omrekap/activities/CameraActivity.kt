@@ -59,6 +59,7 @@ class CameraActivity : AppCompatActivity() {
 		intent.putExtra(MainActivity.EXTRA_NAME_IS_RESULT, true)
 		intent.putExtra(MainActivity.EXTRA_NAME_IMAGE_URI_STRING, imageUriString)
 		intent.putExtra(MainActivity.EXTRA_NAME_IS_FROM_CAMERA, isFromCameraResult)
+		intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_SINGLE_TOP)
 		startActivity(intent)
 	}
 
@@ -81,19 +82,6 @@ class CameraActivity : AppCompatActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_camera)
-	}
-
-	override fun onStart() {
-		super.onStart()
-		previewView = findViewById(R.id.preview_view)
-		imageView = findViewById(R.id.freeze_image_view)
-		imageView.visibility = View.GONE
-		previewView.visibility = View.VISIBLE
-		captureButton = findViewById(R.id.take_photo_button)
-		captureButton.setOnClickListener {
-			takePhoto()
-		}
-		captureButton.isEnabled = true
 
 		imageUriString = intent.getStringExtra(EXTRA_NAME_IMAGE_URI_STRING)
 		isFromCameraResult = intent.getBooleanExtra(EXTRA_NAME_IS_FROM_CAMERA_RESULT, false)
@@ -108,6 +96,20 @@ class CameraActivity : AppCompatActivity() {
 				}
 			},
 		)
+	}
+
+	override fun onStart() {
+		super.onStart()
+		previewView = findViewById(R.id.preview_view)
+		imageView = findViewById(R.id.freeze_image_view)
+		imageView.visibility = View.GONE
+		previewView.visibility = View.VISIBLE
+		captureButton = findViewById(R.id.take_photo_button)
+		captureButton.setOnClickListener {
+			takePhoto()
+		}
+		captureButton.isEnabled = true
+
 		requirePermission(Manifest.permission.CAMERA) {
 			if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.Q) {
 				requirePermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, false) {}
@@ -182,7 +184,9 @@ class CameraActivity : AppCompatActivity() {
 			Intent(this, MainActivity::class.java)
 				.putExtra(MainActivity.EXTRA_NAME_IMAGE_URI_STRING, uri.toString())
 				.putExtra(MainActivity.EXTRA_NAME_IS_RESULT, true)
-				.putExtra(MainActivity.EXTRA_NAME_IS_FROM_CAMERA, true),
+				.putExtra(MainActivity.EXTRA_NAME_IS_FROM_CAMERA, true)
+				.putExtra(MainActivity.EXTRA_NAME_IS_RESET, true)
+				.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_SINGLE_TOP),
 		)
 	}
 
