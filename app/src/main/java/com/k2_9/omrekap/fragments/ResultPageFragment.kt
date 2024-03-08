@@ -73,6 +73,10 @@ class ResultPageFragment : Fragment() {
 		// Check if arguments are not null and retrieve values
 		if (args != null) {
 			isFromCamera = args.getBoolean(ARG_NAME_IS_FROM_CAMERA)
+			imageUriString = args.getString(ARG_NAME_IMAGE_URI_STRING)
+			if (imageUriString == null) {
+				throw IllegalArgumentException("Image URI string is null")
+			}
 		}
 
 		requireActivity().onBackPressedDispatcher.addCallback(
