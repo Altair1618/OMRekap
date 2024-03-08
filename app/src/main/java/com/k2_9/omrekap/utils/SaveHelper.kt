@@ -3,23 +3,46 @@ package com.k2_9.omrekap.utils
 import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import androidx.annotation.RequiresApi
+import com.k2_9.omrekap.models.ImageSaveData
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
+import java.io.FileDescriptor
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 class SaveHelper {
-	fun save(context: Context, rawImage: Bitmap, annotatedImage: Bitmap, data: Map<String, Int>) {
+	suspend fun save(context: Context, data: ImageSaveData) {
 		val folderName: String = generateFolderName()
 
-		saveImage(context, rawImage, folderName, "raw_image.jpg")
-		saveImage(context, annotatedImage, folderName, "annotated_image.jpg")
-		saveJSON(context, data, folderName, "data.json")
+		if (data.annotatedImage == null || data.data == null) {
+			throw RuntimeException("Annotated image and data must not be null")
+		}
+
+		val rawImageBitmap = uriToBitmap(context, data.rawImage)
+		val annotatedImageBitmap = uriToBitmap(context, data.annotatedImage!!)
+
+		withContext(Dispatchers.IO) {
+			saveImage(context, rawImageBitmap, folderName, "raw_image.jpg")
+			saveImage(context, annotatedImageBitmap, folderName, "annotated_image.jpg")
+			saveJSON(context, data.data!!, folderName, "data.json")
+		}
+	}
+
+	private fun uriToBitmap(context: Context, selectedFileUri: Uri): Bitmap {
+		val parcelFileDescriptor = context.contentResolver.openFileDescriptor(selectedFileUri, "r")
+		val fileDescriptor: FileDescriptor = parcelFileDescriptor!!.fileDescriptor
+		val image = BitmapFactory.decodeFileDescriptor(fileDescriptor)
+		parcelFileDescriptor.close()
+		return image
 	}
 
 	private fun generateFolderName(): String {
