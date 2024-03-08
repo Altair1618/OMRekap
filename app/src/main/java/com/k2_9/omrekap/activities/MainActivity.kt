@@ -1,21 +1,43 @@
 package com.k2_9.omrekap.activities
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.widget.ImageButton
+import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import com.k2_9.omrekap.R
 import com.k2_9.omrekap.fragments.HomePageFragment
 import com.k2_9.omrekap.fragments.ResultPageFragment
+import com.k2_9.omrekap.models.ImageSaveData
+import com.k2_9.omrekap.utils.SaveHelper
+import com.k2_9.omrekap.view_models.ImageDataViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
 	companion object {
 		const val EXTRA_NAME_IS_RESULT = "IS_RESULT"
 		const val EXTRA_NAME_IS_FROM_CAMERA = "IS_FROM_CAMERA"
 		const val EXTRA_NAME_IMAGE_URI_STRING = "IMAGE_URI_STRING"
+	}
+
+	private val viewModel: ImageDataViewModel by viewModels()
+	private var saveFileJob: Job? = null
+	private var saveFileJobCompleted: Boolean = false
+	private val omrHelperObserver = Observer<ImageSaveData> { newValue ->
+		if (newValue.isProcessed()) {
+			saveFile()
+		}
 	}
 
 	private var isResult: Boolean = false
@@ -66,9 +88,26 @@ class MainActivity : AppCompatActivity() {
 		imageUriString = null
 	}
 
+	private fun saveFile() {
+		saveFileJob = lifecycleScope.launch(Dispatchers.IO) {
+			SaveHelper().save(applicationContext, viewModel.data.value!!)
+			saveFileJobCompleted = true
+
+			withContext(Dispatchers.Main) {
+				Toast.makeText(
+					applicationContext,
+					"File saved in Documents/OMRekap",
+					Toast.LENGTH_SHORT
+				).show()
+			}
+		}
+	}
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_main)
+
+		saveFileJobCompleted = savedInstanceState?.getBoolean("saveFileJobCompleted") ?: false
 
 		isResult = intent.getBooleanExtra(EXTRA_NAME_IS_RESULT, false)
 
@@ -78,6 +117,15 @@ class MainActivity : AppCompatActivity() {
 
 			if (imageUriString == null) {
 				throw IllegalArgumentException("Image URI string is null")
+			}
+
+			if (viewModel.data.value == null || !viewModel.data.value!!.isProcessed()) {
+				viewModel.processImage(Uri.parse(imageUriString))
+				viewModel.data.observe(this, omrHelperObserver)
+			}
+
+			if (!isFromCamera && !saveFileJobCompleted && viewModel.data.value!!.isProcessed()) {
+				saveFile()
 			}
 		}
 
@@ -126,5 +174,15 @@ class MainActivity : AppCompatActivity() {
 		cameraButton.setOnClickListener {
 			onCameraButtonClick()
 		}
+	}
+
+	override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
+		super.onSaveInstanceState(outState, outPersistentState)
+		outState.putBoolean("saveFileJobCompleted", saveFileJobCompleted)
+	}
+
+	override fun onDestroy() {
+		super.onDestroy()
+		saveFileJob?.cancel()
 	}
 }

@@ -109,6 +109,10 @@ class CameraActivity : AppCompatActivity() {
 			},
 		)
 		requirePermission(Manifest.permission.CAMERA) {
+			if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.Q) {
+				requirePermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, false) {}
+			}
+
 			imageCapture =
 				ImageCapture.Builder()
 					.setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
