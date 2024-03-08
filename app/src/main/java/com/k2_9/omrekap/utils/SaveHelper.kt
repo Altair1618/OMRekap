@@ -20,7 +20,10 @@ import java.util.Date
 import java.util.Locale
 
 class SaveHelper {
-	suspend fun save(context: Context, data: ImageSaveData) {
+	suspend fun save(
+		context: Context,
+		data: ImageSaveData,
+	) {
 		val folderName: String = generateFolderName()
 
 		if (data.rawImage.toString() == "") {
@@ -41,7 +44,10 @@ class SaveHelper {
 		}
 	}
 
-	private fun uriToBitmap(context: Context, selectedFileUri: Uri): Bitmap {
+	private fun uriToBitmap(
+		context: Context,
+		selectedFileUri: Uri,
+	): Bitmap {
 		val parcelFileDescriptor = context.contentResolver.openFileDescriptor(selectedFileUri, "r")
 		val fileDescriptor: FileDescriptor = parcelFileDescriptor!!.fileDescriptor
 		val image = BitmapFactory.decodeFileDescriptor(fileDescriptor)
@@ -54,7 +60,12 @@ class SaveHelper {
 		return sdf.format(Date())
 	}
 
-	private fun saveImage(context: Context, image: Bitmap, folderName: String, fileName: String) {
+	private fun saveImage(
+		context: Context,
+		image: Bitmap,
+		folderName: String,
+		fileName: String,
+	) {
 		// Save the image to the Documents/OMRekap/folderName directory
 
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
@@ -64,7 +75,12 @@ class SaveHelper {
 		}
 	}
 
-	private fun saveJSON(context: Context, data: Map<String, Int>, folderName: String, fileName: String) {
+	private fun saveJSON(
+		context: Context,
+		data: Map<String, Int>,
+		folderName: String,
+		fileName: String,
+	) {
 		// Save the JSON to the Documents/OMRekap/folderName directory
 
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
@@ -74,7 +90,11 @@ class SaveHelper {
 		}
 	}
 
-	private fun saveImageBeforeAndroidQ(image: Bitmap, folderName: String, fileName: String) {
+	private fun saveImageBeforeAndroidQ(
+		image: Bitmap,
+		folderName: String,
+		fileName: String,
+	) {
 		// Save the image using the deprecated environment.getExternalStoragePublicDirectory() method
 
 		val documentDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
@@ -95,14 +115,20 @@ class SaveHelper {
 	}
 
 	@RequiresApi(Build.VERSION_CODES.Q)
-	private fun saveImageAndroidQandAbove(context: Context, image: Bitmap, folderName: String, fileName: String) {
+	private fun saveImageAndroidQandAbove(
+		context: Context,
+		image: Bitmap,
+		folderName: String,
+		fileName: String,
+	) {
 		// Save the image using the new MediaStore API
 
-		val contentValues = ContentValues().apply {
-			put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
-			put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
-			put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOCUMENTS + File.separator + "OMRekap" + File.separator + folderName)
-		}
+		val contentValues =
+			ContentValues().apply {
+				put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
+				put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+				put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOCUMENTS + File.separator + "OMRekap" + File.separator + folderName)
+			}
 
 		val uri = context.contentResolver.insert(MediaStore.Files.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY), contentValues)
 
@@ -119,7 +145,11 @@ class SaveHelper {
 		}
 	}
 
-	private fun saveJSONBeforeAndroidQ(data: Map<String, Int>, folderName: String, fileName: String) {
+	private fun saveJSONBeforeAndroidQ(
+		data: Map<String, Int>,
+		folderName: String,
+		fileName: String,
+	) {
 		// Save the JSON using the deprecated environment.getExternalStoragePublicDirectory() method
 
 		val documentDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
@@ -140,14 +170,20 @@ class SaveHelper {
 	}
 
 	@RequiresApi(Build.VERSION_CODES.Q)
-	private fun saveJSONAndroidQandAbove(context: Context, data: Map<String, Int>, folderName: String, fileName: String) {
+	private fun saveJSONAndroidQandAbove(
+		context: Context,
+		data: Map<String, Int>,
+		folderName: String,
+		fileName: String,
+	) {
 		// Save the JSON using the new MediaStore API
 
-		val contentValues = ContentValues().apply {
-			put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
-			put(MediaStore.MediaColumns.MIME_TYPE, "application/json")
-			put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOCUMENTS + File.separator + "OMRekap" + File.separator + folderName)
-		}
+		val contentValues =
+			ContentValues().apply {
+				put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
+				put(MediaStore.MediaColumns.MIME_TYPE, "application/json")
+				put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOCUMENTS + File.separator + "OMRekap" + File.separator + folderName)
+			}
 
 		val uri = context.contentResolver.insert(MediaStore.Files.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY), contentValues)
 
