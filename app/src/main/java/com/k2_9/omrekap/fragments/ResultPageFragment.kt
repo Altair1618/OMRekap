@@ -4,11 +4,13 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.ProgressBar
 import androidx.activity.OnBackPressedCallback
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
@@ -28,10 +30,11 @@ import com.k2_9.omrekap.adapters.ResultAdapter
 class ResultPageFragment : Fragment() {
 	companion object {
 		const val ARG_NAME_IS_FROM_CAMERA = "IS_FROM_CAMERA"
-		// TODO: ADD IMAGE URI STRING ARG NAME AND ATTRIBUTE
+		const val ARG_NAME_IMAGE_URI_STRING = "IMAGE_URI_STRING"
 	}
 
 	private var isFromCamera: Boolean = false
+	private var imageUriString: String? = null
 
 	private lateinit var recyclerView: RecyclerView
 	private lateinit var resultAdapter: ResultAdapter
@@ -70,6 +73,10 @@ class ResultPageFragment : Fragment() {
 		// Check if arguments are not null and retrieve values
 		if (args != null) {
 			isFromCamera = args.getBoolean(ARG_NAME_IS_FROM_CAMERA)
+			imageUriString = args.getString(ARG_NAME_IMAGE_URI_STRING)
+			if (imageUriString == null) {
+				throw IllegalArgumentException("Image URI string is null")
+			}
 		}
 
 		requireActivity().onBackPressedDispatcher.addCallback(
@@ -116,13 +123,15 @@ class ResultPageFragment : Fragment() {
 		resultAdapter = ResultAdapter(resultData)
 		recyclerView.adapter = resultAdapter
 
-		// set default image
-		// TODO: LINK IMAGE URI WITH VIEW
+		// link image URI with view
 		val documentImageView: ImageView = view.findViewById(R.id.document_image)
-		val defaultDrawableId = R.drawable.ic_image
+		documentImageView.tag = imageUriString
+		Log.d("ResultPageFragment", "load image " + imageUriString.toString())
+		documentImageView.setImageURI(Uri.parse(imageUriString))
 
-		documentImageView.tag = defaultDrawableId
-		documentImageView.setImageResource(defaultDrawableId)
+		// remove progress bar
+		val progressLoader : ProgressBar = view.findViewById(R.id.progress_loader)
+		progressLoader.visibility = View.GONE
 
 		// configure expand action
 		val expandButton: ImageButton = view.findViewById(R.id.expand_button)
