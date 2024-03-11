@@ -4,7 +4,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -126,11 +125,10 @@ class ResultPageFragment : Fragment() {
 		// link image URI with view
 		val documentImageView: ImageView = view.findViewById(R.id.document_image)
 		documentImageView.tag = imageUriString
-		Log.d("ResultPageFragment", "load image " + imageUriString.toString())
 		documentImageView.setImageURI(Uri.parse(imageUriString))
 
 		// remove progress bar
-		val progressLoader : ProgressBar = view.findViewById(R.id.progress_loader)
+		val progressLoader: ProgressBar = view.findViewById(R.id.progress_loader)
 		progressLoader.visibility = View.GONE
 
 		// configure expand action
@@ -145,7 +143,7 @@ class ResultPageFragment : Fragment() {
 				is Int -> {
 					intent.putExtra(ExpandImageActivity.EXTRA_NAME_DRAWABLE_RESOURCE, imageResource)
 				}
-				is Uri -> {
+				is String -> {
 					intent.putExtra(ExpandImageActivity.EXTRA_NAME_IMAGE_RESOURCE, imageResource.toString())
 				}
 				else -> {
