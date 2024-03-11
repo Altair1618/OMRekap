@@ -1,15 +1,21 @@
 package com.k2_9.omrekap.activities
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.util.Log
 import android.widget.ImageButton
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -34,7 +40,7 @@ class MainActivity : AppCompatActivity() {
 
 	private val viewModel: ImageDataViewModel by viewModels()
 	private var saveFileJob: Job? = null
-	private var saveFileJobCompleted: Boolean = false
+	private var startSaveJob: Boolean = false
 	private val omrHelperObserver =
 		Observer<ImageSaveData> { newValue ->
 			if (newValue.isProcessed()) {
@@ -50,15 +56,56 @@ class MainActivity : AppCompatActivity() {
 	private var isCreated = false
 
 	private fun onGalleryButtonClick() {
-		val intent = Intent(this, MainActivity::class.java)
+		val intent = Intent(Intent.ACTION_GET_CONTENT)
+		intent.type = "image/*"
+		pickImage.launch(intent)
+	}
 
-		intent.putExtra(EXTRA_NAME_IS_RESULT, true)
-		intent.putExtra(EXTRA_NAME_IS_RESET, true)
-		intent.putExtra(EXTRA_NAME_IS_FROM_CAMERA, false)
-		// TODO: pass image URI from gallery
-		intent.putExtra(EXTRA_NAME_IMAGE_URI_STRING, imageUriString)
+	private val pickImage = registerForActivityResult(
+		ActivityResultContracts.StartActivityForResult()
+	) { result: ActivityResult ->
+		if (result.resultCode == RESULT_OK) {
+			val data: Intent? = result.data
+			val imageUri: Uri? = data?.data
 
-		startActivity(intent)
+			if (imageUri != null) {
+				val intent = Intent(this, MainActivity::class.java)
+
+				intent.putExtra(EXTRA_NAME_IS_RESULT, true)
+				intent.putExtra(EXTRA_NAME_IS_RESET, true)
+				intent.putExtra(EXTRA_NAME_IS_FROM_CAMERA, false)
+				intent.putExtra(EXTRA_NAME_IMAGE_URI_STRING, imageUri.toString())
+
+				startActivity(intent)
+			}
+		}
+	}
+
+	private fun requirePermission(
+		permission: String,
+		verbose: Boolean = true,
+		operation: () -> Unit,
+	) {
+		if (ContextCompat.checkSelfPermission(
+				this,
+				permission,
+			) == PackageManager.PERMISSION_GRANTED
+		) {
+			operation()
+		} else {
+			val requestPermissionLauncher =
+				registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+						isGranted: Boolean ->
+					if (isGranted) {
+						operation()
+					} else {
+						if (verbose) {
+							Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
+						}
+					}
+				}
+			requestPermissionLauncher.launch(permission)
+		}
 	}
 
 	private fun onCameraButtonClick() {
@@ -77,8 +124,9 @@ class MainActivity : AppCompatActivity() {
 	private fun saveFile() {
 		saveFileJob =
 			lifecycleScope.launch(Dispatchers.IO) {
+				startSaveJob = true
 				SaveHelper().save(applicationContext, viewModel.data.value!!)
-				saveFileJobCompleted = true
+				startSaveJob = false
 
 				withContext(Dispatchers.Main) {
 					Toast.makeText(
@@ -139,10 +187,6 @@ class MainActivity : AppCompatActivity() {
 				viewModel.processImage(Uri.parse(imageUriString))
 				viewModel.data.observe(this, omrHelperObserver)
 			}
-
-			if (!isFromCamera && !saveFileJobCompleted && viewModel.data.value!!.isProcessed()) {
-				saveFile()
-			}
 		}
 	}
 
@@ -178,7 +222,18 @@ class MainActivity : AppCompatActivity() {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_main)
 
-		saveFileJobCompleted = savedInstanceState?.getBoolean("saveFileJobCompleted") ?: false
+		if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
+			requirePermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, false) {}
+		}
+
+		startSaveJob = savedInstanceState?.getBoolean("startSaveJob") ?: false
+		if (startSaveJob) {
+			if (viewModel.data.value != null && viewModel.data.value!!.isProcessed()) {
+				saveFile()
+			} else {
+				Log.e("MainActivity", "startSaveJob is true but data is not processed")
+			}
+		}
 
 		updateStates(intent)
 
@@ -215,7 +270,7 @@ class MainActivity : AppCompatActivity() {
 		outPersistentState: PersistableBundle,
 	) {
 		super.onSaveInstanceState(outState, outPersistentState)
-		outState.putBoolean("saveFileJobCompleted", saveFileJobCompleted)
+		outState.putBoolean("startSaveJob", startSaveJob)
 	}
 
 	override fun onDestroy() {
