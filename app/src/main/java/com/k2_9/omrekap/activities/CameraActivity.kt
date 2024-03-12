@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.media.AudioManager
 import android.media.MediaActionSound
 import android.os.Bundle
@@ -43,7 +44,6 @@ class CameraActivity : AppCompatActivity() {
 	private var isFromCameraResult: Boolean = false
 
 	private lateinit var previewView: PreviewView
-	private lateinit var imageView: ImageView
 	private lateinit var captureButton: ImageButton
 	private lateinit var imageCapture: ImageCapture
 	private lateinit var cameraController: CameraController
@@ -101,9 +101,6 @@ class CameraActivity : AppCompatActivity() {
 	override fun onStart() {
 		super.onStart()
 		previewView = findViewById(R.id.preview_view)
-		imageView = findViewById(R.id.freeze_image_view)
-		imageView.visibility = View.GONE
-		previewView.visibility = View.VISIBLE
 		captureButton = findViewById(R.id.take_photo_button)
 		captureButton.setOnClickListener {
 			takePhoto()
@@ -169,7 +166,9 @@ class CameraActivity : AppCompatActivity() {
 		// save temp file on cache
 		val outputFile = File.createTempFile("temp-image-$dateString", ".png", outputDir)
 		outputFile.outputStream().use {
-			image.toBitmap().compress(Bitmap.CompressFormat.PNG, 100, it)
+			image.toBitmap()
+				.rotate(image.imageInfo.rotationDegrees.toFloat())
+				.compress(Bitmap.CompressFormat.PNG, 100, it)
 		}
 
 		// Notify user
@@ -185,6 +184,8 @@ class CameraActivity : AppCompatActivity() {
 				.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_SINGLE_TOP),
 		)
 	}
+	private fun Bitmap.rotate(degrees: Float): Bitmap =
+		Bitmap.createBitmap(this, 0, 0, width, height, Matrix().apply { postRotate(degrees) }, true)
 
 	private fun playShutterSound() {
 		val audio: AudioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
@@ -201,10 +202,7 @@ class CameraActivity : AppCompatActivity() {
 
 	private fun freezeImage(image: ImageProxy) {
 		runOnUiThread {
-			previewView.visibility = View.GONE
-			imageView.rotation = 90F
-			imageView.setImageBitmap(image.toBitmap())
-			imageView.visibility = View.VISIBLE
+			previewView.controller = null
 			captureButton.isEnabled = false
 		}
 	}
