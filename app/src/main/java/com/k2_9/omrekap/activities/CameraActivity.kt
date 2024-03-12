@@ -9,9 +9,7 @@ import android.graphics.Matrix
 import android.media.AudioManager
 import android.media.MediaActionSound
 import android.os.Bundle
-import android.view.View
 import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
@@ -45,7 +43,6 @@ class CameraActivity : AppCompatActivity() {
 
 	private lateinit var previewView: PreviewView
 	private lateinit var captureButton: ImageButton
-	private lateinit var imageCapture: ImageCapture
 	private lateinit var cameraController: CameraController
 
 	private fun onBackHome() {
@@ -108,12 +105,6 @@ class CameraActivity : AppCompatActivity() {
 		captureButton.isEnabled = true
 
 		requirePermission(Manifest.permission.CAMERA) {
-			imageCapture =
-				ImageCapture.Builder()
-					.setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
-					.setFlashMode(ImageCapture.FLASH_MODE_ON)
-					.build()
-
 			cameraController = LifecycleCameraController(this)
 			(cameraController as LifecycleCameraController).bindToLifecycle(this)
 			cameraController.cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
@@ -184,6 +175,7 @@ class CameraActivity : AppCompatActivity() {
 				.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_SINGLE_TOP),
 		)
 	}
+
 	private fun Bitmap.rotate(degrees: Float): Bitmap =
 		Bitmap.createBitmap(this, 0, 0, width, height, Matrix().apply { postRotate(degrees) }, true)
 
