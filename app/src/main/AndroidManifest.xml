@@ -27,6 +27,7 @@
         </activity>
         <activity android:name=".activities.ExpandImageActivity" />
         <activity android:name=".activities.CameraActivity" />
+        <activity android:name=".activities.PreviewActivity" />
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

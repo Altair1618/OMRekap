@@ -17,6 +17,11 @@
         <item name="RoundBackgroundColor">@color/backgroundExpandButton</item>
     </style>
 
+    <style name="ThemeOverlay.Omrekap.PreviewPageButtonRoundbackground" parent="">
+        <item name="RoundBackgroundRadius">100dp</item>
+        <item name="RoundBackgroundColor">@color/white</item>
+    </style>
+
     <style name="TextAppearance.Heading1" parent="@android:style/TextAppearance">
         <item name="android:textSize">30sp</item>
         <item name="android:fontFamily">@font/inter_bold</item>
