@@ -167,12 +167,11 @@ class CameraActivity : AppCompatActivity() {
 
 		// send URI to MainActivity
 		startActivity(
-			Intent(this, MainActivity::class.java)
+			Intent(this, PreviewActivity::class.java)
 				.putExtra(MainActivity.EXTRA_NAME_IMAGE_URI_STRING, uri.toString())
 				.putExtra(MainActivity.EXTRA_NAME_IS_RESULT, true)
 				.putExtra(MainActivity.EXTRA_NAME_IS_FROM_CAMERA, true)
-				.putExtra(MainActivity.EXTRA_NAME_IS_RESET, true)
-				.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_SINGLE_TOP),
+				.putExtra(MainActivity.EXTRA_NAME_IS_RESET, true),
 		)
 	}
 

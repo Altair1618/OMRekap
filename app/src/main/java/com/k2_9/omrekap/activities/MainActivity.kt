@@ -61,25 +61,25 @@ class MainActivity : AppCompatActivity() {
 		pickImage.launch(intent)
 	}
 
-	private val pickImage = registerForActivityResult(
-		ActivityResultContracts.StartActivityForResult()
-	) { result: ActivityResult ->
-		if (result.resultCode == RESULT_OK) {
-			val data: Intent? = result.data
-			val imageUri: Uri? = data?.data
+	private val pickImage =
+		registerForActivityResult(
+			ActivityResultContracts.StartActivityForResult(),
+		) { result: ActivityResult ->
+			if (result.resultCode == RESULT_OK) {
+				val data: Intent? = result.data
+				val imageUri: Uri? = data?.data
 
-			if (imageUri != null) {
-				val intent = Intent(this, MainActivity::class.java)
+				if (imageUri != null) {
+					val intent = Intent(this, PreviewActivity::class.java)
 
-				intent.putExtra(EXTRA_NAME_IS_RESULT, true)
-				intent.putExtra(EXTRA_NAME_IS_RESET, true)
-				intent.putExtra(EXTRA_NAME_IS_FROM_CAMERA, false)
-				intent.putExtra(EXTRA_NAME_IMAGE_URI_STRING, imageUri.toString())
-
-				startActivity(intent)
+					intent.putExtra(EXTRA_NAME_IS_RESULT, true)
+					intent.putExtra(EXTRA_NAME_IS_RESET, true)
+					intent.putExtra(EXTRA_NAME_IS_FROM_CAMERA, false)
+					intent.putExtra(EXTRA_NAME_IMAGE_URI_STRING, imageUri.toString())
+					startActivity(intent)
+				}
 			}
 		}
-	}
 
 	private fun requirePermission(
 		permission: String,
@@ -192,6 +192,8 @@ class MainActivity : AppCompatActivity() {
 
 	override fun onNewIntent(intent: Intent?) {
 		super.onNewIntent(intent)
+
+		// Important assumption: home page is always below result page in the activity stack
 
 		if (intent != null) {
 			if (isCreated && (isResult.xor(intent.getBooleanExtra(EXTRA_NAME_IS_RESULT, false)))) {
