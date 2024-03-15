@@ -3,7 +3,7 @@ package com.k2_9.omrekap.activities
 import android.content.Intent
 import android.net.Uri
 
-class ResultFromGalleryActivity: ResultActivity() {
+class ResultFromGalleryActivity : ResultActivity() {
 	private fun onBackHome() {
 		val intent = Intent(this, MainActivity::class.java)
 		intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
@@ -25,6 +25,7 @@ class ResultFromGalleryActivity: ResultActivity() {
 
 		return intent
 	}
+
 	override fun getCameraIntent(): Intent {
 		val intent = Intent(this, CameraActivity::class.java)
 		intent.putExtra(CameraActivity.EXTRA_NAME_IMAGE_URI_STRING, getImageUriString())

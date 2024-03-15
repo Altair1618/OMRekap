@@ -14,11 +14,14 @@ import androidx.fragment.app.Fragment
 import com.k2_9.omrekap.R
 
 abstract class MainActivity : AppCompatActivity() {
+	protected abstract fun getGalleryPreviewIntent(imageUri: Uri): Intent
 
-	protected abstract fun getGalleryPreviewIntent(imageUri: Uri): Intent;
-	protected abstract fun getCameraIntent(): Intent;
-	protected abstract fun getFragment(): Fragment;
-	protected abstract fun handleBackNavigation();
+	protected abstract fun getCameraIntent(): Intent
+
+	protected abstract fun getFragment(): Fragment
+
+	protected abstract fun handleBackNavigation()
+
 	private fun onGalleryButtonClick() {
 		val intent = Intent(Intent.ACTION_GET_CONTENT)
 		intent.type = "image/*"
@@ -60,7 +63,6 @@ abstract class MainActivity : AppCompatActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_main)
-
 
 		// fix shadow
 		val galleryCardView: CardView = findViewById(R.id.gallery_card_view)

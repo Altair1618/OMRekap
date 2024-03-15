@@ -9,7 +9,6 @@ import com.github.chrisbanes.photoview.PhotoView
 import com.k2_9.omrekap.R
 
 class PreviewActivity : AppCompatActivity() {
-
 	companion object {
 		const val EXTRA_NAME_IMAGE_URI_STRING = ResultActivity.EXTRA_NAME_IMAGE_URI_STRING
 		const val EXTRA_NAME_IS_RESET = ResultActivity.EXTRA_NAME_IS_RESET

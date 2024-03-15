@@ -13,7 +13,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import com.k2_9.omrekap.fragments.ResultPageFragment
 import com.k2_9.omrekap.models.ImageSaveData
 import com.k2_9.omrekap.utils.SaveHelper
 import com.k2_9.omrekap.view_models.ImageDataViewModel
@@ -21,10 +23,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import androidx.lifecycle.Observer
-import com.k2_9.omrekap.fragments.ResultPageFragment
 
-abstract class ResultActivity: MainActivity() {
+abstract class ResultActivity : MainActivity() {
 	companion object {
 		const val EXTRA_NAME_IMAGE_URI_STRING = "IMAGE_URI_STRING"
 		const val EXTRA_NAME_IS_RESET = "IS_RESET"
@@ -50,13 +50,14 @@ abstract class ResultActivity: MainActivity() {
 
 	private fun updateStates(intent: Intent) {
 		isReset = intent.getBooleanExtra(EXTRA_NAME_IS_RESET, false)
-		val uriString = intent.getStringExtra(EXTRA_NAME_IMAGE_URI_STRING)
-			?: throw IllegalArgumentException("Image URI string is null")
+		val uriString =
+			intent.getStringExtra(EXTRA_NAME_IMAGE_URI_STRING)
+				?: throw IllegalArgumentException("Image URI string is null")
 
 		imageUriString = uriString
 
 		if (isReset) {
-			// TODO: reset view model
+			// TODO: reset view model (perlu diskusi dulu tentang stop proses kalau ganti page)
 
 			if (isCreated) {
 				setFragment()
@@ -68,6 +69,7 @@ abstract class ResultActivity: MainActivity() {
 			viewModel.data.observe(this, omrHelperObserver)
 		}
 	}
+
 	private fun saveFile() {
 		saveFileJob =
 			lifecycleScope.launch(Dispatchers.IO) {
@@ -125,12 +127,12 @@ abstract class ResultActivity: MainActivity() {
 
 		return fragment
 	}
+
 	override fun onNewIntent(intent: Intent?) {
 		super.onNewIntent(intent)
 
 		if (intent != null) {
 			updateStates(intent)
-
 		}
 	}
 
