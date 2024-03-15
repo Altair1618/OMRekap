@@ -24,6 +24,7 @@ import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.k2_9.omrekap.R
+import com.k2_9.omrekap.fragments.HomePageFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -46,16 +47,17 @@ class CameraActivity : AppCompatActivity() {
 	private lateinit var cameraController: CameraController
 
 	private fun onBackHome() {
-		val intent = Intent(this, MainActivity::class.java)
+		val intent = Intent(this, HomePageFragment::class.java)
 		intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
 		startActivity(intent)
 	}
 
 	private fun onBackResult() {
-		val intent = Intent(this, MainActivity::class.java)
-		intent.putExtra(MainActivity.EXTRA_NAME_IS_RESULT, true)
-		intent.putExtra(MainActivity.EXTRA_NAME_IMAGE_URI_STRING, imageUriString)
-		intent.putExtra(MainActivity.EXTRA_NAME_IS_FROM_CAMERA, isFromCameraResult)
+		val newIntentClass = if (isFromCameraResult) ResultFromCameraActivity::class.java else ResultFromCameraActivity::class.java::class.java
+
+		val intent = Intent(this, newIntentClass)
+
+		intent.putExtra(ResultActivity.EXTRA_NAME_IMAGE_URI_STRING, imageUriString)
 		intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_SINGLE_TOP)
 		startActivity(intent)
 	}
@@ -168,10 +170,9 @@ class CameraActivity : AppCompatActivity() {
 		// send URI to MainActivity
 		startActivity(
 			Intent(this, PreviewActivity::class.java)
-				.putExtra(MainActivity.EXTRA_NAME_IMAGE_URI_STRING, uri.toString())
-				.putExtra(MainActivity.EXTRA_NAME_IS_RESULT, true)
-				.putExtra(MainActivity.EXTRA_NAME_IS_FROM_CAMERA, true)
-				.putExtra(MainActivity.EXTRA_NAME_IS_RESET, true),
+				.putExtra(PreviewActivity.EXTRA_NAME_IMAGE_URI_STRING, uri.toString())
+				.putExtra(PreviewActivity.EXTRA_NAME_IS_FROM_CAMERA, true)
+				.putExtra(PreviewActivity.EXTRA_NAME_IS_RESET, true),
 		)
 	}
 

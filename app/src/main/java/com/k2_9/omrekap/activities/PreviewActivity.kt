@@ -11,8 +11,8 @@ import com.k2_9.omrekap.R
 class PreviewActivity : AppCompatActivity() {
 
 	companion object {
-		const val EXTRA_NAME_IMAGE_URI_STRING = "IMAGE_URI_STRING"
-		const val EXTRA_NAME_IS_RESET = "IS_RESET"
+		const val EXTRA_NAME_IMAGE_URI_STRING = ResultActivity.EXTRA_NAME_IMAGE_URI_STRING
+		const val EXTRA_NAME_IS_RESET = ResultActivity.EXTRA_NAME_IS_RESET
 		const val EXTRA_NAME_IS_FROM_CAMERA = "IS_FROM_CAMERA"
 	}
 
@@ -39,18 +39,14 @@ class PreviewActivity : AppCompatActivity() {
 		val rejectButton = findViewById<ImageButton>(R.id.reject_preview_button)
 
 		acceptButton.setOnClickListener {
-			val newIntent = Intent(this, MainActivity::class.java)
+			val newIntentClass = if (isFromCamera) ResultFromCameraActivity::class.java else ResultFromCameraActivity::class.java::class.java
+			val newIntent = Intent(this, newIntentClass)
 
 			intent.extras?.let { extras ->
 				newIntent.putExtras(extras)
 			}
 
-			if (isFromCamera) {
-				newIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-			} else {
-				newIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-			}
-
+			newIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_SINGLE_TOP)
 			finish()
 			startActivity(newIntent)
 		}
