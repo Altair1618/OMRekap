@@ -23,7 +23,7 @@ class HomeActivity : MainActivity() {
 		return intent
 	}
 
-	override fun getFragment(): Fragment {
+	override fun getFragment(intent: Intent): Fragment {
 		return HomePageFragment()
 	}
 

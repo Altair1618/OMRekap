@@ -3,6 +3,7 @@ package com.k2_9.omrekap.activities
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import com.github.chrisbanes.photoview.PhotoView
@@ -26,6 +27,7 @@ class PreviewActivity : AppCompatActivity() {
 		val photoView: PhotoView = findViewById(R.id.preview_content)
 
 		imageUriString = intent.getStringExtra(EXTRA_NAME_IMAGE_URI_STRING)
+		isFromCamera = intent.getBooleanExtra(EXTRA_NAME_IS_FROM_CAMERA, false)
 
 		if (imageUriString == null) {
 			throw IllegalArgumentException("Image URI string is null")
@@ -38,7 +40,7 @@ class PreviewActivity : AppCompatActivity() {
 		val rejectButton = findViewById<ImageButton>(R.id.reject_preview_button)
 
 		acceptButton.setOnClickListener {
-			val newIntentClass = if (isFromCamera) ResultFromCameraActivity::class.java else ResultFromCameraActivity::class.java::class.java
+			val newIntentClass = if (isFromCamera) ResultFromCameraActivity::class.java else ResultFromGalleryActivity::class.java
 			val newIntent = Intent(this, newIntentClass)
 
 			intent.extras?.let { extras ->
@@ -47,6 +49,8 @@ class PreviewActivity : AppCompatActivity() {
 
 			newIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_SINGLE_TOP)
 			finish()
+
+			Log.d("FROMCAMERAGA", isFromCamera.toString())
 			startActivity(newIntent)
 		}
 

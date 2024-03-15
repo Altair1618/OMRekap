@@ -18,7 +18,7 @@ abstract class MainActivity : AppCompatActivity() {
 
 	protected abstract fun getCameraIntent(): Intent
 
-	protected abstract fun getFragment(): Fragment
+	protected abstract fun getFragment(intent: Intent): Fragment
 
 	protected abstract fun handleBackNavigation()
 
@@ -48,13 +48,13 @@ abstract class MainActivity : AppCompatActivity() {
 		startActivity(intent)
 	}
 
-	protected fun setFragment() {
+	protected fun setFragment(intent: Intent) {
 		// set fragment view
 		val fragmentManager = supportFragmentManager
 		val fragmentTransaction = fragmentManager.beginTransaction()
 
 		// Create an instance of your fragment
-		val fragment = getFragment()
+		val fragment = getFragment(intent)
 
 		fragmentTransaction.replace(R.id.fragment_container_view, fragment)
 		fragmentTransaction.commit()
@@ -73,7 +73,7 @@ abstract class MainActivity : AppCompatActivity() {
 			cameraCardView.elevation = 0f
 		}
 
-		setFragment()
+		setFragment(intent)
 
 		// add button listeners
 		val galleryButton: ImageButton = findViewById(R.id.gallery_button)

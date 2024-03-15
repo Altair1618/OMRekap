@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.k2_9.omrekap.R
 import com.k2_9.omrekap.activities.ExpandImageActivity
-import com.k2_9.omrekap.activities.MainActivity
+import com.k2_9.omrekap.activities.HomeActivity
 import com.k2_9.omrekap.adapters.ResultAdapter
 
 /**
@@ -36,7 +36,7 @@ class ResultPageFragment : Fragment() {
 	private lateinit var resultAdapter: ResultAdapter
 
 	private fun onHomeButtonClick() {
-		val intent = Intent(context, MainActivity::class.java)
+		val intent = Intent(context, HomeActivity::class.java)
 		intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
 
 		activity?.finish()

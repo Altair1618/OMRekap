@@ -44,12 +44,9 @@ abstract class ResultActivity : MainActivity() {
 	private var isReset: Boolean = false // reset ViewModel for new OMR process
 	private var isCreated = false
 
-	protected fun getImageUriString(): String {
-		return imageUriString
-	}
-
 	private fun updateStates(intent: Intent) {
 		isReset = intent.getBooleanExtra(EXTRA_NAME_IS_RESET, false)
+		Log.d("RESET GA YA", isReset.toString())
 		val uriString =
 			intent.getStringExtra(EXTRA_NAME_IMAGE_URI_STRING)
 				?: throw IllegalArgumentException("Image URI string is null")
@@ -58,9 +55,9 @@ abstract class ResultActivity : MainActivity() {
 
 		if (isReset) {
 			// TODO: reset view model (perlu diskusi dulu tentang stop proses kalau ganti page)
-
+			Log.d("CREATED GA YA", isCreated.toString())
 			if (isCreated) {
-				setFragment()
+				setFragment(intent)
 			}
 		}
 
@@ -114,18 +111,32 @@ abstract class ResultActivity : MainActivity() {
 		}
 	}
 
-	override fun getFragment(): Fragment {
+	override fun getFragment(intent: Intent): Fragment {
 		val fragment = ResultPageFragment()
+
+		val uriString =
+			intent.getStringExtra(EXTRA_NAME_IMAGE_URI_STRING)
+				?: throw IllegalArgumentException("Image URI string is null")
 
 		val arguments =
 			Bundle().apply {
-				putString(ResultPageFragment.ARG_NAME_IMAGE_URI_STRING, imageUriString)
+				putString(ResultPageFragment.ARG_NAME_IMAGE_URI_STRING, uriString)
 			}
 
 		// Set the arguments for the fragment
 		fragment.arguments = arguments
 
 		return fragment
+	}
+
+	override fun getGalleryPreviewIntent(imageUri: Uri): Intent {
+		val intent = Intent(this, PreviewActivity::class.java)
+
+		intent.putExtra(PreviewActivity.EXTRA_NAME_IS_RESET, true)
+		intent.putExtra(PreviewActivity.EXTRA_NAME_IS_FROM_CAMERA, false)
+		intent.putExtra(PreviewActivity.EXTRA_NAME_IMAGE_URI_STRING, imageUri.toString())
+
+		return intent
 	}
 
 	override fun onNewIntent(intent: Intent?) {
@@ -139,7 +150,7 @@ abstract class ResultActivity : MainActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
-		OpenCVLoader.initLocal()
+// 		OpenCVLoader.initLocal()
 
 		if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
 			requirePermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, false) {}

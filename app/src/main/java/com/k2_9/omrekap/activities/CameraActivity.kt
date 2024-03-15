@@ -24,7 +24,6 @@ import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.k2_9.omrekap.R
-import com.k2_9.omrekap.fragments.HomePageFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -47,13 +46,13 @@ class CameraActivity : AppCompatActivity() {
 	private lateinit var cameraController: CameraController
 
 	private fun onBackHome() {
-		val intent = Intent(this, HomePageFragment::class.java)
+		val intent = Intent(this, HomeActivity::class.java)
 		intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
 		startActivity(intent)
 	}
 
 	private fun onBackResult() {
-		val newIntentClass = if (isFromCameraResult) ResultFromCameraActivity::class.java else ResultFromCameraActivity::class.java::class.java
+		val newIntentClass = if (isFromCameraResult) ResultFromCameraActivity::class.java else ResultFromGalleryActivity::class.java
 
 		val intent = Intent(this, newIntentClass)
 
