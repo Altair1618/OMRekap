@@ -23,6 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.opencv.android.OpenCVLoader
 
 abstract class ResultActivity : MainActivity() {
 	companion object {
@@ -150,7 +151,7 @@ abstract class ResultActivity : MainActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
-// 		OpenCVLoader.initLocal()
+ 		OpenCVLoader.initLocal()
 
 		if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
 			requirePermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, false) {}
