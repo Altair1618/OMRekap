@@ -9,6 +9,13 @@ import com.github.chrisbanes.photoview.PhotoView
 import com.k2_9.omrekap.R
 
 class PreviewActivity : AppCompatActivity() {
+
+	companion object {
+		const val EXTRA_NAME_IMAGE_URI_STRING = "IMAGE_URI_STRING"
+		const val EXTRA_NAME_IS_RESET = "IS_RESET"
+		const val EXTRA_NAME_IS_FROM_CAMERA = "IS_FROM_CAMERA"
+	}
+
 	private var imageUriString: String? = null
 	private var isFromCamera: Boolean = false
 
@@ -19,8 +26,7 @@ class PreviewActivity : AppCompatActivity() {
 		// display photo
 		val photoView: PhotoView = findViewById(R.id.preview_content)
 
-		imageUriString = intent.getStringExtra(MainActivity.EXTRA_NAME_IMAGE_URI_STRING)
-		isFromCamera = intent.getBooleanExtra(MainActivity.EXTRA_NAME_IS_FROM_CAMERA, false)
+		imageUriString = intent.getStringExtra(EXTRA_NAME_IMAGE_URI_STRING)
 
 		if (imageUriString == null) {
 			throw IllegalArgumentException("Image URI string is null")

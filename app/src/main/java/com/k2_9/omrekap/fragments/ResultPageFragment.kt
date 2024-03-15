@@ -32,19 +32,10 @@ class ResultPageFragment : Fragment() {
 		const val ARG_NAME_IMAGE_URI_STRING = "IMAGE_URI_STRING"
 	}
 
-	private var isFromCamera: Boolean = false
 	private var imageUriString: String? = null
 
 	private lateinit var recyclerView: RecyclerView
 	private lateinit var resultAdapter: ResultAdapter
-
-	private fun onBackCamera() {
-		val intent = Intent(context, CameraActivity::class.java)
-		intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-
-		activity?.finish()
-		startActivity(intent)
-	}
 
 	private fun onHomeButtonClick() {
 		val intent = Intent(context, MainActivity::class.java)
@@ -52,15 +43,6 @@ class ResultPageFragment : Fragment() {
 
 		activity?.finish()
 		startActivity(intent)
-	}
-
-	private fun handleBackNavigation() {
-		// TODO: CLEAR VIEWMODEL
-		if (isFromCamera) {
-			onBackCamera()
-		} else {
-			onHomeButtonClick()
-		}
 	}
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,21 +53,11 @@ class ResultPageFragment : Fragment() {
 
 		// Check if arguments are not null and retrieve values
 		if (args != null) {
-			isFromCamera = args.getBoolean(ARG_NAME_IS_FROM_CAMERA)
 			imageUriString = args.getString(ARG_NAME_IMAGE_URI_STRING)
 			if (imageUriString == null) {
 				throw IllegalArgumentException("Image URI string is null")
 			}
 		}
-
-		requireActivity().onBackPressedDispatcher.addCallback(
-			this,
-			object : OnBackPressedCallback(true) {
-				override fun handleOnBackPressed() {
-					handleBackNavigation()
-				}
-			},
-		)
 	}
 
 	override fun onCreateView(
