@@ -10,15 +10,13 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.ProgressBar
-import androidx.activity.OnBackPressedCallback
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.k2_9.omrekap.R
-import com.k2_9.omrekap.activities.CameraActivity
 import com.k2_9.omrekap.activities.ExpandImageActivity
-import com.k2_9.omrekap.activities.MainActivity
+import com.k2_9.omrekap.activities.HomeActivity
 import com.k2_9.omrekap.adapters.ResultAdapter
 
 /**
@@ -32,35 +30,17 @@ class ResultPageFragment : Fragment() {
 		const val ARG_NAME_IMAGE_URI_STRING = "IMAGE_URI_STRING"
 	}
 
-	private var isFromCamera: Boolean = false
 	private var imageUriString: String? = null
 
 	private lateinit var recyclerView: RecyclerView
 	private lateinit var resultAdapter: ResultAdapter
 
-	private fun onBackCamera() {
-		val intent = Intent(context, CameraActivity::class.java)
-		intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-
-		activity?.finish()
-		startActivity(intent)
-	}
-
 	private fun onHomeButtonClick() {
-		val intent = Intent(context, MainActivity::class.java)
+		val intent = Intent(context, HomeActivity::class.java)
 		intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
 
 		activity?.finish()
 		startActivity(intent)
-	}
-
-	private fun handleBackNavigation() {
-		// TODO: CLEAR VIEWMODEL
-		if (isFromCamera) {
-			onBackCamera()
-		} else {
-			onHomeButtonClick()
-		}
 	}
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,21 +51,11 @@ class ResultPageFragment : Fragment() {
 
 		// Check if arguments are not null and retrieve values
 		if (args != null) {
-			isFromCamera = args.getBoolean(ARG_NAME_IS_FROM_CAMERA)
 			imageUriString = args.getString(ARG_NAME_IMAGE_URI_STRING)
 			if (imageUriString == null) {
 				throw IllegalArgumentException("Image URI string is null")
 			}
 		}
-
-		requireActivity().onBackPressedDispatcher.addCallback(
-			this,
-			object : OnBackPressedCallback(true) {
-				override fun handleOnBackPressed() {
-					handleBackNavigation()
-				}
-			},
-		)
 	}
 
 	override fun onCreateView(

@@ -46,16 +46,17 @@ class CameraActivity : AppCompatActivity() {
 	private lateinit var cameraController: CameraController
 
 	private fun onBackHome() {
-		val intent = Intent(this, MainActivity::class.java)
+		val intent = Intent(this, HomeActivity::class.java)
 		intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
 		startActivity(intent)
 	}
 
 	private fun onBackResult() {
-		val intent = Intent(this, MainActivity::class.java)
-		intent.putExtra(MainActivity.EXTRA_NAME_IS_RESULT, true)
-		intent.putExtra(MainActivity.EXTRA_NAME_IMAGE_URI_STRING, imageUriString)
-		intent.putExtra(MainActivity.EXTRA_NAME_IS_FROM_CAMERA, isFromCameraResult)
+		val newIntentClass = if (isFromCameraResult) ResultFromCameraActivity::class.java else ResultFromGalleryActivity::class.java
+
+		val intent = Intent(this, newIntentClass)
+
+		intent.putExtra(ResultActivity.EXTRA_NAME_IMAGE_URI_STRING, imageUriString)
 		intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_SINGLE_TOP)
 		startActivity(intent)
 	}
@@ -168,10 +169,9 @@ class CameraActivity : AppCompatActivity() {
 		// send URI to MainActivity
 		startActivity(
 			Intent(this, PreviewActivity::class.java)
-				.putExtra(MainActivity.EXTRA_NAME_IMAGE_URI_STRING, uri.toString())
-				.putExtra(MainActivity.EXTRA_NAME_IS_RESULT, true)
-				.putExtra(MainActivity.EXTRA_NAME_IS_FROM_CAMERA, true)
-				.putExtra(MainActivity.EXTRA_NAME_IS_RESET, true),
+				.putExtra(PreviewActivity.EXTRA_NAME_IMAGE_URI_STRING, uri.toString())
+				.putExtra(PreviewActivity.EXTRA_NAME_IS_FROM_CAMERA, true)
+				.putExtra(PreviewActivity.EXTRA_NAME_IS_RESET, true),
 		)
 	}
 
