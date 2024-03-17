@@ -26,25 +26,30 @@ class SaveHelper {
 	) {
 		val folderName: String = generateFolderName()
 
-		if (data.rawImage.toString() == "") {
-			throw RuntimeException("The raw image URI is empty")
+		if (data.rawImage == null) {
+			throw RuntimeException("The raw image bitmap is null")
 		}
 
 		if (data.annotatedImage == null || data.data == null) {
 			throw RuntimeException("Image has not been processed yet")
 		}
 
-		val rawImageBitmap = uriToBitmap(context, data.rawImage)
-		val annotatedImageBitmap = uriToBitmap(context, data.annotatedImage!!)
+		if (data.rawImage!!.width <= 0 || data.rawImage!!.height <= 0) {
+			throw RuntimeException("The raw image bitmap is empty")
+		}
+
+		if(data.annotatedImage!!.width <= 0 || data.rawImage!!.height<=0){
+			throw RuntimeException("The annotated image bitmap is empty")
+		}
 
 		withContext(Dispatchers.IO) {
-			saveImage(context, rawImageBitmap, folderName, "raw_image.jpg")
-			saveImage(context, annotatedImageBitmap, folderName, "annotated_image.jpg")
+			saveImage(context, data.rawImage, folderName, "raw_image.jpg")
+			saveImage(context, data.annotatedImage, folderName, "annotated_image.jpg")
 			saveJSON(context, data.data!!, folderName, "data.json")
 		}
 	}
 
-	private fun uriToBitmap(
+	fun uriToBitmap(
 		context: Context,
 		selectedFileUri: Uri,
 	): Bitmap {
