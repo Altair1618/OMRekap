@@ -155,7 +155,7 @@ abstract class ResultActivity : MainActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
- 		OpenCVLoader.initLocal()
+		OpenCVLoader.initLocal()
 
 		if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
 			requirePermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, false) {}
