@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -163,8 +162,9 @@ abstract class ResultActivity : MainActivity() {
 
 		startSaveJob = savedInstanceState?.getBoolean("startSaveJob") ?: false
 		if (startSaveJob) {
-			if (viewModel.data.value != null && viewModel.data.value?.annotatedImage != null
-				&& viewModel.data.value?.data != null) {
+			if (viewModel.data.value != null && viewModel.data.value?.annotatedImage != null &&
+				viewModel.data.value?.data != null
+			) {
 				saveFile()
 			} else {
 				Log.e("MainActivity", "startSaveJob is true but data is not processed")

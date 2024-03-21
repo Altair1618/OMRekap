@@ -38,9 +38,10 @@ class SaveHelper {
 			throw RuntimeException("The raw image bitmap is empty")
 		}
 
-		if(data.annotatedImage!!.width <= 0 || data.rawImage!!.height<=0){
-			throw RuntimeException("The annotated image bitmap is empty")
-		}
+		if (data.annotatedImage!!.width <= 0 || data.rawImage!!.height <= 0)
+			{
+				throw RuntimeException("The annotated image bitmap is empty")
+			}
 
 		withContext(Dispatchers.IO) {
 			saveImage(context, data.rawImage, folderName, "raw_image.jpg")
