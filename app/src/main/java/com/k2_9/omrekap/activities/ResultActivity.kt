@@ -3,6 +3,7 @@ package com.k2_9.omrekap.activities
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -36,12 +37,13 @@ abstract class ResultActivity : MainActivity() {
 	private var startSaveJob: Boolean = false
 	private val omrHelperObserver =
 		Observer<ImageSaveData> { newValue ->
-			if (newValue.isProcessed()) {
+			if (newValue?.annotatedImage != null && newValue.data != null) {
 				saveFile()
 			}
 		}
 
 	private lateinit var imageUriString: String
+	private lateinit var imageBitmap: Bitmap
 	private var isReset: Boolean = false // reset ViewModel for new OMR process
 	private var isCreated = false
 
@@ -62,8 +64,10 @@ abstract class ResultActivity : MainActivity() {
 			}
 		}
 
-		if (viewModel.data.value == null || !viewModel.data.value!!.isProcessed()) {
-			viewModel.processImage(Uri.parse(imageUriString))
+		imageBitmap = SaveHelper().uriToBitmap(applicationContext, Uri.parse(imageUriString))
+
+		if (viewModel.data.value == null) {
+			viewModel.processImage(imageBitmap)
 			viewModel.data.observe(this, omrHelperObserver)
 		}
 	}
@@ -126,7 +130,6 @@ abstract class ResultActivity : MainActivity() {
 
 		// Set the arguments for the fragment
 		fragment.arguments = arguments
-
 		return fragment
 	}
 
@@ -159,7 +162,9 @@ abstract class ResultActivity : MainActivity() {
 
 		startSaveJob = savedInstanceState?.getBoolean("startSaveJob") ?: false
 		if (startSaveJob) {
-			if (viewModel.data.value != null && viewModel.data.value!!.isProcessed()) {
+			if (viewModel.data.value != null && viewModel.data.value?.annotatedImage != null &&
+				viewModel.data.value?.data != null
+			) {
 				saveFile()
 			} else {
 				Log.e("MainActivity", "startSaveJob is true but data is not processed")
