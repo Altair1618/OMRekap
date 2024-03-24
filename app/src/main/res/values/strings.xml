@@ -10,4 +10,7 @@
     <string name="ratio_image">3:4</string>
     <string name="ratio_square">1:1</string>
     <string name="img_omr_description">OMR Illustration</string>
+    <string name="title_activity_preview">PreviewActivity</string>
+    <string name="desc_accept_preview">accept preview</string>
+    <string name="desc_reject_preview">reject preview</string>
 </resources>

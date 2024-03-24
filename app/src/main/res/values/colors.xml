@@ -12,4 +12,6 @@
     <color name="backgroundExpandButton">#11FFFFFF</color>
     <color name="white_opacity_16">#80FFFFFF</color>
     <color name="white_opacity_0">#00FFFFFF</color>
+    <color name="acceptPreviewButton">#00FF00</color>
+    <color name="rejectPreviewButton">#FF0000</color>
 </resources>
