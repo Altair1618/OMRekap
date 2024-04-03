@@ -1,11 +1,11 @@
-package com.k2_9.omrekap.view_models
+package com.k2_9.omrekap.data.view_models
 
 import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.k2_9.omrekap.models.ImageSaveData
+import com.k2_9.omrekap.data.models.ImageSaveData
 import kotlinx.coroutines.launch
 
 class ImageDataViewModel : ViewModel() {

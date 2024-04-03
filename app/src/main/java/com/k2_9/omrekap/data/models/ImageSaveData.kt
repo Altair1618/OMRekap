@@ -1,4 +1,4 @@
-package com.k2_9.omrekap.models
+package com.k2_9.omrekap.data.models
 
 import android.graphics.Bitmap
 

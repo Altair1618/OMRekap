@@ -1,4 +1,4 @@
-package com.k2_9.omrekap.models
+package com.k2_9.omrekap.data.models
 
 import org.opencv.core.Point
 

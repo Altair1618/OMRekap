@@ -1,4 +1,4 @@
-package com.k2_9.omrekap.activities
+package com.k2_9.omrekap.views.activities
 
 import android.content.Intent
 import android.net.Uri

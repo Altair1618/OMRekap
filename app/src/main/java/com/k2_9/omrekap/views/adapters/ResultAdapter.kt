@@ -1,4 +1,4 @@
-package com.k2_9.omrekap.adapters
+package com.k2_9.omrekap.views.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,8 +24,8 @@ class ResultAdapter(private val dataList: List<Pair<String, String>>) :
 	}
 
 	override fun onBindViewHolder(
-		holder: ResultViewHolder,
-		position: Int,
+        holder: ResultViewHolder,
+        position: Int,
 	) {
 		val item = dataList[position]
 		holder.keyTextView.text = item.first

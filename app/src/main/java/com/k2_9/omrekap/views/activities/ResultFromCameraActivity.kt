@@ -1,18 +1,19 @@
-package com.k2_9.omrekap.activities
+package com.k2_9.omrekap.views.activities
 
 import android.content.Intent
+import android.util.Log
 
-class ResultFromGalleryActivity : ResultActivity() {
-	private fun onBackHome() {
-		val intent = Intent(this, HomeActivity::class.java)
-		intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-
+class ResultFromCameraActivity : ResultActivity() {
+	private fun onBackCamera() {
+		val intent = Intent(this, CameraActivity::class.java)
+		intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+		Log.d("wtf is this", "onBackCamera: ")
 		finish()
 		startActivity(intent)
 	}
 
 	override fun handleBackNavigation() {
-		onBackHome()
+		onBackCamera()
 	}
 
 	override fun getCameraIntent(): Intent {
@@ -22,7 +23,7 @@ class ResultFromGalleryActivity : ResultActivity() {
 
 		val intent = Intent(this, CameraActivity::class.java)
 		intent.putExtra(CameraActivity.EXTRA_NAME_IMAGE_URI_STRING, uriString)
-		intent.putExtra(CameraActivity.EXTRA_NAME_IS_FROM_CAMERA_RESULT, false)
+		intent.putExtra(CameraActivity.EXTRA_NAME_IS_FROM_CAMERA_RESULT, true)
 		intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_SINGLE_TOP)
 		return intent
 	}

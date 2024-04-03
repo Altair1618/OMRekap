@@ -5,7 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
 import com.k2_9.omrekap.R
-import com.k2_9.omrekap.models.CornerPoints
+import com.k2_9.omrekap.data.models.CornerPoints
 import org.opencv.android.Utils
 import org.opencv.core.CvType
 import org.opencv.core.Mat
@@ -93,8 +93,8 @@ class CropHelper {
 	}
 
 	fun fourPointTransform(
-		image: Bitmap,
-		points: CornerPoints,
+        image: Bitmap,
+        points: CornerPoints,
 	): Bitmap {
 		val mult = 0.03
 

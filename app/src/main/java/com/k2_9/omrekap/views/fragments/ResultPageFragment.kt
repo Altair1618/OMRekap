@@ -1,4 +1,4 @@
-package com.k2_9.omrekap.fragments
+package com.k2_9.omrekap.views.fragments
 
 import android.content.Intent
 import android.net.Uri
@@ -15,9 +15,9 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.k2_9.omrekap.R
-import com.k2_9.omrekap.activities.ExpandImageActivity
-import com.k2_9.omrekap.activities.HomeActivity
-import com.k2_9.omrekap.adapters.ResultAdapter
+import com.k2_9.omrekap.views.activities.ExpandImageActivity
+import com.k2_9.omrekap.views.activities.HomeActivity
+import com.k2_9.omrekap.views.adapters.ResultAdapter
 
 /**
  * A simple [Fragment] subclass.

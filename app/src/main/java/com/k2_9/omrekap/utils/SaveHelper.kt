@@ -9,7 +9,7 @@ import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import androidx.annotation.RequiresApi
-import com.k2_9.omrekap.models.ImageSaveData
+import com.k2_9.omrekap.data.models.ImageSaveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -21,8 +21,8 @@ import java.util.Locale
 
 class SaveHelper {
 	suspend fun save(
-		context: Context,
-		data: ImageSaveData,
+        context: Context,
+        data: ImageSaveData,
 	) {
 		val folderName: String = generateFolderName()
 

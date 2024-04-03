@@ -1,4 +1,4 @@
-package com.k2_9.omrekap.fragments
+package com.k2_9.omrekap.views.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater

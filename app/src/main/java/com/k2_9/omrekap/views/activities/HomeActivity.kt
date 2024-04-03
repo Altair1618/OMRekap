@@ -1,10 +1,10 @@
-package com.k2_9.omrekap.activities
+package com.k2_9.omrekap.views.activities
 
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.k2_9.omrekap.fragments.HomePageFragment
+import com.k2_9.omrekap.views.fragments.HomePageFragment
 
 class HomeActivity : MainActivity() {
 	override fun getGalleryPreviewIntent(imageUri: Uri): Intent {
