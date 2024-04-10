@@ -37,7 +37,7 @@ abstract class ResultActivity : MainActivity() {
 	private var startSaveJob: Boolean = false
 	private val omrHelperObserver =
 		Observer<ImageSaveData> { newValue ->
-			if (newValue?.annotatedImage != null && newValue.data != null) {
+			if (newValue.data.isNotEmpty()) {
 				saveFile()
 			}
 		}
@@ -64,7 +64,7 @@ abstract class ResultActivity : MainActivity() {
 			}
 		}
 
-		imageBitmap = SaveHelper().uriToBitmap(applicationContext, Uri.parse(imageUriString))
+		imageBitmap = SaveHelper.uriToBitmap(applicationContext, Uri.parse(imageUriString))
 
 		if (viewModel.data.value == null) {
 			viewModel.processImage(imageBitmap)
@@ -76,7 +76,7 @@ abstract class ResultActivity : MainActivity() {
 		saveFileJob =
 			lifecycleScope.launch(Dispatchers.IO) {
 				startSaveJob = true
-				SaveHelper().save(applicationContext, viewModel.data.value!!)
+				SaveHelper.save(applicationContext, viewModel.data.value!!)
 				startSaveJob = false
 
 				withContext(Dispatchers.Main) {
