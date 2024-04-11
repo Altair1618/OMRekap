@@ -14,20 +14,20 @@ class OMRCropperConfig(
 
 	// Check if all the sections are present
 	init {
-		require (omrSectionPosition.keys.containsAll(OMRSection.entries)) {
-			"All OMR sections must be present"
-		}
-
 		require(omrSectionSize.first >= 0 && omrSectionSize.second >= 0) {
 			"OMR section size must be non-negative"
 		}
 
-		require(omrSectionPosition.values.all { it.first >= 0 && it.second >= 0 }) {
-			"OMR section position must be non-negative"
-		}
-
 		require(omrSectionSize.first <= image.width() && omrSectionSize.second <= image.height()) {
 			"OMR section size must be less than or equal to the image size"
+		}
+
+		require (omrSectionPosition.keys.containsAll(OMRSection.entries)) {
+			"All OMR sections must be present"
+		}
+
+		require(omrSectionPosition.values.all { it.first >= 0 && it.second >= 0 }) {
+			"OMR section position must be non-negative"
 		}
 
 		this.image = image.clone()
