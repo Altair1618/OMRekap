@@ -17,7 +17,7 @@ class PatternMatchingOMRDetectorConfig(
 		get() = field
 
 	init {
-		require(similarityThreshold >= 0 && similarityThreshold <= 0) {
+		require(similarityThreshold in 0.0..1.0) {
 			"similarity_threshold must be between 0 and 1"
 		}
 
