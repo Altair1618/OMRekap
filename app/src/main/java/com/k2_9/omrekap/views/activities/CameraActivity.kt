@@ -3,7 +3,6 @@ package com.k2_9.omrekap.views.activities
 import android.Manifest
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.media.AudioManager
@@ -12,7 +11,6 @@ import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
@@ -21,9 +19,9 @@ import androidx.camera.core.ImageProxy
 import androidx.camera.view.CameraController
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.k2_9.omrekap.R
+import com.k2_9.omrekap.utils.PermissionHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -105,7 +103,7 @@ class CameraActivity : AppCompatActivity() {
 		}
 		captureButton.isEnabled = true
 
-		requirePermission(Manifest.permission.CAMERA) {
+		PermissionHelper.requirePermission(this, Manifest.permission.CAMERA, true) {
 			cameraController = LifecycleCameraController(this)
 			(cameraController as LifecycleCameraController).bindToLifecycle(this)
 			cameraController.cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
@@ -113,34 +111,7 @@ class CameraActivity : AppCompatActivity() {
 		}
 	}
 
-	private fun requirePermission(
-		permission: String,
-		verbose: Boolean = true,
-		operation: () -> Unit,
-	) {
-		if (ContextCompat.checkSelfPermission(
-				this,
-				permission,
-			) == PackageManager.PERMISSION_GRANTED
-		) {
-			operation()
-		} else {
-			val requestPermissionLauncher =
-				registerForActivityResult(RequestPermission()) {
-						isGranted: Boolean ->
-					if (isGranted) {
-						operation()
-					} else {
-						if (verbose) {
-							Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
-						}
-					}
-				}
-			requestPermissionLauncher.launch(permission)
-		}
-	}
-
-	suspend fun saveImageOnCache(image: ImageProxy) {
+	fun saveImageOnCache(image: ImageProxy) {
 		// get current day as sign
 		val dateString = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
 
