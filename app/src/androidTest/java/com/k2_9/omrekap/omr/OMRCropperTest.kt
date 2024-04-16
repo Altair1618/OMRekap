@@ -53,9 +53,7 @@ class OMRCropperTest {
 		val bitmap = Bitmap.createBitmap(result.cols(), result.rows(), Bitmap.Config.ARGB_8888)
 		Utils.matToBitmap(result, bitmap)
 
-		val saveHelper = SaveHelper()
-
-		saveHelper.saveImage(appContext, bitmap, "test", "test_crop.png")
+		SaveHelper.saveImage(appContext, bitmap, "test", "test_crop.png")
 		assert(result.width() == 140 && result.height() == 225)
 	}
 }
