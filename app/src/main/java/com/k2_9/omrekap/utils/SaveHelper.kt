@@ -19,15 +19,14 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class SaveHelper {
-
+object SaveHelper {
 	suspend fun save(
         context: Context,
         data: ImageSaveData,
 	) {
 		val folderName: String = generateFolderName()
 
-		if (data.data == null) {
+		if (data.data.isEmpty()) {
 			throw RuntimeException("Image has not been processed yet")
 		}
 
@@ -35,15 +34,14 @@ class SaveHelper {
 			throw RuntimeException("The raw image bitmap is empty")
 		}
 
-		if (data.annotatedImage.width <= 0 || data.rawImage.height <= 0)
-			{
-				throw RuntimeException("The annotated image bitmap is empty")
-			}
+		if (data.annotatedImage.width <= 0 || data.rawImage.height <= 0) {
+			throw RuntimeException("The annotated image bitmap is empty")
+		}
 
 		withContext(Dispatchers.IO) {
 			saveImage(context, data.rawImage, folderName, "raw_image.jpg")
 			saveImage(context, data.annotatedImage, folderName, "annotated_image.jpg")
-			saveJSON(context, data.data!!, folderName, "data.json")
+			saveJSON(context, data.data, folderName, "data.json")
 		}
 	}
 

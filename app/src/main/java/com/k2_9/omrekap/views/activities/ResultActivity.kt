@@ -2,7 +2,6 @@ package com.k2_9.omrekap.views.activities
 
 import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
@@ -10,16 +9,15 @@ import android.os.Bundle
 import android.os.PersistableBundle
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import com.k2_9.omrekap.views.fragments.ResultPageFragment
 import com.k2_9.omrekap.data.models.ImageSaveData
-import com.k2_9.omrekap.utils.SaveHelper
 import com.k2_9.omrekap.data.view_models.ImageDataViewModel
+import com.k2_9.omrekap.utils.PermissionHelper
+import com.k2_9.omrekap.utils.SaveHelper
+import com.k2_9.omrekap.views.fragments.ResultPageFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -37,7 +35,7 @@ abstract class ResultActivity : MainActivity() {
 	private var startSaveJob: Boolean = false
 	private val omrHelperObserver =
 		Observer<ImageSaveData> { newValue ->
-			if (newValue.data != null) {
+			if (newValue.data.isNotEmpty()) {
 				saveFile()
 			}
 		}
@@ -64,7 +62,7 @@ abstract class ResultActivity : MainActivity() {
 			}
 		}
 
-		imageBitmap = SaveHelper().uriToBitmap(applicationContext, Uri.parse(imageUriString))
+		imageBitmap = SaveHelper.uriToBitmap(applicationContext, Uri.parse(imageUriString))
 
 		if (viewModel.data.value == null) {
 			viewModel.processImage(imageBitmap)
@@ -76,7 +74,7 @@ abstract class ResultActivity : MainActivity() {
 		saveFileJob =
 			lifecycleScope.launch(Dispatchers.IO) {
 				startSaveJob = true
-				SaveHelper().save(applicationContext, viewModel.data.value!!)
+				SaveHelper.save(applicationContext, viewModel.data.value!!)
 				startSaveJob = false
 
 				withContext(Dispatchers.Main) {
@@ -87,33 +85,6 @@ abstract class ResultActivity : MainActivity() {
 					).show()
 				}
 			}
-	}
-
-	private fun requirePermission(
-		permission: String,
-		verbose: Boolean = true,
-		operation: () -> Unit,
-	) {
-		if (ContextCompat.checkSelfPermission(
-				this,
-				permission,
-			) == PackageManager.PERMISSION_GRANTED
-		) {
-			operation()
-		} else {
-			val requestPermissionLauncher =
-				registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-						isGranted: Boolean ->
-					if (isGranted) {
-						operation()
-					} else {
-						if (verbose) {
-							Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
-						}
-					}
-				}
-			requestPermissionLauncher.launch(permission)
-		}
 	}
 
 	override fun getFragment(intent: Intent): Fragment {
@@ -157,7 +128,7 @@ abstract class ResultActivity : MainActivity() {
 		OpenCVLoader.initLocal()
 
 		if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
-			requirePermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, false) {}
+			PermissionHelper.requirePermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, false) {}
 		}
 
 		startSaveJob = savedInstanceState?.getBoolean("startSaveJob") ?: false

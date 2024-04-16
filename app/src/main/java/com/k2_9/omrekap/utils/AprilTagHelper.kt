@@ -12,7 +12,7 @@ import org.opencv.objdetect.Objdetect
 
 private const val LOG_TAG = "AprilTagHelper"
 
-class AprilTagHelper {
+object AprilTagHelper {
 	/**
 	 * Uses OpenCV module, remember OpenCVLoader.initLocal() has been run before
 	 *
