@@ -17,7 +17,11 @@ import org.opencv.imgproc.Imgproc.warpPerspective
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-class CropHelper {
+object CropHelper {
+	private const val UPPER_LEFT: Int = 0
+	private const val UPPER_RIGHT: Int = 1
+	private const val LOWER_RIGHT: Int = 2
+	private const val LOWER_LEFT: Int = 3
 
 	fun detectCorner(image: Bitmap, caller: Context): CornerPoints {
 		// Convert to Matrix (Mat)
@@ -38,13 +42,13 @@ class CropHelper {
 			CvType.CV_8UC1
 		)
 		Imgproc.matchTemplate(imageMatrix, cornerPatternMatrix, resultMatrix, Imgproc.TM_SQDIFF_NORMED)
-		var upperLeftPoint: Point = Point()
-		var upperRightPoint: Point = Point()
-		var lowerLeftPoint: Point = Point()
-		var lowerRightPoint: Point = Point()
+		var upperLeftPoint = Point()
+		var upperRightPoint = Point()
+		var lowerLeftPoint = Point()
+		var lowerRightPoint = Point()
 
 		val needed = mutableListOf(true, true, true, true)
-		var needChange: Int = 4
+		var needChange = 4
 
 		data class PointsAndWeight (
 			val x: Int,
@@ -221,12 +225,5 @@ class CropHelper {
 			// Not in corner
 			else -> -1
 		}
-	}
-
-	companion object {
-		const val UPPER_LEFT: Int = 0
-		const val UPPER_RIGHT: Int = 1
-		const val LOWER_RIGHT: Int = 2
-		const val LOWER_LEFT: Int = 3
 	}
 }
