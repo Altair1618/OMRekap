@@ -20,25 +20,22 @@ import java.util.Date
 import java.util.Locale
 
 class SaveHelper {
+
 	suspend fun save(
         context: Context,
         data: ImageSaveData,
 	) {
 		val folderName: String = generateFolderName()
 
-		if (data.rawImage == null) {
-			throw RuntimeException("The raw image bitmap is null")
-		}
-
-		if (data.annotatedImage == null || data.data == null) {
+		if (data.data == null) {
 			throw RuntimeException("Image has not been processed yet")
 		}
 
-		if (data.rawImage!!.width <= 0 || data.rawImage!!.height <= 0) {
+		if (data.rawImage.width <= 0 || data.rawImage.height <= 0) {
 			throw RuntimeException("The raw image bitmap is empty")
 		}
 
-		if (data.annotatedImage!!.width <= 0 || data.rawImage!!.height <= 0)
+		if (data.annotatedImage.width <= 0 || data.rawImage.height <= 0)
 			{
 				throw RuntimeException("The annotated image bitmap is empty")
 			}
@@ -66,7 +63,7 @@ class SaveHelper {
 		return sdf.format(Date())
 	}
 
-	private fun saveImage(
+	fun saveImage(
 		context: Context,
 		image: Bitmap,
 		folderName: String,

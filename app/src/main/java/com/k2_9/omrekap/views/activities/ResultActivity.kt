@@ -37,7 +37,7 @@ abstract class ResultActivity : MainActivity() {
 	private var startSaveJob: Boolean = false
 	private val omrHelperObserver =
 		Observer<ImageSaveData> { newValue ->
-			if (newValue?.annotatedImage != null && newValue.data != null) {
+			if (newValue.data != null) {
 				saveFile()
 			}
 		}

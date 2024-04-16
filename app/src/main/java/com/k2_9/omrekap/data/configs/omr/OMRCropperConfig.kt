@@ -35,14 +35,6 @@ class OMRCropperConfig(
 
 	private val omrSectionPosition: Map<OMRSection, Pair<Int, Int>> = omrSectionPosition.toMap()
 
-	fun getImage(): Mat {
-		return image.clone()
-	}
-
-	fun getOmrSectionSize(): Pair<Int, Int> {
-		return omrSectionSize
-	}
-
 	fun getSectionPosition(section: OMRSection): Pair<Int, Int> {
 		return omrSectionPosition[section]!!
 	}
