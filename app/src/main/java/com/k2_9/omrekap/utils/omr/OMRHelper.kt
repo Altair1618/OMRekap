@@ -14,6 +14,7 @@ abstract class OMRHelper(private val config: OMRDetectorConfig) {
 	}
 
 	protected fun contourInfosToNumbers(contourInfos: List<ContourInfo?>): Int {
+		// TODO: consider gap height between circles
 		// Return the detected numbers based on the vertical position of the filled circles for each column
 		require(contourInfos.size == 3)
 
@@ -30,9 +31,9 @@ abstract class OMRHelper(private val config: OMRDetectorConfig) {
 				val centerY = contourInfo.center.second
 				val h = contourInfo.size.second
 
-				val columnIndex = floor(((centerY - h / 2) / columnHeight.toDouble()) * 10).toInt()
+				val columnIndex = floor(((centerY.toDouble() - h.toDouble() / 2.0) / columnHeight.toDouble()) * 10).toInt()
 
-				result.add(columnIndex + 1)
+				result.add(columnIndex)
 			}
 		}
 		return getCombinedNumbers(result)

@@ -2,7 +2,7 @@ package com.k2_9.omrekap.data.configs.omr
 
 import org.opencv.core.Mat
 
-class PatternMatchingOMRDetectorConfig(
+class TemplateMatchingOMRDetectorConfig(
 	omrCropper: OMRCropper,
 	template: Mat,
 	similarityThreshold: Float

@@ -106,6 +106,7 @@ class ContourOMRHelper(private val config: ContourOMRDetectorConfig) : OMRHelper
 	}
 
 	private fun compareAll(contours: List<MatOfPoint>): Int {
+		// TODO: fix this algorithm, high chance something wrong in getDarkestRow method
 		// Sort contours by column and then by row
 		val contoursSorted = contours.sortedBy { Imgproc.boundingRect(it).x }
 
@@ -125,6 +126,7 @@ class ContourOMRHelper(private val config: ContourOMRDetectorConfig) : OMRHelper
 			// Append the darkest row for the current column to the list
 			darkestRows.add(darkestRow)
 		}
+
 		darkestRows.forEachIndexed { idx, darkestRow ->
 			if (darkestRow == null) {
 				Log.e("ContourOMRHelper", "No darkest row found for column ${idx + 1}. Assuming 0")
@@ -178,9 +180,12 @@ class ContourOMRHelper(private val config: ContourOMRDetectorConfig) : OMRHelper
 
 		val contours = getAllContours()
 
-		return if (contours.size != 30) {
+		return if (contours.size != 30 || true) {
+			Log.d("ContourOMRHelper", "Some circles are not detected, considering only filled circles")
+
 			predictForFilledCircle(contours)
 		} else {
+			Log.d("ContourOMRHelper", "All 30 circles are detected")
 			compareAll(contours)
 		}
 	}

@@ -1,6 +1,6 @@
 package com.k2_9.omrekap.utils.omr
 
-import com.k2_9.omrekap.data.configs.omr.PatternMatchingOMRDetectorConfig
+import com.k2_9.omrekap.data.configs.omr.TemplateMatchingOMRDetectorConfig
 import com.k2_9.omrekap.data.configs.omr.OMRSection
 import org.opencv.core.Mat
 import org.opencv.core.Rect
@@ -8,18 +8,23 @@ import org.opencv.core.Point
 import org.opencv.imgproc.Imgproc
 import kotlin.collections.ArrayList
 
-abstract class PatternMatchingOMRHelper(private val config: PatternMatchingOMRDetectorConfig) : OMRHelper(config) {
+class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRDetectorConfig) : OMRHelper(config) {
 
 	private var currentSectionGray: Mat? = null
 	private var currentSectionBinary: Mat? = null
 
 	private fun getMatchRectangles(): List<Rect> {
+		// TODO: fix algorithm bug
+		
 		// Load the template image
 		val template = config.template
 
+		val grayTemplate = Mat()
+		Imgproc.cvtColor(template, grayTemplate, Imgproc.COLOR_BGR2GRAY)
+
 		// Apply binary thresholding to the template image
 		val templateBinary = Mat()
-		Imgproc.threshold(template, templateBinary, 0.0, 255.0, Imgproc.THRESH_BINARY_INV + Imgproc.THRESH_TRIANGLE)
+		Imgproc.threshold(grayTemplate, templateBinary, 0.0, 255.0, Imgproc.THRESH_BINARY_INV + Imgproc.THRESH_TRIANGLE)
 
 		// Perform template matching
 		val result = Mat()

@@ -4,26 +4,26 @@ import android.util.Log
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.k2_9.omrekap.R
-import com.k2_9.omrekap.data.configs.omr.ContourOMRDetectorConfig
 import com.k2_9.omrekap.data.configs.omr.OMRCropper
 import com.k2_9.omrekap.data.configs.omr.OMRCropperConfig
 import com.k2_9.omrekap.data.configs.omr.OMRSection
-import com.k2_9.omrekap.utils.omr.ContourOMRHelper
+import com.k2_9.omrekap.data.configs.omr.TemplateMatchingOMRDetectorConfig
+import com.k2_9.omrekap.utils.omr.TemplateMatchingOMRHelper
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.opencv.android.OpenCVLoader
 import org.opencv.android.Utils
 
 @RunWith(AndroidJUnit4::class)
-class ContourOMRHelperTest {
+class TemplateMatchingOMRHelperTest {
 
-	private var helper: ContourOMRHelper
+	private var helper: TemplateMatchingOMRHelper
 	init {
 		OpenCVLoader.initLocal()
 
 		val appContext = InstrumentationRegistry.getInstrumentation().targetContext
 
-		// Load the image resource as a Bitmap
+		// Load the image resource
 		val image = Utils.loadResource(appContext, R.raw.example)
 
 		val sectionPositions = mapOf(
@@ -40,23 +40,22 @@ class ContourOMRHelperTest {
 
 		val cropper = OMRCropper(cropperConfig)
 
-		val config = ContourOMRDetectorConfig(
+		// Load the template image resource
+		val template = Utils.loadResource(appContext, R.raw.circle_template)
+
+		val config = TemplateMatchingOMRDetectorConfig(
 			cropper,
-			12,
-			30,
-			0.5f,
-			1.5f,
-			0.9f,
-			230
+			template,
+			0.7f
 		)
 
-		helper = ContourOMRHelper(config)
+		helper = TemplateMatchingOMRHelper(config)
 	}
 
 	@Test
 	fun test_detect() {
 		val result = helper.detect(OMRSection.FIRST)
-		Log.d("ContourOMRHelperTest", result.toString())
-//		assert(result == 172)
+		Log.d("TemplateMatchingOMRHelperTest", result.toString())
+		assert(result == 172)
 	}
 }
