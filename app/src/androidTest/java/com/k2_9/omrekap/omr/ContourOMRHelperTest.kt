@@ -16,8 +16,8 @@ import org.opencv.android.Utils
 
 @RunWith(AndroidJUnit4::class)
 class ContourOMRHelperTest {
-
 	private var helper: ContourOMRHelper
+
 	init {
 		OpenCVLoader.initLocal()
 
@@ -26,29 +26,32 @@ class ContourOMRHelperTest {
 		// Load the image resource as a Bitmap
 		val image = Utils.loadResource(appContext, R.raw.example)
 
-		val sectionPositions = mapOf(
-			OMRSection.FIRST to Pair(780,373),
-			OMRSection.SECOND to Pair(0, 0),
-			OMRSection.THIRD to Pair(0, 0),
-		)
+		val sectionPositions =
+			mapOf(
+				OMRSection.FIRST to Pair(780, 373),
+				OMRSection.SECOND to Pair(0, 0),
+				OMRSection.THIRD to Pair(0, 0),
+			)
 
-		val cropperConfig = OMRCropperConfig(
-			image,
-			Pair(140, 220),
-			sectionPositions
-		)
+		val cropperConfig =
+			OMRCropperConfig(
+				image,
+				Pair(140, 220),
+				sectionPositions,
+			)
 
 		val cropper = OMRCropper(cropperConfig)
 
-		val config = ContourOMRDetectorConfig(
-			cropper,
-			12,
-			30,
-			0.5f,
-			1.5f,
-			0.9f,
-			230
-		)
+		val config =
+			ContourOMRDetectorConfig(
+				cropper,
+				12,
+				30,
+				0.5f,
+				1.5f,
+				0.9f,
+				230,
+			)
 
 		helper = ContourOMRHelper(config)
 	}

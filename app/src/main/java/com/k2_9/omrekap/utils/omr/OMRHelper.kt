@@ -5,7 +5,6 @@ import com.k2_9.omrekap.data.configs.omr.OMRSection
 import kotlin.math.floor
 
 abstract class OMRHelper(private val config: OMRDetectorConfig) {
-
 	data class ContourInfo(val center: Pair<Int, Int>, val size: Pair<Int, Int>)
 
 	protected fun getCombinedNumbers(numbers: List<Int>): Int {
@@ -18,7 +17,7 @@ abstract class OMRHelper(private val config: OMRDetectorConfig) {
 		// Return the detected numbers based on the vertical position of the filled circles for each column
 		require(contourInfos.size == 3)
 
-		val columnHeight = config.omrCropper.config.omrSectionSize.second  // Define the column height based on your image
+		val columnHeight = config.omrCropper.config.omrSectionSize.second // Define the column height based on your image
 
 		val result = mutableListOf<Int>()
 

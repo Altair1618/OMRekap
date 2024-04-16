@@ -21,8 +21,8 @@ import java.util.Locale
 
 object SaveHelper {
 	suspend fun save(
-        context: Context,
-        data: ImageSaveData,
+		context: Context,
+		data: ImageSaveData,
 	) {
 		val folderName: String = generateFolderName()
 

@@ -1,15 +1,14 @@
 package com.k2_9.omrekap.utils.omr
 
-import com.k2_9.omrekap.data.configs.omr.TemplateMatchingOMRDetectorConfig
 import com.k2_9.omrekap.data.configs.omr.OMRSection
+import com.k2_9.omrekap.data.configs.omr.TemplateMatchingOMRDetectorConfig
 import org.opencv.core.Mat
-import org.opencv.core.Rect
 import org.opencv.core.Point
+import org.opencv.core.Rect
 import org.opencv.imgproc.Imgproc
 import kotlin.collections.ArrayList
 
 class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRDetectorConfig) : OMRHelper(config) {
-
 	private var currentSectionGray: Mat? = null
 	private var currentSectionBinary: Mat? = null
 

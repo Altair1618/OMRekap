@@ -1,7 +1,5 @@
 package com.k2_9.omrekap.data.configs.omr
 
-import com.k2_9.omrekap.data.configs.omr.OMRCropperConfig
-import com.k2_9.omrekap.data.configs.omr.OMRSection
 import org.opencv.core.Mat
 import org.opencv.core.Rect
 

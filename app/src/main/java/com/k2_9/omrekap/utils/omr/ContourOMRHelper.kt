@@ -3,16 +3,14 @@ package com.k2_9.omrekap.utils.omr
 import android.util.Log
 import com.k2_9.omrekap.data.configs.omr.ContourOMRDetectorConfig
 import com.k2_9.omrekap.data.configs.omr.OMRSection
-import org.opencv.core.Mat
-
-import org.opencv.imgproc.Imgproc
 import org.opencv.core.Core
 import org.opencv.core.CvType
-import org.opencv.core.Scalar
+import org.opencv.core.Mat
 import org.opencv.core.MatOfPoint
+import org.opencv.core.Scalar
+import org.opencv.imgproc.Imgproc
 
 class ContourOMRHelper(private val config: ContourOMRDetectorConfig) : OMRHelper(config) {
-
 	private var currentSectionGray: Mat? = null
 	private var currentSectionBinary: Mat? = null
 
@@ -56,8 +54,9 @@ class ContourOMRHelper(private val config: ContourOMRDetectorConfig) : OMRHelper
 			// Compute the percentage of dark pixels inside the contour
 			val percentageDarkPixels = totalIntensity.toDouble() / contourArea
 
-			if (totalIntensity > config.darkIntensityThreshold
-				&& percentageDarkPixels >= config.darkPercentageThreshold) {
+			if (totalIntensity > config.darkIntensityThreshold &&
+				percentageDarkPixels >= config.darkPercentageThreshold
+			) {
 				filledContours.add(contour)
 			}
 		}
@@ -91,9 +90,10 @@ class ContourOMRHelper(private val config: ContourOMRDetectorConfig) : OMRHelper
 			val percentageDarkPixels = totalIntensity.toDouble() / contourArea
 
 			// Update the darkest row if necessary
-			if (darkestIntensity < totalIntensity
-				&& totalIntensity >= config.darkIntensityThreshold
-				&& percentageDarkPixels >= config.darkPercentageThreshold) {
+			if (darkestIntensity < totalIntensity &&
+				totalIntensity >= config.darkIntensityThreshold &&
+				percentageDarkPixels >= config.darkPercentageThreshold
+			) {
 				darkestIntensity = totalIntensity.toDouble()
 				darkestRow = idx
 			}

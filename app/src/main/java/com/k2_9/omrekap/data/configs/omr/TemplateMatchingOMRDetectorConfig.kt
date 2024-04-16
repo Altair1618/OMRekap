@@ -5,9 +5,8 @@ import org.opencv.core.Mat
 class TemplateMatchingOMRDetectorConfig(
 	omrCropper: OMRCropper,
 	template: Mat,
-	similarityThreshold: Float
+	similarityThreshold: Float,
 ) : OMRDetectorConfig(omrCropper) {
-
 	var template: Mat
 		private set
 		get() = field.clone()
@@ -21,7 +20,7 @@ class TemplateMatchingOMRDetectorConfig(
 			"similarity_threshold must be between 0 and 1"
 		}
 
-	    this.template = template.clone()
+		this.template = template.clone()
 		this.similarityThreshold = similarityThreshold
 	}
 }

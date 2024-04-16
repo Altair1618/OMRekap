@@ -2,11 +2,10 @@ package com.k2_9.omrekap.data.configs.omr
 
 import org.opencv.core.Mat
 
-
 class OMRCropperConfig(
 	image: Mat,
-	val omrSectionSize: Pair<Int, Int>, // (width, height)
-	omrSectionPosition: Map<OMRSection, Pair<Int, Int>> // {OMRSection: (x, y)}
+	val omrSectionSize: Pair<Int, Int>,
+	omrSectionPosition: Map<OMRSection, Pair<Int, Int>>,
 ) {
 	var image: Mat
 		private set
@@ -26,7 +25,7 @@ class OMRCropperConfig(
 			"OMR section size must be less than or equal to the image size"
 		}
 
-		require (omrSectionPosition.keys.containsAll(OMRSection.entries)) {
+		require(omrSectionPosition.keys.containsAll(OMRSection.entries)) {
 			"All OMR sections must be present"
 		}
 

@@ -7,9 +7,8 @@ class ContourOMRDetectorConfig(
 	minAspectRatio: Float,
 	maxAspectRatio: Float,
 	darkPercentageThreshold: Float,
-	darkIntensityThreshold: Int
+	darkIntensityThreshold: Int,
 ) : OMRDetectorConfig(omrCropper) {
-
 	var minRadius: Int
 		private set
 	var maxRadius: Int

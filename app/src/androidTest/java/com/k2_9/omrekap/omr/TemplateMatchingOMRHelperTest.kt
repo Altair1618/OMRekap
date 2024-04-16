@@ -16,8 +16,8 @@ import org.opencv.android.Utils
 
 @RunWith(AndroidJUnit4::class)
 class TemplateMatchingOMRHelperTest {
-
 	private var helper: TemplateMatchingOMRHelper
+
 	init {
 		OpenCVLoader.initLocal()
 
@@ -26,28 +26,31 @@ class TemplateMatchingOMRHelperTest {
 		// Load the image resource
 		val image = Utils.loadResource(appContext, R.raw.example)
 
-		val sectionPositions = mapOf(
-			OMRSection.FIRST to Pair(780,373),
-			OMRSection.SECOND to Pair(0, 0),
-			OMRSection.THIRD to Pair(0, 0),
-		)
+		val sectionPositions =
+			mapOf(
+				OMRSection.FIRST to Pair(780, 373),
+				OMRSection.SECOND to Pair(0, 0),
+				OMRSection.THIRD to Pair(0, 0),
+			)
 
-		val cropperConfig = OMRCropperConfig(
-			image,
-			Pair(140, 220),
-			sectionPositions
-		)
+		val cropperConfig =
+			OMRCropperConfig(
+				image,
+				Pair(140, 220),
+				sectionPositions,
+			)
 
 		val cropper = OMRCropper(cropperConfig)
 
 		// Load the template image resource
 		val template = Utils.loadResource(appContext, R.raw.circle_template)
 
-		val config = TemplateMatchingOMRDetectorConfig(
-			cropper,
-			template,
-			0.7f
-		)
+		val config =
+			TemplateMatchingOMRDetectorConfig(
+				cropper,
+				template,
+				0.7f,
+			)
 
 		helper = TemplateMatchingOMRHelper(config)
 	}
