@@ -15,7 +15,7 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRDetectorC
 
 	private fun getMatchRectangles(): List<Rect> {
 		// TODO: fix algorithm bug
-		
+
 		// Load the template image
 		val template = config.template
 

@@ -27,14 +27,14 @@ class ContourOMRHelperTest {
 		val image = Utils.loadResource(appContext, R.raw.example)
 
 		val sectionPositions = mapOf(
-			OMRSection.FIRST to Pair(780,375),
+			OMRSection.FIRST to Pair(780,373),
 			OMRSection.SECOND to Pair(0, 0),
 			OMRSection.THIRD to Pair(0, 0),
 		)
 
 		val cropperConfig = OMRCropperConfig(
 			image,
-			Pair(140, 225),
+			Pair(140, 220),
 			sectionPositions
 		)
 
@@ -57,6 +57,6 @@ class ContourOMRHelperTest {
 	fun test_detect() {
 		val result = helper.detect(OMRSection.FIRST)
 		Log.d("ContourOMRHelperTest", result.toString())
-//		assert(result == 172)
+		assert(result == 172)
 	}
 }

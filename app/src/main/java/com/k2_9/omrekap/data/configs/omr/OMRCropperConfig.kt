@@ -14,6 +14,10 @@ class OMRCropperConfig(
 
 	// Check if all the sections are present
 	init {
+
+		// Note: Top-left corner and height must be in the way so that the section is cropped with additional top padding and no bottom padding
+		// Top padding must have the same size as gap between circles inside the section
+
 		require(omrSectionSize.first >= 0 && omrSectionSize.second >= 0) {
 			"OMR section size must be non-negative"
 		}

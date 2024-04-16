@@ -180,7 +180,7 @@ class ContourOMRHelper(private val config: ContourOMRDetectorConfig) : OMRHelper
 
 		val contours = getAllContours()
 
-		return if (contours.size != 30 || true) {
+		return if (contours.size != 30) {
 			Log.d("ContourOMRHelper", "Some circles are not detected, considering only filled circles")
 
 			predictForFilledCircle(contours)
