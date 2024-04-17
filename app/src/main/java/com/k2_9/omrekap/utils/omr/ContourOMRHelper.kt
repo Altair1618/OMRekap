@@ -115,11 +115,8 @@ class ContourOMRHelper(private val config: ContourOMRDetectorConfig) : OMRHelper
 
 		// Loop through each column
 		for (col in 0 until 3) {
-			// Get contours for the current column
-			val colContours = contoursSorted.subList(col * 10, (col + 1) * 10)
-
-			// sort by row
-			colContours.sortedBy { Imgproc.boundingRect(it).y }
+			// Get contours for the current column and sort by rows
+			val colContours = contoursSorted.subList(col * 10, (col + 1) * 10).sortedBy { Imgproc.boundingRect(it).y }
 
 			val darkestRow = getDarkestRow(colContours)
 
