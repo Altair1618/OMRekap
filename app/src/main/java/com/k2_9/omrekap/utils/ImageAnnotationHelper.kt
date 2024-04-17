@@ -8,7 +8,7 @@ import org.opencv.core.Point
 import org.opencv.core.Scalar
 import org.opencv.imgproc.Imgproc
 
-class ImageAnnotationHelper {
+object ImageAnnotationHelper {
 	fun annotateCorner(img: Bitmap, cornerPoints: List<MatOfPoint>): Bitmap {
 		val imgMat = Mat()
 		Utils.bitmapToMat(img, imgMat)
