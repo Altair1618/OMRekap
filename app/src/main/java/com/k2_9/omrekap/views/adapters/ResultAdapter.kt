@@ -24,8 +24,8 @@ class ResultAdapter(private val dataList: List<Pair<String, String>>) :
 	}
 
 	override fun onBindViewHolder(
-        holder: ResultViewHolder,
-        position: Int,
+		holder: ResultViewHolder,
+		position: Int,
 	) {
 		val item = dataList[position]
 		holder.keyTextView.text = item.first
