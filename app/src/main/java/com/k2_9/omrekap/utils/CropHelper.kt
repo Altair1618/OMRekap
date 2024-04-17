@@ -23,7 +23,10 @@ object CropHelper {
 	private const val LOWER_RIGHT: Int = 2
 	private const val LOWER_LEFT: Int = 3
 
-	fun detectCorner(image: Bitmap, caller: Context): CornerPoints {
+	fun detectCorner(
+		image: Bitmap,
+		caller: Context,
+	): CornerPoints {
 		// Convert to Matrix (Mat)
 		val imageMatrix = Mat(image.height, image.width, CvType.CV_8UC1)
 		Utils.bitmapToMat(image, imageMatrix)
@@ -31,16 +34,17 @@ object CropHelper {
 		// Find corner pattern
 		val options = BitmapFactory.Options()
 		options.inPreferredConfig = Bitmap.Config.ARGB_8888
-		val cornerPatternBitmap: Bitmap
-			= BitmapFactory.decodeResource(caller.resources, R.raw.corner_pattern, options)
+		val cornerPatternBitmap: Bitmap =
+			BitmapFactory.decodeResource(caller.resources, R.raw.corner_pattern, options)
 		val cornerPatternMatrix = Mat(cornerPatternBitmap.height, cornerPatternBitmap.width, CvType.CV_8UC1)
 		Utils.bitmapToMat(cornerPatternBitmap, cornerPatternMatrix)
 
-		val resultMatrix = Mat(
-			image.height - cornerPatternBitmap.height + 1,
-			image.width - cornerPatternBitmap.width + 1,
-			CvType.CV_8UC1
-		)
+		val resultMatrix =
+			Mat(
+				image.height - cornerPatternBitmap.height + 1,
+				image.width - cornerPatternBitmap.width + 1,
+				CvType.CV_8UC1,
+			)
 		Imgproc.matchTemplate(imageMatrix, cornerPatternMatrix, resultMatrix, Imgproc.TM_SQDIFF_NORMED)
 		var upperLeftPoint = Point()
 		var upperRightPoint = Point()
@@ -50,10 +54,10 @@ object CropHelper {
 		val needed = mutableListOf(true, true, true, true)
 		var needChange = 4
 
-		data class PointsAndWeight (
+		data class PointsAndWeight(
 			val x: Int,
 			val y: Int,
-			val weight: Double
+			val weight: Double,
 		)
 
 		val pointsList: MutableList<PointsAndWeight> = mutableListOf()
@@ -87,7 +91,6 @@ object CropHelper {
 			}
 		}
 
-
 		Log.d("Corner", "type = ${resultMatrix.type()}, should be ${CvType.CV_8UC1}")
 
 		if (needChange > 0) {
@@ -97,8 +100,8 @@ object CropHelper {
 	}
 
 	fun fourPointTransform(
-        image: Bitmap,
-        points: CornerPoints,
+		image: Bitmap,
+		points: CornerPoints,
 	): Bitmap {
 		val mult = 0.03
 
@@ -190,7 +193,6 @@ object CropHelper {
 		return bitmapResult
 	}
 
-
 	/**
 	 * Get corner ID near enough to the point
 	 *
@@ -204,11 +206,15 @@ object CropHelper {
 	 * else return -1
 	 *
 	 */
-	private fun nearWhichCorner(x: Int, y: Int,
-								height: Int, width: Int,
-								limX: Int? = null,
-								limY: Int? = null,
-								limFrac: Float = 0.1F): Int {
+	private fun nearWhichCorner(
+		x: Int,
+		y: Int,
+		height: Int,
+		width: Int,
+		limX: Int? = null,
+		limY: Int? = null,
+		limFrac: Float = 0.1F,
+	): Int {
 		// process limit
 		val limitX: Int = limX ?: (limFrac / 2 * height).toInt()
 		val limitY: Int = limY ?: (limFrac / 2 * width).toInt()

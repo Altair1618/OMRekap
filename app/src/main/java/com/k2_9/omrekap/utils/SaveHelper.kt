@@ -21,8 +21,8 @@ import java.util.Locale
 
 object SaveHelper {
 	suspend fun save(
-        context: Context,
-        data: ImageSaveData,
+		context: Context,
+		data: ImageSaveData,
 	) {
 		val folderName: String = generateFolderName()
 
@@ -61,7 +61,7 @@ object SaveHelper {
 		return sdf.format(Date())
 	}
 
-	private fun saveImage(
+	fun saveImage(
 		context: Context,
 		image: Bitmap,
 		folderName: String,
