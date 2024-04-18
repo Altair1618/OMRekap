@@ -6,7 +6,7 @@ import org.opencv.core.MatOfByte
 import org.opencv.imgcodecs.Imgcodecs
 import java.io.InputStream
 
-class CircleTemplateLoader (private val appContext: Context, private val resId: Int ) {
+class CircleTemplateLoader(private val appContext: Context, private val resId: Int) {
 	fun loadTemplateImage(): Mat {
 		val inputStream: InputStream = appContext.resources.openRawResource(resId)
 		val byteArray = inputStream.readBytes()

@@ -1,6 +1,5 @@
 package com.k2_9.omrekap.omr
 
-import android.content.Context
 import android.util.Log
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -15,10 +14,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.opencv.android.OpenCVLoader
 import org.opencv.android.Utils
-import org.opencv.core.Mat
-import org.opencv.core.MatOfByte
-import org.opencv.imgcodecs.Imgcodecs
-import java.io.InputStream
 
 @RunWith(AndroidJUnit4::class)
 class TemplateMatchingOMRHelperTest {

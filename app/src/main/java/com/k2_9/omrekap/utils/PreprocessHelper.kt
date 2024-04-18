@@ -1,7 +1,6 @@
 package com.k2_9.omrekap.utils
 
 import android.graphics.Bitmap
-import com.k2_9.omrekap.data.models.ImageSaveData
 import org.opencv.android.Utils
 import org.opencv.core.Core
 import org.opencv.core.Mat
@@ -20,17 +19,24 @@ object PreprocessHelper {
 		Utils.matToBitmap(resultMat, resultBitmap)
 		return resultBitmap
 	}
+
 	fun preprocessImage(img: Mat): Mat {
 		return img.apply {
 			resizeMat(this, FINAL_WIDTH.toDouble(), FINAL_HEIGHT.toDouble())
 			normalize(this)
 		}
 	}
-	fun resizeMat(img: Mat, width: Double, height: Double): Mat {
+
+	fun resizeMat(
+		img: Mat,
+		width: Double,
+		height: Double,
+	): Mat {
 		val resizedImg = Mat()
 		Imgproc.resize(img, resizedImg, Size(width, height))
 		return resizedImg
 	}
+
 	fun normalize(img: Mat): Mat {
 		val normalizedImg = Mat()
 		Core.normalize(img, normalizedImg)

@@ -28,7 +28,10 @@ class TemplateMatchingOMRDetectorConfig(
 		this.similarityThreshold = similarityThreshold
 	}
 
-	private fun loadTemplateImage(appContext: Context, resId: Int): Mat {
+	private fun loadTemplateImage(
+		appContext: Context,
+		resId: Int,
+	): Mat {
 		val inputStream: InputStream = appContext.resources.openRawResource(resId)
 		val byteArray = inputStream.readBytes()
 		val imgBuffer = MatOfByte(*byteArray)

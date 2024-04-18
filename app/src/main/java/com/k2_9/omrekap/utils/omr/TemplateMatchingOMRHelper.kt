@@ -1,6 +1,5 @@
 package com.k2_9.omrekap.utils.omr
 
-import android.util.Log
 import com.k2_9.omrekap.data.configs.omr.OMRSection
 import com.k2_9.omrekap.data.configs.omr.TemplateMatchingOMRDetectorConfig
 import org.opencv.core.Mat
