@@ -1,8 +1,6 @@
 package com.k2_9.omrekap.utils
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.util.Log
 import com.k2_9.omrekap.data.models.CornerPoints
 import org.opencv.android.Utils
 import org.opencv.core.CvType
@@ -21,37 +19,34 @@ object CropHelper {
 	private const val LOWER_RIGHT: Int = 2
 	private const val LOWER_LEFT: Int = 3
 
-	private lateinit var patternBitmap: Bitmap
+	private lateinit var pattern: Mat
 
 	fun loadPattern(patternBitmap: Bitmap) {
-		this.patternBitmap = patternBitmap
+		this.pattern = Mat(patternBitmap.height, patternBitmap.width, CvType.CV_8UC1)
+		Utils.bitmapToMat(patternBitmap, this.pattern)
+	}
+
+	fun loadPattern(pattern: Mat) {
+		this.pattern = pattern
 	}
 
 	fun detectCorner(
-		image: Bitmap
+		img: Mat
 	): CornerPoints {
 		// If pattern hasn't been loaded, throw exception
-		if (!::patternBitmap.isInitialized) {
+		if (!::pattern.isInitialized) {
 			throw Exception("Pattern not loaded!")
 		}
 
-		// Convert to Matrix (Mat)
-		val imageMatrix = Mat(image.height, image.width, CvType.CV_8UC1)
-		Utils.bitmapToMat(image, imageMatrix)
-
-		// Find corner pattern
-		val options = BitmapFactory.Options()
-		options.inPreferredConfig = Bitmap.Config.ARGB_8888
-		val cornerPatternMatrix = Mat(patternBitmap.height, patternBitmap.width, CvType.CV_8UC1)
-		Utils.bitmapToMat(patternBitmap, cornerPatternMatrix)
-
 		val resultMatrix =
 			Mat(
-				image.height - patternBitmap.height + 1,
-				image.width - patternBitmap.width + 1,
+				img.height() - pattern.height() + 1,
+				img.width() - pattern.width() + 1,
 				CvType.CV_8UC1,
 			)
-		Imgproc.matchTemplate(imageMatrix, cornerPatternMatrix, resultMatrix, Imgproc.TM_SQDIFF_NORMED)
+
+		Imgproc.matchTemplate(img, pattern, resultMatrix, Imgproc.TM_SQDIFF_NORMED)
+
 		var upperLeftPoint = Point()
 		var upperRightPoint = Point()
 		var lowerLeftPoint = Point()
@@ -68,8 +63,8 @@ object CropHelper {
 
 		val pointsList: MutableList<PointsAndWeight> = mutableListOf()
 
-		for (i in 0..<resultMatrix.height() step 4) {
-			for (j in 0..<resultMatrix.width() step 4) {
+		for (i in 0 until resultMatrix.height() step 4) {
+			for (j in 0 until resultMatrix.width() step 4) {
 				pointsList.add(PointsAndWeight(i, j, resultMatrix.get(i, j)[0]))
 			}
 		}
@@ -77,13 +72,11 @@ object CropHelper {
 		pointsList.sortBy { it.weight }
 
 		pointsList.forEach {
-			if (needChange == 0) {
-				return@forEach
-			}
+			if (needChange == 0) return@forEach
+
 			val corner = nearWhichCorner(it.x, it.y, resultMatrix.height(), resultMatrix.width(), limFrac = 0.1F)
-			if (corner == -1) {
-				return@forEach
-			}
+			if (corner == -1) return@forEach
+
 			if (needed[corner]) {
 				needed[corner] = false
 				needChange--
@@ -97,106 +90,70 @@ object CropHelper {
 			}
 		}
 
-		Log.d("Corner", "type = ${resultMatrix.type()}, should be ${CvType.CV_8UC1}")
-
 		if (needChange > 0) {
 			throw Exception("Not all corner points found!")
 		}
+
 		return CornerPoints(upperLeftPoint, upperRightPoint, lowerRightPoint, lowerLeftPoint)
 	}
 
 	fun fourPointTransform(
-		image: Bitmap,
+		img: Mat,
 		points: CornerPoints,
-	): Bitmap {
-		val mult = 0.03
+	): Mat {
+		// Multiplier for padding, can be adjusted
+		val mult = 0.01
 
-		val newTopLeft =
-			Point(
-				points.topLeft.x - (points.topRight.x - points.topLeft.x) * mult - (points.bottomLeft.x - points.topLeft.x) * mult,
-				points.topLeft.y - (points.topRight.y - points.topLeft.y) * mult - (points.bottomLeft.y - points.topLeft.y) * mult,
-			)
+		// Calculate new corner points
+		val newTopLeft = Point(
+			points.topLeft.x - (points.topRight.x - points.topLeft.x) * mult - (points.bottomLeft.x - points.topLeft.x) * mult,
+			points.topLeft.y - (points.topRight.y - points.topLeft.y) * mult - (points.bottomLeft.y - points.topLeft.y) * mult,
+		)
 
-		val newTopRight =
-			Point(
-				points.topRight.x + (points.topRight.x - points.topLeft.x) * mult - (points.bottomRight.x - points.topRight.x) * mult,
-				points.topRight.y + (points.topRight.y - points.topLeft.y) * mult - (points.bottomRight.y - points.topRight.y) * mult,
-			)
+		val newTopRight = Point(
+			points.topRight.x + (points.topRight.x - points.topLeft.x) * mult - (points.bottomRight.x - points.topRight.x) * mult,
+			points.topRight.y + (points.topRight.y - points.topLeft.y) * mult - (points.bottomRight.y - points.topRight.y) * mult,
+		)
 
-		val newBottomRight =
-			Point(
-				points.bottomRight.x + (points.bottomRight.x - points.topRight.x) * mult + (points.bottomRight.x - points.bottomLeft.x) * mult,
-				points.bottomRight.y + (points.bottomRight.y - points.topRight.y) * mult + (points.bottomRight.y - points.bottomLeft.y) * mult,
-			)
+		val newBottomRight = Point(
+			points.bottomRight.x + (points.bottomRight.x - points.topRight.x) * mult + (points.bottomRight.x - points.bottomLeft.x) * mult,
+			points.bottomRight.y + (points.bottomRight.y - points.topRight.y) * mult + (points.bottomRight.y - points.bottomLeft.y) * mult,
+		)
 
-		val newBottomLeft =
-			Point(
-				points.bottomLeft.x - (points.bottomRight.x - points.bottomLeft.x) * mult + (points.bottomRight.x - points.topRight.x) * mult,
-				points.bottomLeft.y - (points.bottomRight.y - points.bottomLeft.y) * mult + (points.bottomRight.y - points.topRight.y) * mult,
-			)
+		val newBottomLeft = Point(
+			points.bottomLeft.x - (points.bottomRight.x - points.bottomLeft.x) * mult + (points.bottomRight.x - points.topRight.x) * mult,
+			points.bottomLeft.y - (points.bottomRight.y - points.bottomLeft.y) * mult + (points.bottomRight.y - points.topRight.y) * mult,
+		)
 
 		val newPoints = CornerPoints(newTopLeft, newTopRight, newBottomRight, newBottomLeft)
 
-		val topWidth =
-			sqrt(
-				(newPoints.topRight.x - newPoints.topLeft.x).pow(2) +
-					(newPoints.topRight.y - newPoints.topLeft.y).pow(2),
-			)
-
-		val bottomWidth =
-			sqrt(
-				(newPoints.bottomRight.x - newPoints.bottomLeft.x).pow(2) +
-					(newPoints.bottomRight.y - newPoints.bottomLeft.y).pow(2),
-			)
-
+		// Calculate aspect ratio
+		val topWidth = sqrt((newPoints.topRight.x - newPoints.topLeft.x).pow(2) + (newPoints.topRight.y - newPoints.topLeft.y).pow(2))
+		val bottomWidth = sqrt((newPoints.bottomRight.x - newPoints.bottomLeft.x).pow(2) + (newPoints.bottomRight.y - newPoints.bottomLeft.y).pow(2))
 		val maxWidth = maxOf(topWidth, bottomWidth)
 
-		val leftHeight =
-			sqrt(
-				(newPoints.bottomLeft.x - newPoints.topLeft.x).pow(2) +
-					(newPoints.bottomLeft.y - newPoints.topLeft.y).pow(2),
-			)
-
-		val rightHeight =
-			sqrt(
-				(newPoints.bottomRight.x - newPoints.topRight.x).pow(2) +
-					(newPoints.bottomRight.y - newPoints.topRight.y).pow(2),
-			)
-
+		val leftHeight = sqrt((newPoints.bottomLeft.x - newPoints.topLeft.x).pow(2) + (newPoints.bottomLeft.y - newPoints.topLeft.y).pow(2))
+		val rightHeight = sqrt((newPoints.bottomRight.x - newPoints.topRight.x).pow(2) + (newPoints.bottomRight.y - newPoints.topRight.y).pow(2))
 		val maxHeight = maxOf(leftHeight, rightHeight)
 
 		val aspectRatio = maxWidth / maxHeight
 
-		val width = 800
+		// Calculate new image size
+		val width = 540
 		val height = (width / aspectRatio).toInt()
 
-		val srcMatrix =
-			MatOfPoint2f(
-				newPoints.topLeft,
-				newPoints.topRight,
-				newPoints.bottomRight,
-				newPoints.bottomLeft,
-			)
+		// Create source and destination matrix
+		val srcMatrix = MatOfPoint2f(newPoints.topLeft, newPoints.topRight, newPoints.bottomRight, newPoints.bottomLeft)
+		val dstMatrix = MatOfPoint2f(Point(0.0, 0.0), Point(width - 1.0, 0.0), Point(0.0, height - 1.0), Point(width - 1.0, height - 1.0))
 
-		val dstMatrix =
-			MatOfPoint2f(
-				Point(0.0, 0.0),
-				Point(width - 1.0, 0.0),
-				Point(0.0, height - 1.0),
-				Point(width - 1.0, height - 1.0),
-			)
-
+		// Get perspective transform matrix
 		val transformMatrix = getPerspectiveTransform(srcMatrix, dstMatrix)
 
-		val imageMatrix = Mat(image.height, image.width, CvType.CV_8UC1)
-		Utils.bitmapToMat(image, imageMatrix)
+		// Warp image
+		val result = Mat(height, width, CvType.CV_8UC1)
+		warpPerspective(img, result, transformMatrix, result.size())
 
-		val resultMatrix = Mat(height, width, CvType.CV_8UC1)
-		warpPerspective(imageMatrix, resultMatrix, transformMatrix, resultMatrix.size())
-
-		val bitmapResult: Bitmap = Bitmap.createBitmap(resultMatrix.width(), resultMatrix.height(), Bitmap.Config.ARGB_8888)
-		Utils.matToBitmap(resultMatrix, bitmapResult)
-		return bitmapResult
+		return result
 	}
 
 	/**
