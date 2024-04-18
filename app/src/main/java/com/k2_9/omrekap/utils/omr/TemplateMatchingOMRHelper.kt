@@ -1,5 +1,6 @@
 package com.k2_9.omrekap.utils.omr
 
+import android.util.Log
 import com.k2_9.omrekap.data.configs.omr.OMRSection
 import com.k2_9.omrekap.data.configs.omr.TemplateMatchingOMRDetectorConfig
 import org.opencv.core.Mat
@@ -18,12 +19,9 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRDetectorC
 		// Load the template image
 		val template = config.template
 
-		val grayTemplate = Mat()
-		Imgproc.cvtColor(template, grayTemplate, Imgproc.COLOR_BGR2GRAY)
-
 		// Apply binary thresholding to the template image
 		val templateBinary = Mat()
-		Imgproc.threshold(grayTemplate, templateBinary, 0.0, 255.0, Imgproc.THRESH_BINARY_INV + Imgproc.THRESH_TRIANGLE)
+		Imgproc.threshold(template, templateBinary, 0.0, 255.0, Imgproc.THRESH_BINARY_INV + Imgproc.THRESH_TRIANGLE)
 
 		// Perform template matching
 		val result = Mat()
@@ -38,6 +36,7 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRDetectorC
 		for (y in 0 until result.rows()) {
 			for (x in 0 until result.cols()) {
 				val similarityScore = result.get(y, x)[0]
+
 				if (similarityScore > threshold) {
 					// Add the location to the list
 					locations.add(Point(x.toDouble(), y.toDouble()))
