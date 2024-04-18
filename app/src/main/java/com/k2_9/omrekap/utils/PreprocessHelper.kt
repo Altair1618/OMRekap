@@ -27,12 +27,13 @@ object PreprocessHelper {
 		// Get corner points
 		val cornerPoints = CropHelper.detectCorner(mainImageResult)
 
+		// Annotate annotated image
+		// TODO: Call function to annotate image
+		annotatedImageResult = ImageAnnotationHelper.annotateCorner(annotatedImageResult, cornerPoints)
+
 		// Crop both images
 		mainImageResult = CropHelper.fourPointTransform(mainImageResult, cornerPoints)
 		annotatedImageResult = CropHelper.fourPointTransform(annotatedImageResult, cornerPoints)
-
-		// Annotate annotated image
-		// TODO: Call function to annotate image
 
 		// Re-resize both images
 		mainImageResult = resizeMat(mainImageResult)
