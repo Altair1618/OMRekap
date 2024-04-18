@@ -57,9 +57,10 @@ class PreviewActivity : AppCompatActivity() {
 		viewModel.preprocessImage(photoView.drawable.toBitmap())
 
 		// Observe Data
-		val preprocessImageObserver = Observer<ImageSaveData> { newValue ->
-			photoView.setImageBitmap(newValue.rawImage)
-		}
+		val preprocessImageObserver =
+			Observer<ImageSaveData> { newValue ->
+				photoView.setImageBitmap(newValue.rawImage)
+			}
 
 		viewModel.data.observe(this, preprocessImageObserver)
 
