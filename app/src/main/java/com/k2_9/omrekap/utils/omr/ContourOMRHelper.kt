@@ -106,7 +106,6 @@ class ContourOMRHelper(private val config: ContourOMRDetectorConfig) : OMRHelper
 	}
 
 	private fun compareAll(contours: List<MatOfPoint>): Int {
-		// TODO: fix this algorithm, high chance something wrong in getDarkestRow method
 		// Sort contours by column and then by row
 		val contoursSorted = contours.sortedBy { Imgproc.boundingRect(it).x }
 
@@ -115,11 +114,8 @@ class ContourOMRHelper(private val config: ContourOMRDetectorConfig) : OMRHelper
 
 		// Loop through each column
 		for (col in 0 until 3) {
-			// Get contours for the current column
-			val colContours = contoursSorted.subList(col * 10, (col + 1) * 10)
-
-			// sort by row
-			colContours.sortedBy { Imgproc.boundingRect(it).y }
+			// Get contours for the current column and sort by rows
+			val colContours = contoursSorted.subList(col * 10, (col + 1) * 10).sortedBy { Imgproc.boundingRect(it).y }
 
 			val darkestRow = getDarkestRow(colContours)
 

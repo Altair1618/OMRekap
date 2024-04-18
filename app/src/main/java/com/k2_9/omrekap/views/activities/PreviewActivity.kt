@@ -1,13 +1,22 @@
 package com.k2_9.omrekap.views.activities
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageButton
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.drawable.toBitmap
+import androidx.lifecycle.Observer
 import com.github.chrisbanes.photoview.PhotoView
 import com.k2_9.omrekap.R
+import com.k2_9.omrekap.data.models.ImageSaveData
+import com.k2_9.omrekap.data.view_models.PreviewViewModel
+import com.k2_9.omrekap.utils.CropHelper
+import org.opencv.android.OpenCVLoader
 
 class PreviewActivity : AppCompatActivity() {
 	companion object {
@@ -16,12 +25,16 @@ class PreviewActivity : AppCompatActivity() {
 		const val EXTRA_NAME_IS_FROM_CAMERA = "IS_FROM_CAMERA"
 	}
 
+	private val viewModel: PreviewViewModel by viewModels()
+
 	private var imageUriString: String? = null
 	private var isFromCamera: Boolean = false
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_preview)
+
+		OpenCVLoader.initLocal()
 
 		// display photo
 		val photoView: PhotoView = findViewById(R.id.preview_content)
@@ -33,7 +46,23 @@ class PreviewActivity : AppCompatActivity() {
 			throw IllegalArgumentException("Image URI string is null")
 		}
 
+		val bitmapOptions = BitmapFactory.Options()
+		bitmapOptions.inPreferredConfig = Bitmap.Config.ARGB_8888
+		val cornerPatternBitmap: Bitmap = BitmapFactory.decodeResource(resources, R.raw.corner_pattern, bitmapOptions)
+
+		CropHelper.loadPattern(cornerPatternBitmap)
+
 		photoView.setImageURI(Uri.parse(imageUriString))
+
+		viewModel.preprocessImage(photoView.drawable.toBitmap())
+
+		// Observe Data
+		val preprocessImageObserver =
+			Observer<ImageSaveData> { newValue ->
+				photoView.setImageBitmap(newValue.rawImage)
+			}
+
+		viewModel.data.observe(this, preprocessImageObserver)
 
 		// set buttons action
 		val acceptButton = findViewById<ImageButton>(R.id.accept_preview_button)
