@@ -1,10 +1,8 @@
 package com.k2_9.omrekap.utils
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
-import com.k2_9.omrekap.R
 import com.k2_9.omrekap.data.models.CornerPoints
 import org.opencv.android.Utils
 import org.opencv.core.CvType
@@ -23,10 +21,20 @@ object CropHelper {
 	private const val LOWER_RIGHT: Int = 2
 	private const val LOWER_LEFT: Int = 3
 
+	private lateinit var patternBitmap: Bitmap
+
+	fun loadPattern(patternBitmap: Bitmap) {
+		this.patternBitmap = patternBitmap
+	}
+
 	fun detectCorner(
-		image: Bitmap,
-		caller: Context,
+		image: Bitmap
 	): CornerPoints {
+		// If pattern hasn't been loaded, throw exception
+		if (!::patternBitmap.isInitialized) {
+			throw Exception("Pattern not loaded!")
+		}
+
 		// Convert to Matrix (Mat)
 		val imageMatrix = Mat(image.height, image.width, CvType.CV_8UC1)
 		Utils.bitmapToMat(image, imageMatrix)
@@ -34,15 +42,13 @@ object CropHelper {
 		// Find corner pattern
 		val options = BitmapFactory.Options()
 		options.inPreferredConfig = Bitmap.Config.ARGB_8888
-		val cornerPatternBitmap: Bitmap =
-			BitmapFactory.decodeResource(caller.resources, R.raw.corner_pattern, options)
-		val cornerPatternMatrix = Mat(cornerPatternBitmap.height, cornerPatternBitmap.width, CvType.CV_8UC1)
-		Utils.bitmapToMat(cornerPatternBitmap, cornerPatternMatrix)
+		val cornerPatternMatrix = Mat(patternBitmap.height, patternBitmap.width, CvType.CV_8UC1)
+		Utils.bitmapToMat(patternBitmap, cornerPatternMatrix)
 
 		val resultMatrix =
 			Mat(
-				image.height - cornerPatternBitmap.height + 1,
-				image.width - cornerPatternBitmap.width + 1,
+				image.height - patternBitmap.height + 1,
+				image.width - patternBitmap.width + 1,
 				CvType.CV_8UC1,
 			)
 		Imgproc.matchTemplate(imageMatrix, cornerPatternMatrix, resultMatrix, Imgproc.TM_SQDIFF_NORMED)
