@@ -1,10 +1,12 @@
 package com.k2_9.omrekap.utils
 
 import android.graphics.Bitmap
+import com.k2_9.omrekap.data.models.CornerPoints
 import com.k2_9.omrekap.data.models.ImageSaveData
 import org.opencv.android.Utils
 import org.opencv.core.Core
 import org.opencv.core.Mat
+import org.opencv.core.Point
 import org.opencv.core.Size
 import org.opencv.imgproc.Imgproc
 
@@ -21,8 +23,8 @@ object PreprocessHelper {
 		Utils.bitmapToMat(data.annotatedImage, annotatedImageMat)
 
 		// Preprocess both images
-		var mainImageResult = preprocessImage(mainImageMat)
-		var annotatedImageResult = preprocessImage(annotatedImageMat)
+		var mainImageResult = preprocessMat(mainImageMat)
+		var annotatedImageResult = preprocessMat(annotatedImageMat)
 
 		// Get corner points
 		val cornerPoints = CropHelper.detectCorner(mainImageResult)
@@ -31,12 +33,12 @@ object PreprocessHelper {
 		mainImageResult = CropHelper.fourPointTransform(mainImageResult, cornerPoints)
 		annotatedImageResult = CropHelper.fourPointTransform(annotatedImageResult, cornerPoints)
 
+		// Annotate annotated image
+		// TODO: Call function to annotate image
+
 		// Re-resize both images
 		mainImageResult = resizeMat(mainImageResult)
 		annotatedImageResult = resizeMat(annotatedImageResult)
-
-		// Annotate annotated image
-		// TODO: Call function to annotate image
 
 		// Convert Mats to Bitmaps
 		val mainImageBitmap = Bitmap.createBitmap(mainImageResult.width(), mainImageResult.height(), Bitmap.Config.ARGB_8888)
@@ -48,9 +50,15 @@ object PreprocessHelper {
 		return ImageSaveData(mainImageBitmap, annotatedImageBitmap, data.data)
 	}
 
-	private fun preprocessImage(img: Mat): Mat {
+	private fun preprocessMat(img: Mat): Mat {
 		return img.apply {
 			resizeMat(this)
+			normalize(this)
+		}
+	}
+
+	fun preprocessPattern(img: Mat): Mat {
+		return img.apply {
 			normalize(this)
 		}
 	}
