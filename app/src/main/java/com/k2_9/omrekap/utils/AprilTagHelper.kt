@@ -67,14 +67,17 @@ object AprilTagHelper {
 		return idList
 	}
 
-	fun annotateImage(imageBitmap: Bitmap, cornerPoints: List<Mat>, id: String): Bitmap {
+	fun annotateImage(
+		imageBitmap: Bitmap,
+		cornerPoints: List<Mat>,
+		id: String,
+	): Bitmap {
 		val imageMat = prepareImage(imageBitmap)
 		val annotatedImageMat = ImageAnnotationHelper.annotateAprilTag(imageMat, cornerPoints, id)
 		val annotatedImageBitmap = Bitmap.createBitmap(annotatedImageMat.width(), annotatedImageMat.height(), Bitmap.Config.ARGB_8888)
 		Utils.matToBitmap(annotatedImageMat, annotatedImageBitmap)
 		return annotatedImageBitmap
 	}
-
 
 	private fun prepareDetector(detectorDictionary: Dictionary): ArucoDetector {
 		// initialize detector parameters
