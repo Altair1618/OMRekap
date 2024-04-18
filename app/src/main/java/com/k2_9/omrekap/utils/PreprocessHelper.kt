@@ -35,6 +35,7 @@ object PreprocessHelper {
 
 		// Annotate annotated image
 		// TODO: Call function to annotate image
+		 annotatedImageResult = ImageAnnotationHelper.annotateCorner(annotatedImageResult, cornerPoints)
 
 		// Re-resize both images
 		mainImageResult = resizeMat(mainImageResult)

@@ -10,37 +10,31 @@ import org.opencv.core.Scalar
 import org.opencv.imgproc.Imgproc
 
 object ImageAnnotationHelper {
-	fun annotateCorner(img: Bitmap, cornerPoints: CornerPoints): Bitmap {
-		val imgMat = Mat()
-		Utils.bitmapToMat(img, imgMat)
-		Imgproc.circle(imgMat,cornerPoints.topLeft, 10, Scalar(0.0, 255.0, 0.0), 5)
-		Imgproc.circle(imgMat,cornerPoints.topRight, 10, Scalar(0.0, 255.0, 0.0), 5)
-		Imgproc.circle(imgMat,cornerPoints.bottomLeft, 10, Scalar(0.0, 255.0, 0.0), 5)
-		Imgproc.circle(imgMat,cornerPoints.bottomRight, 10, Scalar(0.0, 255.0, 0.0), 5)
-		val annotatedImg = Bitmap.createBitmap(imgMat.width(), imgMat.height(), Bitmap.Config.ARGB_8888)
-		Utils.matToBitmap(imgMat, annotatedImg)
-		return annotatedImg
+	fun annotateCorner(img: Mat, cornerPoints: CornerPoints): Mat {
+		Imgproc.circle(img,cornerPoints.topLeft, 10, Scalar(0.0, 255.0, 0.0), 5)
+		Imgproc.circle(img,cornerPoints.topRight, 10, Scalar(0.0, 255.0, 0.0), 5)
+		Imgproc.circle(img,cornerPoints.bottomLeft, 10, Scalar(0.0, 255.0, 0.0), 5)
+		Imgproc.circle(img,cornerPoints.bottomRight, 10, Scalar(0.0, 255.0, 0.0), 5)
+		return img
 	}
 
-	fun annotateAprilTag(img:Bitmap, cornerPoints: CornerPoints, id: String): Bitmap{
-		val imgMat = Mat()
-		Utils.bitmapToMat(img, imgMat)
-		if(id.isNotEmpty()){
-			Imgproc.putText(imgMat, id, cornerPoints.topLeft, Imgproc.FONT_HERSHEY_SIMPLEX, 1.0, Scalar(0.0, 255.0, 0.0), 5)
-			Imgproc.polylines(imgMat, listOf(
-				MatOfPoint(
-					cornerPoints.topLeft,
-					cornerPoints.topRight,
-					cornerPoints.bottomRight,
-					cornerPoints.bottomLeft
-				)
-			), true, Scalar(0.0, 255.0, 0.0), 5)
+	fun annotateAprilTag(img: Mat, cornerPoints: List<Mat>, id: String): Mat {
+		val imgWithAnnotations = img.clone()
+		if (id.isNotEmpty()) {
+			val points = cornerPoints.map { mat ->
+				val x = mat.get(0, 0)[0]
+				val y = mat.get(1, 0)[0]
+				Point(x, y)
+			}
+
+			// Draw ID and bounding box
+			Imgproc.putText(imgWithAnnotations, id, points[0], Imgproc.FONT_HERSHEY_SIMPLEX, 1.0, Scalar(0.0, 255.0, 0.0), 5)
+			Imgproc.polylines(imgWithAnnotations, listOf(MatOfPoint(*points.toTypedArray())), true, Scalar(0.0, 255.0, 0.0), 5)
 		} else {
-			Imgproc.putText(imgMat, "April Tag Not Detected", cornerPoints.topLeft, Imgproc.FONT_HERSHEY_SIMPLEX, 1.0, Scalar(0.0, 255.0, 0.0), 5)
+			val topLeft = Point(cornerPoints[0].get(0, 0)[0], cornerPoints[0].get(1, 0)[0])
+			Imgproc.putText(imgWithAnnotations, "April Tag Not Detected", topLeft, Imgproc.FONT_HERSHEY_SIMPLEX, 1.0, Scalar(0.0, 255.0, 0.0), 5)
 		}
-		val annotatedImg = Bitmap.createBitmap(imgMat.width(), imgMat.height(), Bitmap.Config.ARGB_8888)
-		Utils.matToBitmap(imgMat, annotatedImg)
-		return annotatedImg
+		return imgWithAnnotations
 	}
 
 	fun annotateOMR(){
