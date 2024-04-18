@@ -35,7 +35,6 @@ object PreprocessHelper {
 		mainImageResult = CropHelper.fourPointTransform(mainImageResult, cornerPoints)
 		annotatedImageResult = CropHelper.fourPointTransform(annotatedImageResult, cornerPoints)
 
-
 		// Re-resize both images
 		mainImageResult = resizeMat(mainImageResult)
 		annotatedImageResult = resizeMat(annotatedImageResult)

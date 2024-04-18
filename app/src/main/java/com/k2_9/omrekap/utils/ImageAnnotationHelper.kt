@@ -43,7 +43,7 @@ object ImageAnnotationHelper {
 		return imgWithAnnotations
 	}
 
-	fun annotateOMR()  {
+	fun annotateOMR() {
 		TODO()
 	}
 }
