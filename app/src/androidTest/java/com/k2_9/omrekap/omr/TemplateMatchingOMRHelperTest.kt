@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.k2_9.omrekap.R
+import com.k2_9.omrekap.data.configs.omr.CircleTemplateLoader
 import com.k2_9.omrekap.data.configs.omr.OMRCropper
 import com.k2_9.omrekap.data.configs.omr.OMRCropperConfig
 import com.k2_9.omrekap.data.configs.omr.OMRSection
@@ -43,12 +44,12 @@ class TemplateMatchingOMRHelperTest {
 		val cropper = OMRCropper(cropperConfig)
 
 		// Load the template image resource
-		val template = Utils.loadResource(appContext, R.raw.circle_template)
+		val templateLoader = CircleTemplateLoader(appContext, R.raw.circle_template)
 
 		val config =
 			TemplateMatchingOMRDetectorConfig(
 				cropper,
-				template,
+				templateLoader,
 				0.7f,
 			)
 
