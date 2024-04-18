@@ -31,9 +31,7 @@ object CropHelper {
 		PreprocessHelper.preprocessPattern(this.pattern)
 	}
 
-	fun detectCorner(
-		img: Mat
-	): CornerPoints {
+	fun detectCorner(img: Mat): CornerPoints {
 		// If pattern hasn't been loaded, throw exception
 		if (!::pattern.isInitialized) {
 			throw Exception("Pattern not loaded!")
@@ -106,31 +104,36 @@ object CropHelper {
 		val mult = 0.01
 
 		// Calculate new corner points
-		val newTopLeft = Point(
-			points.topLeft.x - (points.topRight.x - points.topLeft.x) * mult - (points.bottomLeft.x - points.topLeft.x) * mult,
-			points.topLeft.y - (points.topRight.y - points.topLeft.y) * mult - (points.bottomLeft.y - points.topLeft.y) * mult,
-		)
+		val newTopLeft =
+			Point(
+				points.topLeft.x - (points.topRight.x - points.topLeft.x) * mult - (points.bottomLeft.x - points.topLeft.x) * mult,
+				points.topLeft.y - (points.topRight.y - points.topLeft.y) * mult - (points.bottomLeft.y - points.topLeft.y) * mult,
+			)
 
-		val newTopRight = Point(
-			points.topRight.x + (points.topRight.x - points.topLeft.x) * mult - (points.bottomRight.x - points.topRight.x) * mult,
-			points.topRight.y + (points.topRight.y - points.topLeft.y) * mult - (points.bottomRight.y - points.topRight.y) * mult,
-		)
+		val newTopRight =
+			Point(
+				points.topRight.x + (points.topRight.x - points.topLeft.x) * mult - (points.bottomRight.x - points.topRight.x) * mult,
+				points.topRight.y + (points.topRight.y - points.topLeft.y) * mult - (points.bottomRight.y - points.topRight.y) * mult,
+			)
 
-		val newBottomRight = Point(
-			points.bottomRight.x + (points.bottomRight.x - points.topRight.x) * mult + (points.bottomRight.x - points.bottomLeft.x) * mult,
-			points.bottomRight.y + (points.bottomRight.y - points.topRight.y) * mult + (points.bottomRight.y - points.bottomLeft.y) * mult,
-		)
+		val newBottomRight =
+			Point(
+				points.bottomRight.x + (points.bottomRight.x - points.topRight.x) * mult + (points.bottomRight.x - points.bottomLeft.x) * mult,
+				points.bottomRight.y + (points.bottomRight.y - points.topRight.y) * mult + (points.bottomRight.y - points.bottomLeft.y) * mult,
+			)
 
-		val newBottomLeft = Point(
-			points.bottomLeft.x - (points.bottomRight.x - points.bottomLeft.x) * mult + (points.bottomRight.x - points.topRight.x) * mult,
-			points.bottomLeft.y - (points.bottomRight.y - points.bottomLeft.y) * mult + (points.bottomRight.y - points.topRight.y) * mult,
-		)
+		val newBottomLeft =
+			Point(
+				points.bottomLeft.x - (points.bottomRight.x - points.bottomLeft.x) * mult + (points.bottomRight.x - points.topRight.x) * mult,
+				points.bottomLeft.y - (points.bottomRight.y - points.bottomLeft.y) * mult + (points.bottomRight.y - points.topRight.y) * mult,
+			)
 
 		val newPoints = CornerPoints(newTopLeft, newTopRight, newBottomRight, newBottomLeft)
 
 		// Calculate aspect ratio
 		val topWidth = sqrt((newPoints.topRight.x - newPoints.topLeft.x).pow(2) + (newPoints.topRight.y - newPoints.topLeft.y).pow(2))
-		val bottomWidth = sqrt((newPoints.bottomRight.x - newPoints.bottomLeft.x).pow(2) + (newPoints.bottomRight.y - newPoints.bottomLeft.y).pow(2))
+		val bottomWidth =
+			sqrt((newPoints.bottomRight.x - newPoints.bottomLeft.x).pow(2) + (newPoints.bottomRight.y - newPoints.bottomLeft.y).pow(2))
 		val maxWidth = maxOf(topWidth, bottomWidth)
 
 		val leftHeight = sqrt((newPoints.bottomLeft.x - newPoints.topLeft.x).pow(2) + (newPoints.bottomLeft.y - newPoints.topLeft.y).pow(2))
