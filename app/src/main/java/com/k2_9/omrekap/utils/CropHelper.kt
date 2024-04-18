@@ -22,12 +22,13 @@ object CropHelper {
 	private lateinit var pattern: Mat
 
 	fun loadPattern(patternBitmap: Bitmap) {
+		// Load only if pattern hasn't been loaded
+		if (::pattern.isInitialized) return
+
 		this.pattern = Mat(patternBitmap.height, patternBitmap.width, CvType.CV_8UC1)
 		Utils.bitmapToMat(patternBitmap, this.pattern)
-	}
 
-	fun loadPattern(pattern: Mat) {
-		this.pattern = pattern
+		PreprocessHelper.preprocessPattern(this.pattern)
 	}
 
 	fun detectCorner(
@@ -144,7 +145,7 @@ object CropHelper {
 
 		// Create source and destination matrix
 		val srcMatrix = MatOfPoint2f(newPoints.topLeft, newPoints.topRight, newPoints.bottomRight, newPoints.bottomLeft)
-		val dstMatrix = MatOfPoint2f(Point(0.0, 0.0), Point(width - 1.0, 0.0), Point(0.0, height - 1.0), Point(width - 1.0, height - 1.0))
+		val dstMatrix = MatOfPoint2f(Point(0.0, 0.0), Point(width - 1.0, 0.0), Point(width - 1.0, height - 1.0), Point(0.0, height - 1.0))
 
 		// Get perspective transform matrix
 		val transformMatrix = getPerspectiveTransform(srcMatrix, dstMatrix)
