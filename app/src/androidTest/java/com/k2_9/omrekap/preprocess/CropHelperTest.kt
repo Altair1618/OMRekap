@@ -28,9 +28,6 @@ class CropHelperTest {
 	init {
 		OpenCVLoader.initLocal()
 
-
-
-
 		appContext = InstrumentationRegistry.getInstrumentation().targetContext
 		image = Utils.loadResource(appContext, R.raw.example, CvType.CV_8UC1)
 		patternImage = Utils.loadResource(appContext, R.raw.corner_pattern, CvType.CV_8UC4)
@@ -39,20 +36,24 @@ class CropHelperTest {
 		imageBitmap = Bitmap.createBitmap(image.width(), image.height(), Bitmap.Config.ARGB_8888)
 		Utils.matToBitmap(image, imageBitmap)
 		Utils.matToBitmap(patternImage, patternBitmap)
+
+		CropHelper.loadPattern(patternBitmap)
 	}
 
 	@Test
 	fun test_preprocess_and_crop() {
-		val cornerPoints = CropHelper.detectCorner(imageBitmap, patternImage)
+		val cornerPoints = CropHelper.detectCorner(image)
 		val result = CropHelper.fourPointTransform(
-			imageBitmap,
+			image,
 			cornerPoints
 		)
 		Log.d("test_crop", cornerPoints.toString())
 		Log.d("test_crop", "size ${patternImage.width()} x ${patternImage.height()}")
-		SaveHelper.saveImage(appContext, patternBitmap, "test", "img_pattern_init")
-		SaveHelper.saveImage(appContext, imageBitmap, "test", "img_example_init")
-		SaveHelper.saveImage(appContext, result, "test", "test_preprocess_corner")
+
+		val resultBitmap = Bitmap.createBitmap(result.width(), result.height(), Bitmap.Config.ARGB_8888)
+		Utils.matToBitmap(result, resultBitmap)
+
+		SaveHelper.saveImage(appContext, resultBitmap, "test", "test_preprocess_corner")
 	}
 
 	@After
