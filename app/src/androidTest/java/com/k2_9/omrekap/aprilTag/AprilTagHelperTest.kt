@@ -28,7 +28,6 @@ class AprilTagHelperTest {
 		// Call the method to detect AprilTag
 		val result = helper.getAprilTagId(image)
 		Log.d("ContourOMRHelperTest", result.toString())
-		assert()
 
 	}
 }
