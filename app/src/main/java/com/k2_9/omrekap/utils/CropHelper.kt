@@ -46,7 +46,7 @@ object CropHelper {
 		}
 
 		val imgTmp = img.clone()
-		Imgproc.cvtColor(imgTmp, img, COLOR_BGRA2GRAY)
+		cvtColor(imgTmp, img, COLOR_BGRA2GRAY)
 
 		val resultMatrix =
 			Mat(

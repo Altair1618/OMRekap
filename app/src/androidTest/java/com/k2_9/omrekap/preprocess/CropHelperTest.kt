@@ -2,7 +2,6 @@ package com.k2_9.omrekap.preprocess
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.test.platform.app.InstrumentationRegistry
 import com.k2_9.omrekap.R
 import com.k2_9.omrekap.data.models.ImageSaveData
@@ -18,7 +17,6 @@ import org.opencv.android.OpenCVLoader
 import org.opencv.android.Utils
 import org.opencv.core.CvType
 import org.opencv.core.Mat
-import org.opencv.imgproc.Imgproc
 
 
 @RunWith(JUnit4::class)
