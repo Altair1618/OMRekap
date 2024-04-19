@@ -1,6 +1,7 @@
 package com.k2_9.omrekap.utils
 
 import android.graphics.Bitmap
+import android.util.Log
 import com.k2_9.omrekap.data.models.CornerPoints
 import org.opencv.android.Utils
 import org.opencv.core.CvType
@@ -9,6 +10,7 @@ import org.opencv.core.MatOfPoint2f
 import org.opencv.core.Point
 import org.opencv.imgproc.Imgproc
 import org.opencv.imgproc.Imgproc.COLOR_BGR2GRAY
+import org.opencv.imgproc.Imgproc.COLOR_BGRA2GRAY
 import org.opencv.imgproc.Imgproc.cvtColor
 import org.opencv.imgproc.Imgproc.getPerspectiveTransform
 import org.opencv.imgproc.Imgproc.warpPerspective
@@ -42,6 +44,9 @@ object CropHelper {
 		if (!::pattern.isInitialized) {
 			throw Exception("Pattern not loaded!")
 		}
+
+		val imgTmp = img.clone()
+		Imgproc.cvtColor(imgTmp, img, COLOR_BGRA2GRAY)
 
 		val resultMatrix =
 			Mat(
@@ -92,7 +97,7 @@ object CropHelper {
 					}
 					UPPER_RIGHT -> {
 						upperRightPoint = pointFromIt
-						upperRightPoint.y += pattern.width().toDouble()
+						upperRightPoint.x += pattern.height().toDouble()
 					}
 					LOWER_RIGHT -> {
 						lowerRightPoint = pointFromIt
@@ -101,7 +106,7 @@ object CropHelper {
 					}
 					LOWER_LEFT -> {
 						lowerLeftPoint = pointFromIt
-						lowerLeftPoint.x += pattern.height().toDouble()
+						lowerLeftPoint.y += pattern.width().toDouble()
 					}
 				}
 			}
@@ -111,6 +116,7 @@ object CropHelper {
 			throw Exception("Not all corner points found!")
 		}
 
+		Log.d("Corner", CornerPoints(upperLeftPoint, upperRightPoint, lowerRightPoint, lowerLeftPoint).toString())
 		return CornerPoints(upperLeftPoint, upperRightPoint, lowerRightPoint, lowerLeftPoint)
 	}
 
