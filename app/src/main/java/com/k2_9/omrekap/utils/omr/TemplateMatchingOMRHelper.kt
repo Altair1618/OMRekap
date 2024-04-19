@@ -99,7 +99,7 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperCon
 		return contourInfos.toList()
 	}
 
-	fun annotateImage(contourNumber: Int): Bitmap  {
+	fun annotateImage(contourNumber: Int): Bitmap {
 		val annotatedImg = currentSectionGray!!.clone()
 		val matchedRectangles = getMatchRectangles()
 		for (rect in matchedRectangles) {
