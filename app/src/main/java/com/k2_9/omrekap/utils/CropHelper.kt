@@ -10,7 +10,6 @@ import org.opencv.core.MatOfPoint2f
 import org.opencv.core.Point
 import org.opencv.imgproc.Imgproc
 import org.opencv.imgproc.Imgproc.COLOR_BGR2GRAY
-import org.opencv.imgproc.Imgproc.COLOR_BGRA2GRAY
 import org.opencv.imgproc.Imgproc.cvtColor
 import org.opencv.imgproc.Imgproc.getPerspectiveTransform
 import org.opencv.imgproc.Imgproc.warpPerspective
@@ -46,7 +45,7 @@ object CropHelper {
 		}
 
 		val imgTmp = img.clone()
-		cvtColor(imgTmp, img, COLOR_BGRA2GRAY)
+		cvtColor(imgTmp, img, COLOR_BGR2GRAY)
 
 		val resultMatrix =
 			Mat(
