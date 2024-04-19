@@ -3,10 +3,12 @@ package com.k2_9.omrekap.utils.omr
 import android.util.Log
 import com.k2_9.omrekap.data.configs.omr.ContourOMRDetectorConfig
 import com.k2_9.omrekap.data.configs.omr.OMRSection
+import com.k2_9.omrekap.utils.ImageAnnotationHelper
 import org.opencv.core.Core
 import org.opencv.core.CvType
 import org.opencv.core.Mat
 import org.opencv.core.MatOfPoint
+import org.opencv.core.Rect
 import org.opencv.core.Scalar
 import org.opencv.imgproc.Imgproc
 
@@ -159,6 +161,17 @@ class ContourOMRHelper(private val config: ContourOMRDetectorConfig) : OMRHelper
 		return filteredContours
 	}
 
+	private fun annotateImage(contourNumber: Int): Mat {
+		var annotatedImg = currentSectionGray!!.clone()
+		val contours = getAllContours()
+		for (contour in contours) {
+			val rect = Imgproc.boundingRect(contour)
+			annotatedImg = ImageAnnotationHelper.annotateOMR(annotatedImg, rect, contourNumber)
+		}
+		return annotatedImg
+	}
+
+
 	override fun detect(section: OMRSection): Int {
 		val omrSectionImage = config.omrCropper.crop(section)
 
@@ -178,11 +191,12 @@ class ContourOMRHelper(private val config: ContourOMRDetectorConfig) : OMRHelper
 
 		return if (contours.size != 30) {
 			Log.d("ContourOMRHelper", "Some circles are not detected, considering only filled circles")
-
 			predictForFilledCircle(contours)
+
 		} else {
 			Log.d("ContourOMRHelper", "All 30 circles are detected")
 			compareAll(contours)
 		}
 	}
+
 }

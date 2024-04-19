@@ -2,6 +2,7 @@ package com.k2_9.omrekap.utils.omr
 
 import com.k2_9.omrekap.data.configs.omr.OMRSection
 import com.k2_9.omrekap.data.configs.omr.TemplateMatchingOMRDetectorConfig
+import com.k2_9.omrekap.utils.ImageAnnotationHelper
 import org.opencv.core.Mat
 import org.opencv.core.Point
 import org.opencv.core.Rect
@@ -87,6 +88,7 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRDetectorC
 			if (!overlap) {
 				contourInfos.add(ContourInfo(Pair(centerX, centerY), Pair(w, h)))
 				addedRectangles.add(Rect(x, y, w, h))
+
 			}
 		}
 
@@ -94,6 +96,14 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRDetectorC
 		contourInfos.sortBy { it.center.first }
 
 		return contourInfos.toList()
+	}
+	fun annotateImage(contourNumber: Int) :Mat{
+		val annotatedImg = currentSectionGray!!.clone()
+		val matchedRectangles = getMatchRectangles()
+		for (rect in matchedRectangles) {
+			ImageAnnotationHelper.annotateOMR(annotatedImg, rect, contourNumber)
+		}
+		return annotatedImg
 	}
 
 	override fun detect(section: OMRSection): Int {
