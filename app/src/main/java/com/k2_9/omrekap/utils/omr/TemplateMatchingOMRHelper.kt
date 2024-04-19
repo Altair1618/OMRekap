@@ -2,7 +2,7 @@ package com.k2_9.omrekap.utils.omr
 
 import android.graphics.Bitmap
 import com.k2_9.omrekap.data.configs.omr.OMRSection
-import com.k2_9.omrekap.data.configs.omr.TemplateMatchingOMRDetectorConfig
+import com.k2_9.omrekap.data.configs.omr.TemplateMatchingOMRHelperConfig
 import com.k2_9.omrekap.utils.ImageAnnotationHelper
 import org.opencv.android.Utils
 import org.opencv.core.Mat
@@ -90,7 +90,6 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperCon
 			if (!overlap) {
 				contourInfos.add(ContourInfo(Pair(centerX, centerY), Pair(w, h)))
 				addedRectangles.add(Rect(x, y, w, h))
-
 			}
 		}
 
@@ -99,7 +98,8 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperCon
 
 		return contourInfos.toList()
 	}
-	fun annotateImage(contourNumber: Int) :Bitmap{
+
+	fun annotateImage(contourNumber: Int): Bitmap  {
 		val annotatedImg = currentSectionGray!!.clone()
 		val matchedRectangles = getMatchRectangles()
 		for (rect in matchedRectangles) {

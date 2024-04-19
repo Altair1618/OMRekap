@@ -8,12 +8,10 @@ import com.k2_9.omrekap.utils.AprilTagHelper
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.opencv.android.OpenCVLoader
-import org.opencv.core.Mat
 import org.opencv.android.Utils
 
 @RunWith(AndroidJUnit4::class)
 class AprilTagHelperTest {
-
 	private val helper: AprilTagHelper = AprilTagHelper
 
 	@Test
@@ -28,6 +26,5 @@ class AprilTagHelperTest {
 		// Call the method to detect AprilTag
 		val result = helper.getAprilTagId(image)
 		Log.d("ContourOMRHelperTest", result.toString())
-
 	}
 }

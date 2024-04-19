@@ -21,7 +21,7 @@ object AprilTagHelper {
 	 * @return List of possible IDs detected in the image,
 	 * returns empty list if no valid tag is found
 	 */
-	fun getAprilTagId(imageBitmap: Bitmap): List<Pair<Int, List<Mat>>>  {
+	fun getAprilTagId(imageBitmap: Bitmap): List<Pair<Int, List<Mat>>> {
 		val grayImageMat: Mat = prepareImage(imageBitmap)
 		return getAprilTagId(grayImageMat)
 	}
@@ -67,9 +67,7 @@ object AprilTagHelper {
 		return idList
 	}
 
-	fun annotateImage(
-		imageBitmap: Bitmap
-	): Bitmap {
+	fun annotateImage(imageBitmap: Bitmap): Bitmap {
 		val res = getAprilTagId(imageBitmap)
 		val cornerPoints = res[0].second
 		val ids = res[0].first.toString()

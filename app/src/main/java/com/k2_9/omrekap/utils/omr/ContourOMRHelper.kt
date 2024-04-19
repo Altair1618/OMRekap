@@ -10,7 +10,6 @@ import org.opencv.core.Core
 import org.opencv.core.CvType
 import org.opencv.core.Mat
 import org.opencv.core.MatOfPoint
-import org.opencv.core.Rect
 import org.opencv.core.Scalar
 import org.opencv.imgproc.Imgproc
 
@@ -175,7 +174,6 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 		return annotatedImageBitmap
 	}
 
-
 	override fun detect(section: OMRSection): Int {
 		val omrSectionImage = config.omrCropper.crop(section)
 
@@ -196,11 +194,9 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 		return if (contours.size != 30) {
 			Log.d("ContourOMRHelper", "Some circles are not detected, considering only filled circles")
 			predictForFilledCircle(contours)
-
 		} else {
 			Log.d("ContourOMRHelper", "All 30 circles are detected")
 			compareAll(contours)
 		}
 	}
-
 }
