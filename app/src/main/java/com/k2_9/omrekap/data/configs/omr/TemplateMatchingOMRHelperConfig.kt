@@ -17,7 +17,6 @@ class TemplateMatchingOMRHelperConfig(
 
 	var similarityThreshold: Float
 		private set
-		get() = field
 
 	init {
 		require(similarityThreshold in 0.0..1.0) {
