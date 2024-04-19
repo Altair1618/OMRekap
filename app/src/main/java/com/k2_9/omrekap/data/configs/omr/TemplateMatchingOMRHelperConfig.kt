@@ -27,14 +27,4 @@ class TemplateMatchingOMRHelperConfig(
 		this.template = templateLoader.loadTemplateImage()
 		this.similarityThreshold = similarityThreshold
 	}
-
-	private fun loadTemplateImage(
-		appContext: Context,
-		resId: Int,
-	): Mat {
-		val inputStream: InputStream = appContext.resources.openRawResource(resId)
-		val byteArray = inputStream.readBytes()
-		val imgBuffer = MatOfByte(*byteArray)
-		return Imgcodecs.imdecode(imgBuffer, Imgcodecs.IMREAD_GRAYSCALE)
-	}
 }
