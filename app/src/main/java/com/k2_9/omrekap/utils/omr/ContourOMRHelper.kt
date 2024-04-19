@@ -1,9 +1,11 @@
 package com.k2_9.omrekap.utils.omr
 
+import android.graphics.Bitmap
 import android.util.Log
 import com.k2_9.omrekap.data.configs.omr.ContourOMRDetectorConfig
 import com.k2_9.omrekap.data.configs.omr.OMRSection
 import com.k2_9.omrekap.utils.ImageAnnotationHelper
+import org.opencv.android.Utils
 import org.opencv.core.Core
 import org.opencv.core.CvType
 import org.opencv.core.Mat
@@ -161,14 +163,16 @@ class ContourOMRHelper(private val config: ContourOMRDetectorConfig) : OMRHelper
 		return filteredContours
 	}
 
-	private fun annotateImage(contourNumber: Int): Mat {
+	private fun annotateImage(contourNumber: Int): Bitmap {
 		var annotatedImg = currentSectionGray!!.clone()
 		val contours = getAllContours()
 		for (contour in contours) {
 			val rect = Imgproc.boundingRect(contour)
 			annotatedImg = ImageAnnotationHelper.annotateOMR(annotatedImg, rect, contourNumber)
 		}
-		return annotatedImg
+		val annotatedImageBitmap = Bitmap.createBitmap(annotatedImg.width(), annotatedImg.height(), Bitmap.Config.ARGB_8888)
+		Utils.matToBitmap(annotatedImg, annotatedImageBitmap)
+		return annotatedImageBitmap
 	}
 
 
