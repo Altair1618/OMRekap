@@ -6,18 +6,17 @@ import org.opencv.core.MatOfByte
 import org.opencv.imgcodecs.Imgcodecs
 import java.io.InputStream
 
-class TemplateMatchingOMRDetectorConfig(
+class TemplateMatchingOMRHelperConfig(
 	omrCropper: OMRCropper,
 	templateLoader: CircleTemplateLoader,
 	similarityThreshold: Float,
-) : OMRDetectorConfig(omrCropper) {
+) : OMRHelperConfig(omrCropper) {
 	var template: Mat
 		private set
 		get() = field.clone()
 
 	var similarityThreshold: Float
 		private set
-		get() = field
 
 	init {
 		require(similarityThreshold in 0.0..1.0) {
@@ -26,15 +25,5 @@ class TemplateMatchingOMRDetectorConfig(
 
 		this.template = templateLoader.loadTemplateImage()
 		this.similarityThreshold = similarityThreshold
-	}
-
-	private fun loadTemplateImage(
-		appContext: Context,
-		resId: Int,
-	): Mat {
-		val inputStream: InputStream = appContext.resources.openRawResource(resId)
-		val byteArray = inputStream.readBytes()
-		val imgBuffer = MatOfByte(*byteArray)
-		return Imgcodecs.imdecode(imgBuffer, Imgcodecs.IMREAD_GRAYSCALE)
 	}
 }
