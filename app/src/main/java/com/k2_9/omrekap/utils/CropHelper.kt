@@ -87,10 +87,22 @@ object CropHelper {
 				needChange--
 				val pointFromIt = Point(it.y.toDouble(), it.x.toDouble())
 				when (corner) {
-					UPPER_LEFT -> upperLeftPoint = pointFromIt
-					UPPER_RIGHT -> upperRightPoint = pointFromIt
-					LOWER_RIGHT -> lowerRightPoint = pointFromIt
-					LOWER_LEFT -> lowerLeftPoint = pointFromIt
+					UPPER_LEFT -> {
+						upperLeftPoint = pointFromIt
+					}
+					UPPER_RIGHT -> {
+						upperRightPoint = pointFromIt
+						upperRightPoint.y += pattern.width().toDouble()
+					}
+					LOWER_RIGHT -> {
+						lowerRightPoint = pointFromIt
+						lowerRightPoint.x += pattern.height().toDouble()
+						lowerRightPoint.y += pattern.width().toDouble()
+					}
+					LOWER_LEFT -> {
+						lowerLeftPoint = pointFromIt
+						lowerLeftPoint.x += pattern.height().toDouble()
+					}
 				}
 			}
 		}
