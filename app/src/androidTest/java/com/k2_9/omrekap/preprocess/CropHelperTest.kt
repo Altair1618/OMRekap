@@ -5,9 +5,12 @@ import android.graphics.Bitmap
 import android.util.Log
 import androidx.test.platform.app.InstrumentationRegistry
 import com.k2_9.omrekap.R
+import com.k2_9.omrekap.data.models.ImageSaveData
 import com.k2_9.omrekap.utils.CropHelper
+import com.k2_9.omrekap.utils.PreprocessHelper
 import com.k2_9.omrekap.utils.SaveHelper
 import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -25,6 +28,8 @@ class CropHelperTest {
 	private val imageBitmap: Bitmap
 	private val patternBitmap: Bitmap
 	private val appContext: Context
+
+	private var imageSaveData: ImageSaveData
 	init {
 		OpenCVLoader.initLocal()
 
@@ -38,22 +43,21 @@ class CropHelperTest {
 		Utils.matToBitmap(patternImage, patternBitmap)
 
 		CropHelper.loadPattern(patternBitmap)
+
+		imageSaveData = ImageSaveData(imageBitmap, imageBitmap, mutableMapOf<String, Int>())
+	}
+
+	@Before
+	fun beforeEachTest() {
+		imageSaveData = ImageSaveData(imageBitmap, imageBitmap, mutableMapOf<String, Int>())
 	}
 
 	@Test
 	fun test_preprocess_and_crop() {
-		val cornerPoints = CropHelper.detectCorner(image)
-		val result = CropHelper.fourPointTransform(
-			image,
-			cornerPoints
-		)
-		Log.d("test_crop", cornerPoints.toString())
-		Log.d("test_crop", "size ${patternImage.width()} x ${patternImage.height()}")
+		CropHelper.loadPattern(patternBitmap)
+		imageSaveData = PreprocessHelper.preprocessImage(imageSaveData)
 
-		val resultBitmap = Bitmap.createBitmap(result.width(), result.height(), Bitmap.Config.ARGB_8888)
-		Utils.matToBitmap(result, resultBitmap)
-
-		SaveHelper.saveImage(appContext, resultBitmap, "test", "test_preprocess_corner")
+		SaveHelper.saveImage(appContext, imageSaveData.rawImage, "test", "test_preprocess_raw")
 	}
 
 	@After
