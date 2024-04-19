@@ -6,11 +6,11 @@ import org.opencv.core.MatOfByte
 import org.opencv.imgcodecs.Imgcodecs
 import java.io.InputStream
 
-class TemplateMatchingOMRDetectorConfig(
+class TemplateMatchingOMRHelperConfig(
 	omrCropper: OMRCropper,
 	templateLoader: CircleTemplateLoader,
 	similarityThreshold: Float,
-) : OMRDetectorConfig(omrCropper) {
+) : OMRHelperConfig(omrCropper) {
 	var template: Mat
 		private set
 		get() = field.clone()
