@@ -8,7 +8,7 @@ import com.k2_9.omrekap.data.configs.omr.CircleTemplateLoader
 import com.k2_9.omrekap.data.configs.omr.OMRCropper
 import com.k2_9.omrekap.data.configs.omr.OMRCropperConfig
 import com.k2_9.omrekap.data.configs.omr.OMRSection
-import com.k2_9.omrekap.data.configs.omr.TemplateMatchingOMRDetectorConfig
+import com.k2_9.omrekap.data.configs.omr.TemplateMatchingOMRHelperConfig
 import com.k2_9.omrekap.utils.omr.TemplateMatchingOMRHelper
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -47,7 +47,7 @@ class TemplateMatchingOMRHelperTest {
 		val templateLoader = CircleTemplateLoader(appContext, R.raw.circle_template)
 
 		val config =
-			TemplateMatchingOMRDetectorConfig(
+			TemplateMatchingOMRHelperConfig(
 				cropper,
 				templateLoader,
 				0.7f,

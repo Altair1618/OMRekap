@@ -1,5 +1,5 @@
 package com.k2_9.omrekap.data.configs.omr
 
-open class OMRDetectorConfig(
+open class OMRHelperConfig(
 	val omrCropper: OMRCropper,
 )

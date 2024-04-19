@@ -1,6 +1,6 @@
 package com.k2_9.omrekap.data.configs.omr
 
-class ContourOMRDetectorConfig(
+class ContourOMRHelperConfig(
 	omrCropper: OMRCropper,
 	minRadius: Int,
 	maxRadius: Int,
@@ -8,7 +8,7 @@ class ContourOMRDetectorConfig(
 	maxAspectRatio: Float,
 	darkPercentageThreshold: Float,
 	darkIntensityThreshold: Int,
-) : OMRDetectorConfig(omrCropper) {
+) : OMRHelperConfig(omrCropper) {
 	var minRadius: Int
 		private set
 	var maxRadius: Int

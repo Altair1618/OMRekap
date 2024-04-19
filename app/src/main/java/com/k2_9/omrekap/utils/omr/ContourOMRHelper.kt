@@ -2,7 +2,7 @@ package com.k2_9.omrekap.utils.omr
 
 import android.graphics.Bitmap
 import android.util.Log
-import com.k2_9.omrekap.data.configs.omr.ContourOMRDetectorConfig
+import com.k2_9.omrekap.data.configs.omr.ContourOMRHelperConfig
 import com.k2_9.omrekap.data.configs.omr.OMRSection
 import com.k2_9.omrekap.utils.ImageAnnotationHelper
 import org.opencv.android.Utils
@@ -14,7 +14,7 @@ import org.opencv.core.Rect
 import org.opencv.core.Scalar
 import org.opencv.imgproc.Imgproc
 
-class ContourOMRHelper(private val config: ContourOMRDetectorConfig) : OMRHelper(config) {
+class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(config) {
 	private var currentSectionGray: Mat? = null
 	private var currentSectionBinary: Mat? = null
 

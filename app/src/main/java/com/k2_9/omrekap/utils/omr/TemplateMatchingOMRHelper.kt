@@ -11,7 +11,7 @@ import org.opencv.core.Rect
 import org.opencv.imgproc.Imgproc
 import kotlin.collections.ArrayList
 
-class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRDetectorConfig) : OMRHelper(config) {
+class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperConfig) : OMRHelper(config) {
 	private var currentSectionGray: Mat? = null
 	private var currentSectionBinary: Mat? = null
 

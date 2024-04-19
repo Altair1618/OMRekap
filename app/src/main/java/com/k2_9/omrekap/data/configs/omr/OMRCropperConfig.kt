@@ -41,4 +41,8 @@ class OMRCropperConfig(
 	fun getSectionPosition(section: OMRSection): Pair<Int, Int> {
 		return omrSectionPosition[section]!!
 	}
+
+	fun setImage(image: Mat) {
+		this.image = image
+	}
 }
