@@ -56,6 +56,7 @@ class CropHelperTest {
 		imageSaveData = PreprocessHelper.preprocessImage(imageSaveData)
 
 		SaveHelper.saveImage(appContext, imageSaveData.rawImage, "test", "test_preprocess_raw")
+		SaveHelper.saveImage(appContext, imageSaveData.annotatedImage, "test", "test_preprocess_annotated")
 	}
 
 	@After
