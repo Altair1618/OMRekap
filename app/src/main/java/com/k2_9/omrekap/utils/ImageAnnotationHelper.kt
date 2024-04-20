@@ -4,6 +4,7 @@ import com.k2_9.omrekap.data.models.CornerPoints
 import org.opencv.core.Mat
 import org.opencv.core.MatOfPoint
 import org.opencv.core.Point
+import org.opencv.core.Rect
 import org.opencv.core.Scalar
 import org.opencv.imgproc.Imgproc
 
@@ -12,11 +13,12 @@ object ImageAnnotationHelper {
 		img: Mat,
 		cornerPoints: CornerPoints,
 	): Mat {
-		Imgproc.circle(img, cornerPoints.topLeft, 10, Scalar(0.0, 255.0, 0.0), 5)
-		Imgproc.circle(img, cornerPoints.topRight, 10, Scalar(0.0, 255.0, 0.0), 5)
-		Imgproc.circle(img, cornerPoints.bottomLeft, 10, Scalar(0.0, 255.0, 0.0), 5)
-		Imgproc.circle(img, cornerPoints.bottomRight, 10, Scalar(0.0, 255.0, 0.0), 5)
-		return img
+		val imgWithAnnotations = img.clone()
+		Imgproc.circle(imgWithAnnotations, cornerPoints.topLeft, 10, Scalar(0.0, 255.0, 0.0), 5)
+		Imgproc.circle(imgWithAnnotations, cornerPoints.topRight, 10, Scalar(0.0, 255.0, 0.0), 5)
+		Imgproc.circle(imgWithAnnotations, cornerPoints.bottomLeft, 10, Scalar(0.0, 255.0, 0.0), 5)
+		Imgproc.circle(imgWithAnnotations, cornerPoints.bottomRight, 10, Scalar(0.0, 255.0, 0.0), 5)
+		return imgWithAnnotations
 	}
 
 	fun annotateAprilTag(
@@ -43,7 +45,22 @@ object ImageAnnotationHelper {
 		return imgWithAnnotations
 	}
 
-	fun annotateOMR() {
-		TODO()
+	fun annotateOMR(
+		img: Mat,
+		cornerPoints: Rect,
+		contourNumber: Int,
+	): Mat {
+		val imgWithAnnotations = img.clone()
+		Imgproc.rectangle(imgWithAnnotations, cornerPoints.tl(), cornerPoints.br(), Scalar(0.0, 255.0, 0.0), 5)
+		Imgproc.putText(
+			imgWithAnnotations,
+			"Contour $contourNumber",
+			cornerPoints.tl(),
+			Imgproc.FONT_HERSHEY_SIMPLEX,
+			1.0,
+			Scalar(0.0, 255.0, 0.0),
+			5,
+		)
+		return imgWithAnnotations
 	}
 }
