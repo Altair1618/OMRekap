@@ -14,7 +14,8 @@ object OMRConfigRepository {
 			readConfigString(context)
 		}
 		return if (jsonString == null) {
-			Toast.makeText(context, "Error! Unable to read configuration", Toast.LENGTH_SHORT).show()
+			Toast.makeText(context, "Error! Unable to read configuration", Toast.LENGTH_SHORT)
+				.show()
 			null
 		} else {
 			OMRJsonConfigLoader.parsePlanoConfig(jsonString)
@@ -32,7 +33,7 @@ object OMRConfigRepository {
 		return try {
 			val buffer = ByteArray(inputStream.available())
 			inputStream.read(buffer)
-			Log.d("ConfigLoader", String(buffer))
+			Log.d("OMRConfigLoader", String(buffer))
 
 			String(buffer)
 		} catch (e: IOException) {

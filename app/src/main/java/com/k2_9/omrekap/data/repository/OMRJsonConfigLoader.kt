@@ -11,7 +11,7 @@ object OMRJsonConfigLoader {
 		return gson.fromJson(jsonString, OMRBaseConfiguration::class.java)
 	}
 
-	fun toJson(templateMatchingOMRBaseConfiguration: OMRBaseConfiguration): String {
-		return gson.toJson(templateMatchingOMRBaseConfiguration)
+	fun toJson(omrBaseConfiguration: OMRBaseConfiguration): String {
+		return gson.toJson(omrBaseConfiguration)
 	}
 }
