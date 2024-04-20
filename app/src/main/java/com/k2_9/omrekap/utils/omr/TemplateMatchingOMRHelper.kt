@@ -1,7 +1,10 @@
 package com.k2_9.omrekap.utils.omr
 
+import android.graphics.Bitmap
 import com.k2_9.omrekap.data.configs.omr.OMRSection
 import com.k2_9.omrekap.data.configs.omr.TemplateMatchingOMRHelperConfig
+import com.k2_9.omrekap.utils.ImageAnnotationHelper
+import org.opencv.android.Utils
 import org.opencv.core.Mat
 import org.opencv.core.Point
 import org.opencv.core.Rect
@@ -94,6 +97,17 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperCon
 		contourInfos.sortBy { it.center.first }
 
 		return contourInfos.toList()
+	}
+
+	fun annotateImage(contourNumber: Int): Bitmap {
+		val annotatedImg = currentSectionGray!!.clone()
+		val matchedRectangles = getMatchRectangles()
+		for (rect in matchedRectangles) {
+			ImageAnnotationHelper.annotateOMR(annotatedImg, rect, contourNumber)
+		}
+		val annotatedImageBitmap = Bitmap.createBitmap(annotatedImg.width(), annotatedImg.height(), Bitmap.Config.ARGB_8888)
+		Utils.matToBitmap(annotatedImg, annotatedImageBitmap)
+		return annotatedImageBitmap
 	}
 
 	override fun detect(section: OMRSection): Int {

@@ -1,10 +1,6 @@
 package com.k2_9.omrekap.data.configs.omr
 
-import android.content.Context
 import org.opencv.core.Mat
-import org.opencv.core.MatOfByte
-import org.opencv.imgcodecs.Imgcodecs
-import java.io.InputStream
 
 class TemplateMatchingOMRHelperConfig(
 	omrCropper: OMRCropper,
