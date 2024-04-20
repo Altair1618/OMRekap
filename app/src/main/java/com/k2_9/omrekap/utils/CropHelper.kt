@@ -44,8 +44,8 @@ object CropHelper {
 			throw Exception("Pattern not loaded!")
 		}
 
-		val imgTmp = img.clone()
-		cvtColor(imgTmp, img, COLOR_BGR2GRAY)
+		val imgGray = img.clone()
+		cvtColor(img, imgGray, COLOR_BGR2GRAY)
 
 		val resultMatrix =
 			Mat(
@@ -54,7 +54,7 @@ object CropHelper {
 				CvType.CV_8UC1,
 			)
 
-		Imgproc.matchTemplate(img, pattern, resultMatrix, Imgproc.TM_SQDIFF_NORMED)
+		Imgproc.matchTemplate(imgGray, pattern, resultMatrix, Imgproc.TM_SQDIFF_NORMED)
 
 		var upperLeftPoint = Point()
 		var upperRightPoint = Point()
