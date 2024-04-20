@@ -1,12 +1,10 @@
 package com.k2_9.omrekap.utils
 
 import android.graphics.Bitmap
-import com.k2_9.omrekap.data.models.CornerPoints
 import com.k2_9.omrekap.data.models.ImageSaveData
 import org.opencv.android.Utils
 import org.opencv.core.Core
 import org.opencv.core.Mat
-import org.opencv.core.Point
 import org.opencv.core.Size
 import org.opencv.imgproc.Imgproc
 
@@ -29,12 +27,13 @@ object PreprocessHelper {
 		// Get corner points
 		val cornerPoints = CropHelper.detectCorner(mainImageResult)
 
+		// Annotate annotated image
+		// TODO: Call function to annotate image
+		annotatedImageResult = ImageAnnotationHelper.annotateCorner(annotatedImageResult, cornerPoints)
+
 		// Crop both images
 		mainImageResult = CropHelper.fourPointTransform(mainImageResult, cornerPoints)
 		annotatedImageResult = CropHelper.fourPointTransform(annotatedImageResult, cornerPoints)
-
-		// Annotate annotated image
-		// TODO: Call function to annotate image
 
 		// Re-resize both images
 		mainImageResult = resizeMat(mainImageResult)
@@ -68,6 +67,7 @@ object PreprocessHelper {
 		Imgproc.resize(img, resizedImg, Size(FINAL_WIDTH, FINAL_HEIGHT))
 		return resizedImg
 	}
+
 	private fun normalize(img: Mat): Mat {
 		val normalizedImg = Mat()
 		Core.normalize(img, normalizedImg)

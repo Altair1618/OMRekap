@@ -1,10 +1,10 @@
 package com.k2_9.omrekap.utils.omr
 
-import com.k2_9.omrekap.data.configs.omr.OMRDetectorConfig
+import com.k2_9.omrekap.data.configs.omr.OMRHelperConfig
 import com.k2_9.omrekap.data.configs.omr.OMRSection
 import kotlin.math.floor
 
-abstract class OMRHelper(private val config: OMRDetectorConfig) {
+abstract class OMRHelper(private val config: OMRHelperConfig) {
 	data class ContourInfo(val center: Pair<Int, Int>, val size: Pair<Int, Int>)
 
 	protected fun getCombinedNumbers(numbers: List<Int>): Int {

@@ -1,8 +1,11 @@
 package com.k2_9.omrekap.utils.omr
 
+import android.graphics.Bitmap
 import android.util.Log
-import com.k2_9.omrekap.data.configs.omr.ContourOMRDetectorConfig
+import com.k2_9.omrekap.data.configs.omr.ContourOMRHelperConfig
 import com.k2_9.omrekap.data.configs.omr.OMRSection
+import com.k2_9.omrekap.utils.ImageAnnotationHelper
+import org.opencv.android.Utils
 import org.opencv.core.Core
 import org.opencv.core.CvType
 import org.opencv.core.Mat
@@ -10,7 +13,7 @@ import org.opencv.core.MatOfPoint
 import org.opencv.core.Scalar
 import org.opencv.imgproc.Imgproc
 
-class ContourOMRHelper(private val config: ContourOMRDetectorConfig) : OMRHelper(config) {
+class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(config) {
 	private var currentSectionGray: Mat? = null
 	private var currentSectionBinary: Mat? = null
 
@@ -106,7 +109,6 @@ class ContourOMRHelper(private val config: ContourOMRDetectorConfig) : OMRHelper
 	}
 
 	private fun compareAll(contours: List<MatOfPoint>): Int {
-		// TODO: fix this algorithm, high chance something wrong in getDarkestRow method
 		// Sort contours by column and then by row
 		val contoursSorted = contours.sortedBy { Imgproc.boundingRect(it).x }
 
@@ -115,11 +117,8 @@ class ContourOMRHelper(private val config: ContourOMRDetectorConfig) : OMRHelper
 
 		// Loop through each column
 		for (col in 0 until 3) {
-			// Get contours for the current column
-			val colContours = contoursSorted.subList(col * 10, (col + 1) * 10)
-
-			// sort by row
-			colContours.sortedBy { Imgproc.boundingRect(it).y }
+			// Get contours for the current column and sort by rows
+			val colContours = contoursSorted.subList(col * 10, (col + 1) * 10).sortedBy { Imgproc.boundingRect(it).y }
 
 			val darkestRow = getDarkestRow(colContours)
 
@@ -163,6 +162,18 @@ class ContourOMRHelper(private val config: ContourOMRDetectorConfig) : OMRHelper
 		return filteredContours
 	}
 
+	private fun annotateImage(contourNumber: Int): Bitmap {
+		var annotatedImg = currentSectionGray!!.clone()
+		val contours = getAllContours()
+		for (contour in contours) {
+			val rect = Imgproc.boundingRect(contour)
+			annotatedImg = ImageAnnotationHelper.annotateOMR(annotatedImg, rect, contourNumber)
+		}
+		val annotatedImageBitmap = Bitmap.createBitmap(annotatedImg.width(), annotatedImg.height(), Bitmap.Config.ARGB_8888)
+		Utils.matToBitmap(annotatedImg, annotatedImageBitmap)
+		return annotatedImageBitmap
+	}
+
 	override fun detect(section: OMRSection): Int {
 		val omrSectionImage = config.omrCropper.crop(section)
 
@@ -182,7 +193,6 @@ class ContourOMRHelper(private val config: ContourOMRDetectorConfig) : OMRHelper
 
 		return if (contours.size != 30) {
 			Log.d("ContourOMRHelper", "Some circles are not detected, considering only filled circles")
-
 			predictForFilledCircle(contours)
 		} else {
 			Log.d("ContourOMRHelper", "All 30 circles are detected")

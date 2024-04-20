@@ -1,14 +1,17 @@
 package com.k2_9.omrekap.utils.omr
 
+import android.graphics.Bitmap
 import com.k2_9.omrekap.data.configs.omr.OMRSection
-import com.k2_9.omrekap.data.configs.omr.TemplateMatchingOMRDetectorConfig
+import com.k2_9.omrekap.data.configs.omr.TemplateMatchingOMRHelperConfig
+import com.k2_9.omrekap.utils.ImageAnnotationHelper
+import org.opencv.android.Utils
 import org.opencv.core.Mat
 import org.opencv.core.Point
 import org.opencv.core.Rect
 import org.opencv.imgproc.Imgproc
 import kotlin.collections.ArrayList
 
-class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRDetectorConfig) : OMRHelper(config) {
+class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperConfig) : OMRHelper(config) {
 	private var currentSectionGray: Mat? = null
 	private var currentSectionBinary: Mat? = null
 
@@ -18,12 +21,9 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRDetectorC
 		// Load the template image
 		val template = config.template
 
-		val grayTemplate = Mat()
-		Imgproc.cvtColor(template, grayTemplate, Imgproc.COLOR_BGR2GRAY)
-
 		// Apply binary thresholding to the template image
 		val templateBinary = Mat()
-		Imgproc.threshold(grayTemplate, templateBinary, 0.0, 255.0, Imgproc.THRESH_BINARY_INV + Imgproc.THRESH_TRIANGLE)
+		Imgproc.threshold(template, templateBinary, 0.0, 255.0, Imgproc.THRESH_BINARY_INV + Imgproc.THRESH_TRIANGLE)
 
 		// Perform template matching
 		val result = Mat()
@@ -38,6 +38,7 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRDetectorC
 		for (y in 0 until result.rows()) {
 			for (x in 0 until result.cols()) {
 				val similarityScore = result.get(y, x)[0]
+
 				if (similarityScore > threshold) {
 					// Add the location to the list
 					locations.add(Point(x.toDouble(), y.toDouble()))
@@ -96,6 +97,17 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRDetectorC
 		contourInfos.sortBy { it.center.first }
 
 		return contourInfos.toList()
+	}
+
+	fun annotateImage(contourNumber: Int): Bitmap {
+		val annotatedImg = currentSectionGray!!.clone()
+		val matchedRectangles = getMatchRectangles()
+		for (rect in matchedRectangles) {
+			ImageAnnotationHelper.annotateOMR(annotatedImg, rect, contourNumber)
+		}
+		val annotatedImageBitmap = Bitmap.createBitmap(annotatedImg.width(), annotatedImg.height(), Bitmap.Config.ARGB_8888)
+		Utils.matToBitmap(annotatedImg, annotatedImageBitmap)
+		return annotatedImageBitmap
 	}
 
 	override fun detect(section: OMRSection): Int {

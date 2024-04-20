@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.k2_9.omrekap.R
-import com.k2_9.omrekap.data.configs.omr.ContourOMRDetectorConfig
+import com.k2_9.omrekap.data.configs.omr.ContourOMRHelperConfig
 import com.k2_9.omrekap.data.configs.omr.OMRCropper
 import com.k2_9.omrekap.data.configs.omr.OMRCropperConfig
 import com.k2_9.omrekap.data.configs.omr.OMRSection
@@ -43,7 +43,7 @@ class ContourOMRHelperTest {
 		val cropper = OMRCropper(cropperConfig)
 
 		val config =
-			ContourOMRDetectorConfig(
+			ContourOMRHelperConfig(
 				cropper,
 				12,
 				30,
