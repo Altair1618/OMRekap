@@ -8,7 +8,6 @@ import org.opencv.android.Utils
 import org.opencv.core.Mat
 import org.opencv.core.Point
 import org.opencv.core.Rect
-import org.opencv.core.Scalar
 import org.opencv.imgproc.Imgproc
 import kotlin.collections.ArrayList
 
@@ -106,13 +105,15 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperCon
 		val res = ImageAnnotationHelper.annotateTemplateMatchingOMR(annotatedImg, matchedRectangles, contourNumber)
 
 		// Convert the annotated Mat to Bitmap
-		val annotatedImageBitmap = Bitmap.createBitmap(
-			res.width(), res.height(), Bitmap.Config.ARGB_8888
-		)
+		val annotatedImageBitmap =
+			Bitmap.createBitmap(
+				res.width(),
+				res.height(),
+				Bitmap.Config.ARGB_8888,
+			)
 		Utils.matToBitmap(res, annotatedImageBitmap)
 		return annotatedImageBitmap
 	}
-
 
 	override fun detect(section: OMRSection): Int {
 		val omrSectionImage = config.omrCropper.crop(section)

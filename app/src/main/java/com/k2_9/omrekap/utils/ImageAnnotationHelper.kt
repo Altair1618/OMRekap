@@ -51,7 +51,7 @@ object ImageAnnotationHelper {
 		contourNumber: Int,
 	): Mat {
 		val imgWithAnnotations = img.clone()
-		for(rect in cornerPoints) {
+		for (rect in cornerPoints) {
 			Imgproc.rectangle(imgWithAnnotations, rect.tl(), rect.br(), Scalar(0.0, 255.0, 0.0), 1)
 		}
 		Imgproc.putText(
@@ -72,7 +72,7 @@ object ImageAnnotationHelper {
 		contourNumber: Int,
 	): Mat {
 		val imgWithAnnotations = img.clone()
-		for(contour in cornerPoints) {
+		for (contour in cornerPoints) {
 			val rect = Imgproc.boundingRect(contour)
 			Imgproc.rectangle(imgWithAnnotations, rect.tl(), rect.br(), Scalar(0.0, 255.0, 0.0), 1)
 		}

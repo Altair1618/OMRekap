@@ -20,6 +20,7 @@ import org.opencv.android.Utils
 class ContourOMRHelperTest {
 	private var helper: ContourOMRHelper
 	private val appContext: Context
+
 	init {
 		OpenCVLoader.initLocal()
 

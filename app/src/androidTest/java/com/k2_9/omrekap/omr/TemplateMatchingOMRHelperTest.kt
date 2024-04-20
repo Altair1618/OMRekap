@@ -1,7 +1,6 @@
 package com.k2_9.omrekap.omr
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.util.Log
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -24,7 +23,6 @@ class TemplateMatchingOMRHelperTest {
 	private var helper: TemplateMatchingOMRHelper
 	private val image: Mat
 	private val appContext: Context
-
 
 	init {
 		OpenCVLoader.initLocal()
