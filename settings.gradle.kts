@@ -16,4 +16,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "omrekap"
 include(":app")
-include(":opencv")

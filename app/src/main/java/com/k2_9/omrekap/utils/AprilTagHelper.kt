@@ -21,7 +21,7 @@ object AprilTagHelper {
 	 * @return List of possible IDs detected in the image,
 	 * returns empty list if no valid tag is found
 	 */
-	fun getAprilTagId(imageBitmap: Bitmap): List<Pair<Int, List<Mat>>> {
+	fun getAprilTagId(imageBitmap: Bitmap): Pair<List<String>, List<Mat>> {
 		val grayImageMat: Mat = prepareImage(imageBitmap)
 		return getAprilTagId(grayImageMat)
 	}
@@ -36,7 +36,7 @@ object AprilTagHelper {
 	 * returns empty list if no valid tag is found
 	 */
 
-	fun getAprilTagId(imageMat: Mat): List<Pair<Int, List<Mat>>> {
+	fun getAprilTagId(imageMat: Mat): Pair<List<String>, List<Mat>> {
 		// TODO refactor to singleton pattern if initiation behavior is well known
 		// TODO refactor AprilTag family to be read from config file
 		val detector: ArucoDetector =
@@ -55,24 +55,29 @@ object AprilTagHelper {
 
 		logDebug("found ${rejectedCandidates.size} possible tags")
 		// get IDs from OpenCV's Mat
-		val idList: MutableList<Pair<Int, List<Mat>>> = ArrayList()
+		val idList: MutableList<String> = ArrayList()
 		val nId: Int = idMat.size().height.toInt()
 		logDebug("found $nId IDs")
 		for (i in 0..<nId) {
-			val id = idMat[i, 0][0].toInt()
+			val id = idMat[i, 0][0].toInt().toString()
 			logDebug("detected tag with id: $id")
-			idList.add(id to corners)
+			idList.add(id)
 		}
 
-		return idList
+		return (idList to corners)
 	}
 
 	fun annotateImage(imageBitmap: Bitmap): Bitmap {
 		val res = getAprilTagId(imageBitmap)
-		val cornerPoints = res[0].second
-		val ids = res[0].first.toString()
-		val annotatedImageMat = ImageAnnotationHelper.annotateAprilTag(prepareImage(imageBitmap), cornerPoints, ids)
-		val annotatedImageBitmap = Bitmap.createBitmap(annotatedImageMat.width(), annotatedImageMat.height(), Bitmap.Config.ARGB_8888)
+		val cornerPoints = res.second
+		val ids = (res.first)[0]
+		val annotatedImageMat =
+			ImageAnnotationHelper.annotateAprilTag(prepareImage(imageBitmap), cornerPoints, ids)
+		val annotatedImageBitmap = Bitmap.createBitmap(
+			annotatedImageMat.width(),
+			annotatedImageMat.height(),
+			Bitmap.Config.ARGB_8888
+		)
 		Utils.matToBitmap(annotatedImageMat, annotatedImageBitmap)
 		return annotatedImageBitmap
 	}
