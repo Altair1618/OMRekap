@@ -18,7 +18,6 @@ import org.opencv.android.Utils
 import org.opencv.core.CvType
 import org.opencv.core.Mat
 
-
 @RunWith(JUnit4::class)
 class CropHelperTest {
 	private val image: Mat
@@ -28,6 +27,7 @@ class CropHelperTest {
 	private val appContext: Context
 
 	private var imageSaveData: ImageSaveData
+
 	init {
 		OpenCVLoader.initLocal()
 
@@ -56,10 +56,10 @@ class CropHelperTest {
 		imageSaveData = PreprocessHelper.preprocessImage(imageSaveData)
 
 		SaveHelper.saveImage(appContext, imageSaveData.rawImage, "test", "test_preprocess_raw")
+		SaveHelper.saveImage(appContext, imageSaveData.annotatedImage, "test", "test_preprocess_annotated")
 	}
 
 	@After
 	fun clear() {
-
 	}
 }

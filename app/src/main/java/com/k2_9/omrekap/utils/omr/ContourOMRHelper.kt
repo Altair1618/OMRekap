@@ -162,13 +162,11 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 		return filteredContours
 	}
 
-	private fun annotateImage(contourNumber: Int): Bitmap {
+	fun annotateImage(contourNumber: Int): Bitmap {
 		var annotatedImg = currentSectionGray!!.clone()
 		val contours = getAllContours()
-		for (contour in contours) {
-			val rect = Imgproc.boundingRect(contour)
-			annotatedImg = ImageAnnotationHelper.annotateOMR(annotatedImg, rect, contourNumber)
-		}
+		annotatedImg = ImageAnnotationHelper.annotateContourOMR(annotatedImg, contours, contourNumber)
+
 		val annotatedImageBitmap = Bitmap.createBitmap(annotatedImg.width(), annotatedImg.height(), Bitmap.Config.ARGB_8888)
 		Utils.matToBitmap(annotatedImg, annotatedImageBitmap)
 		return annotatedImageBitmap
