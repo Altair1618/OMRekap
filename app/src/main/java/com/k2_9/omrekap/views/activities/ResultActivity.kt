@@ -15,6 +15,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.k2_9.omrekap.data.models.ImageSaveData
 import com.k2_9.omrekap.data.view_models.ImageDataViewModel
+import com.k2_9.omrekap.utils.ImageSaveDataHolder
 import com.k2_9.omrekap.utils.PermissionHelper
 import com.k2_9.omrekap.utils.SaveHelper
 import com.k2_9.omrekap.utils.omr.OMRConfigDetector
@@ -36,9 +37,12 @@ abstract class ResultActivity : MainActivity() {
 	private var startSaveJob: Boolean = false
 	private val omrHelperObserver =
 		Observer<ImageSaveData> { newValue ->
-			if (newValue.data.isNotEmpty()) {
-				saveFile()
-			}
+			saveFile()
+
+//			TODO: save file when data is not empty after implemented
+//			if (newValue.data.isNotEmpty()) {
+//				saveFile()
+//			}
 		}
 
 	private lateinit var imageUriString: String
@@ -66,7 +70,7 @@ abstract class ResultActivity : MainActivity() {
 		imageBitmap = SaveHelper.uriToBitmap(applicationContext, Uri.parse(imageUriString))
 
 		if (viewModel.data.value == null) {
-			viewModel.processImage(imageBitmap)
+			viewModel.processImage(ImageSaveDataHolder.get())
 			viewModel.data.observe(this, omrHelperObserver)
 		}
 	}

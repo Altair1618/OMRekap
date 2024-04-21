@@ -1,6 +1,5 @@
 package com.k2_9.omrekap.data.view_models
 
-import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -17,11 +16,12 @@ class ImageDataViewModel : ViewModel() {
 	private val _data = MutableLiveData<ImageSaveData>()
 	val data = _data as LiveData<ImageSaveData>
 
-	fun processImage(bitmap: Bitmap) {
+	fun processImage(data: ImageSaveData) {
 		viewModelScope.launch {
+			val rawImage = data.rawImage
 			val imageMat = Mat()
 //			val annotatedImageMat = Mat()
-			Utils.bitmapToMat(bitmap, imageMat)
+			Utils.bitmapToMat(rawImage, imageMat)
 
 			// convert image to gray
 			val grayImageMat = Mat()
@@ -31,10 +31,10 @@ class ImageDataViewModel : ViewModel() {
 			val (loadedConfig, id, corners) = OMRConfigDetector.detectConfiguration(grayImageMat)!!
 
 			// annotate the detected AprilTag
-			val annotatedImage = AprilTagHelper.annotateImage(bitmap)
+			val annotatedImage = AprilTagHelper.annotateImage(rawImage)
 
 			// TODO: Process the raw image using OMRHelper
-			val data = ImageSaveData(bitmap, annotatedImage, mapOf())
+			data.annotatedImage = annotatedImage
 			_data.value = data
 		}
 	}

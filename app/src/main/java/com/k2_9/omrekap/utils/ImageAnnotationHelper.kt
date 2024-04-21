@@ -72,27 +72,45 @@ object ImageAnnotationHelper {
 		return imgWithAnnotations
 	}
 
-	fun annotateOMR(
+	fun annotateTemplateMatchingOMR(
 		img: Mat,
-		cornerPoints: Rect,
+		cornerPoints: List<Rect>,
 		contourNumber: Int,
 	): Mat {
 		val imgWithAnnotations = img.clone()
-		Imgproc.rectangle(
-			imgWithAnnotations,
-			cornerPoints.tl(),
-			cornerPoints.br(),
-			Scalar(0.0, 255.0, 0.0),
-			5
-		)
+		for (rect in cornerPoints) {
+			Imgproc.rectangle(imgWithAnnotations, rect.tl(), rect.br(), Scalar(0.0, 255.0, 0.0), 1)
+		}
 		Imgproc.putText(
 			imgWithAnnotations,
-			"Contour $contourNumber",
-			cornerPoints.tl(),
+			"$contourNumber",
+			cornerPoints[0].tl(),
 			Imgproc.FONT_HERSHEY_SIMPLEX,
-			1.0,
+			0.5,
 			Scalar(0.0, 255.0, 0.0),
-			5,
+			1,
+		)
+		return imgWithAnnotations
+	}
+
+	fun annotateContourOMR(
+		img: Mat,
+		cornerPoints: List<MatOfPoint>,
+		contourNumber: Int,
+	): Mat {
+		val imgWithAnnotations = img.clone()
+		for (contour in cornerPoints) {
+			val rect = Imgproc.boundingRect(contour)
+			Imgproc.rectangle(imgWithAnnotations, rect.tl(), rect.br(), Scalar(0.0, 255.0, 0.0), 1)
+		}
+		Imgproc.putText(
+			imgWithAnnotations,
+			"$contourNumber",
+			Point(0.0, 20.0),
+			Imgproc.FONT_HERSHEY_SIMPLEX,
+			0.5,
+			Scalar(0.0, 255.0, 0.0),
+			1,
 		)
 		return imgWithAnnotations
 	}
