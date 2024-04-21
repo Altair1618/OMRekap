@@ -6,7 +6,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.google.gson.Gson
 import com.k2_9.omrekap.R
 import com.k2_9.omrekap.data.repository.OMRConfigRepository
-import com.k2_9.omrekap.utils.omr.OMRConfigurationDetector
+import com.k2_9.omrekap.utils.omr.OMRConfigDetector
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -31,10 +31,10 @@ class AprilTagConfigDetectionTest {
 		Imgproc.cvtColor(imageMat, grayImageMat, Imgproc.COLOR_BGR2GRAY)
 
 		CoroutineScope(Dispatchers.Default).launch {
-			OMRConfigurationDetector.loadConfiguration(
+			OMRConfigDetector.loadConfiguration(
 				appContext
 			)
-			val result = OMRConfigurationDetector.detectConfiguration(grayImageMat)
+			val result = OMRConfigDetector.detectConfiguration(grayImageMat)
 			val gson = Gson()
 			Log.d("ConfigDetectionTestx", gson.toJson(result))
 			val compare = OMRConfigRepository.loadConfigurations(appContext)

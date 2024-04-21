@@ -61,6 +61,13 @@ object AprilTagHelper {
 		for (i in 0..<nId) {
 			val id = idMat[i, 0][0].toInt().toString()
 			logDebug("detected tag with id: $id")
+			val cornerPoints = corners[i]
+			logDebug(
+				"with corners at: (${cornerPoints[0, 0][0]},${cornerPoints[0, 0][1]}), " +
+					"(${cornerPoints[0, 1][0]},${cornerPoints[0, 1][1]}) " +
+					"(${cornerPoints[0, 2][0]},${cornerPoints[0, 2][1]}) " +
+					"(${cornerPoints[0, 3][0]},${cornerPoints[0, 3][1]})"
+			)
 			idList.add(id)
 		}
 
