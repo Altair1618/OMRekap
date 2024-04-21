@@ -27,11 +27,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "1.8"
     }
 }
 
@@ -53,10 +53,16 @@ dependencies {
 	implementation("androidx.camera:camera-view:${cameraxVersion}")
 	implementation("androidx.camera:camera-extensions:${cameraxVersion}")
 
-	// OpenCV
-	implementation(project(":opencv"))
+	// JSON
+//	implementation("com.squareup.moshi:moshi:1.15.1")
+//	implementation("com.squareup.moshi:moshi-adapters:1.15.1")
+//	implementation("com.squareup.moshi:moshi-kotlin:1.15.1")
+	implementation("com.google.code.gson:gson:2.10.1")
 
-	// Test
+	// OpenCV
+	implementation("org.opencv:opencv:4.9.0")
+
+ 	// Test
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
