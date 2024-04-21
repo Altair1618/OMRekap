@@ -102,11 +102,16 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperCon
 	fun annotateImage(contourNumber: Int): Bitmap {
 		val annotatedImg = currentSectionGray!!.clone()
 		val matchedRectangles = getMatchRectangles()
-		for (rect in matchedRectangles) {
-			ImageAnnotationHelper.annotateOMR(annotatedImg, rect, contourNumber)
-		}
-		val annotatedImageBitmap = Bitmap.createBitmap(annotatedImg.width(), annotatedImg.height(), Bitmap.Config.ARGB_8888)
-		Utils.matToBitmap(annotatedImg, annotatedImageBitmap)
+		val res = ImageAnnotationHelper.annotateTemplateMatchingOMR(annotatedImg, matchedRectangles, contourNumber)
+
+		// Convert the annotated Mat to Bitmap
+		val annotatedImageBitmap =
+			Bitmap.createBitmap(
+				res.width(),
+				res.height(),
+				Bitmap.Config.ARGB_8888,
+			)
+		Utils.matToBitmap(res, annotatedImageBitmap)
 		return annotatedImageBitmap
 	}
 

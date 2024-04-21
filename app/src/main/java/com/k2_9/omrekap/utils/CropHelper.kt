@@ -29,7 +29,7 @@ object CropHelper {
 		if (::pattern.isInitialized) return
 
 		this.pattern = Mat(patternBitmap.height, patternBitmap.width, CvType.CV_8UC1)
-		val cv8uc4pattern =  Mat(patternBitmap.height, patternBitmap.width, CvType.CV_8UC1)
+		val cv8uc4pattern = Mat(patternBitmap.height, patternBitmap.width, CvType.CV_8UC1)
 		Utils.bitmapToMat(patternBitmap, cv8uc4pattern)
 		cvtColor(cv8uc4pattern, this.pattern, COLOR_BGR2GRAY)
 
