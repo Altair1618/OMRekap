@@ -28,19 +28,46 @@ object ImageAnnotationHelper {
 	): Mat {
 		val imgWithAnnotations = img.clone()
 		if (id.isNotEmpty()) {
+			// points -> list<Point*s*>, inside list of points are corners of the detector
 			val points =
 				cornerPoints.map { mat ->
-					val x = mat.get(0, 0)[0]
-					val y = mat.get(1, 0)[0]
-					Point(x, y)
+					val points = ArrayList<Point>()
+					for (i in 0..<4) {
+						val x = mat.get(0, i)[0]
+						val y = mat.get(0, i)[1]
+						points.add(Point(x, y))
+					}
+					points
 				}
 
 			// Draw ID and bounding box
-			Imgproc.putText(imgWithAnnotations, id, points[0], Imgproc.FONT_HERSHEY_SIMPLEX, 1.0, Scalar(0.0, 255.0, 0.0), 5)
-			Imgproc.polylines(imgWithAnnotations, listOf(MatOfPoint(*points.toTypedArray())), true, Scalar(0.0, 255.0, 0.0), 5)
+			Imgproc.putText(
+				imgWithAnnotations,
+				id,
+				points[0][0],
+				Imgproc.FONT_HERSHEY_SIMPLEX,
+				1.0,
+				Scalar(0.0, 255.0, 0.0),
+				5
+			)
+			Imgproc.polylines(
+				imgWithAnnotations,
+				listOf(MatOfPoint(*points[0].toTypedArray())),
+				true,
+				Scalar(0.0, 255.0, 0.0),
+				5
+			)
 		} else {
 			val topLeft = Point(cornerPoints[0].get(0, 0)[0], cornerPoints[0].get(1, 0)[0])
-			Imgproc.putText(imgWithAnnotations, "April Tag Not Detected", topLeft, Imgproc.FONT_HERSHEY_SIMPLEX, 1.0, Scalar(0.0, 255.0, 0.0), 5)
+			Imgproc.putText(
+				imgWithAnnotations,
+				"April Tag Not Detected",
+				topLeft,
+				Imgproc.FONT_HERSHEY_SIMPLEX,
+				1.0,
+				Scalar(0.0, 255.0, 0.0),
+				5
+			)
 		}
 		return imgWithAnnotations
 	}

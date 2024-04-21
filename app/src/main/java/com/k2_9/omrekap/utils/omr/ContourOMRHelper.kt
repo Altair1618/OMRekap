@@ -118,7 +118,8 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 		// Loop through each column
 		for (col in 0 until 3) {
 			// Get contours for the current column and sort by rows
-			val colContours = contoursSorted.subList(col * 10, (col + 1) * 10).sortedBy { Imgproc.boundingRect(it).y }
+			val colContours = contoursSorted.subList(col * 10, (col + 1) * 10)
+				.sortedBy { Imgproc.boundingRect(it).y }
 
 			val darkestRow = getDarkestRow(colContours)
 
@@ -138,7 +139,13 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 		// Find circle contours in cropped OMR section
 		val contours = mutableListOf<MatOfPoint>()
 		val hierarchy = Mat()
-		Imgproc.findContours(currentSectionBinary!!, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE)
+		Imgproc.findContours(
+			currentSectionBinary!!,
+			contours,
+			hierarchy,
+			Imgproc.RETR_EXTERNAL,
+			Imgproc.CHAIN_APPROX_SIMPLE
+		)
 
 		// Initialize a list to store filtered contours
 		val filteredContours = mutableListOf<MatOfPoint>()
@@ -155,7 +162,10 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 			if (rect.width in minLength..maxLength && rect.height in minLength..maxLength && ar >= minAR && ar <= maxAR) {
 				filteredContours.add(contour)
 			} else {
-				Log.d("ContourOMRHelper", "Contour with aspect ratio $ar and size ${rect.width} x ${rect.height} filtered out")
+				Log.d(
+					"ContourOMRHelper",
+					"Contour with aspect ratio $ar and size ${rect.width} x ${rect.height} filtered out"
+				)
 			}
 		}
 
@@ -165,9 +175,14 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 	fun annotateImage(contourNumber: Int): Bitmap {
 		var annotatedImg = currentSectionGray!!.clone()
 		val contours = getAllContours()
-		annotatedImg = ImageAnnotationHelper.annotateContourOMR(annotatedImg, contours, contourNumber)
+		annotatedImg =
+			ImageAnnotationHelper.annotateContourOMR(annotatedImg, contours, contourNumber)
 
-		val annotatedImageBitmap = Bitmap.createBitmap(annotatedImg.width(), annotatedImg.height(), Bitmap.Config.ARGB_8888)
+		val annotatedImageBitmap = Bitmap.createBitmap(
+			annotatedImg.width(),
+			annotatedImg.height(),
+			Bitmap.Config.ARGB_8888
+		)
 		Utils.matToBitmap(annotatedImg, annotatedImageBitmap)
 		return annotatedImageBitmap
 	}
@@ -181,7 +196,13 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 
 		// Apply binary thresholding
 		val binary = Mat()
-		Imgproc.threshold(gray, binary, 0.0, 255.0, Imgproc.THRESH_BINARY_INV + Imgproc.THRESH_TRIANGLE)
+		Imgproc.threshold(
+			gray,
+			binary,
+			0.0,
+			255.0,
+			Imgproc.THRESH_BINARY_INV + Imgproc.THRESH_TRIANGLE
+		)
 
 		// Update states
 		currentSectionGray = gray
@@ -190,7 +211,10 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 		val contours = getAllContours()
 
 		return if (contours.size != 30) {
-			Log.d("ContourOMRHelper", "Some circles are not detected, considering only filled circles")
+			Log.d(
+				"ContourOMRHelper",
+				"Some circles are not detected, considering only filled circles"
+			)
 			predictForFilledCircle(contours)
 		} else {
 			Log.d("ContourOMRHelper", "All 30 circles are detected")
