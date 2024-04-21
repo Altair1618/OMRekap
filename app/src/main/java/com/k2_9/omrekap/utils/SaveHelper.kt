@@ -9,7 +9,7 @@ import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import androidx.annotation.RequiresApi
-import com.k2_9.omrekap.models.ImageSaveData
+import com.k2_9.omrekap.data.models.ImageSaveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -19,34 +19,30 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class SaveHelper {
+object SaveHelper {
 	suspend fun save(
 		context: Context,
 		data: ImageSaveData,
 	) {
 		val folderName: String = generateFolderName()
 
-		if (data.rawImage == null) {
-			throw RuntimeException("The raw image bitmap is null")
-		}
+//		TODO: Uncomment after implemented
+//		if (data.data.isEmpty()) {
+//			throw RuntimeException("Image has not been processed yet")
+//		}
 
-		if (data.annotatedImage == null || data.data == null) {
-			throw RuntimeException("Image has not been processed yet")
-		}
-
-		if (data.rawImage!!.width <= 0 || data.rawImage!!.height <= 0) {
+		if (data.rawImage.width <= 0 || data.rawImage.height <= 0) {
 			throw RuntimeException("The raw image bitmap is empty")
 		}
 
-		if (data.annotatedImage!!.width <= 0 || data.rawImage!!.height <= 0)
-			{
-				throw RuntimeException("The annotated image bitmap is empty")
-			}
+		if (data.annotatedImage.width <= 0 || data.rawImage.height <= 0) {
+			throw RuntimeException("The annotated image bitmap is empty")
+		}
 
 		withContext(Dispatchers.IO) {
 			saveImage(context, data.rawImage, folderName, "raw_image.jpg")
 			saveImage(context, data.annotatedImage, folderName, "annotated_image.jpg")
-			saveJSON(context, data.data!!, folderName, "data.json")
+			saveJSON(context, data.data, folderName, "data.json")
 		}
 	}
 
@@ -66,7 +62,7 @@ class SaveHelper {
 		return sdf.format(Date())
 	}
 
-	private fun saveImage(
+	fun saveImage(
 		context: Context,
 		image: Bitmap,
 		folderName: String,
