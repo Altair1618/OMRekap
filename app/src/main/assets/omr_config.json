@@ -1,31 +1,64 @@
 {
-    "configs": {
-        "102": {
-            "similarityThreshold": 0.7,
-            "template": null,
-            "omrCropper": {
-                "config": {
-                    "image": null,
-                    "omrSectionPosition": {
-                        "FIRST": {
-                            "first": 780,
-                            "second": 373
-                        },
-                        "SECOND": {
-                            "first": 0,
-                            "second": 0
-                        },
-                        "THIRD": {
-                            "first": 0,
-                            "second": 0
-                        }
-                    },
-                    "omrSectionSize": {
-                        "first": 140,
-                        "second": 220
-                    }
-                }
+  "omrConfigs": {
+    "102": {
+      "contourOMRHelperConfig": {
+        "darkIntensityThreshold": 230,
+        "darkPercentageThreshold": 0.9,
+        "maxAspectRatio": 1.5,
+        "maxRadius": 30,
+        "minAspectRatio": 0.5,
+        "minRadius": 12,
+        "omrCropper": {
+          "config": {
+            "image": null,
+            "omrSectionPosition": {
+              "FIRST": {
+                "first": 780,
+                "second": 373
+              },
+              "SECOND": {
+                "first": 0,
+                "second": 0
+              },
+              "THIRD": {
+                "first": 0,
+                "second": 0
+              }
+            },
+            "omrSectionSize": {
+              "first": 140,
+              "second": 220
             }
+          }
         }
+      },
+      "templateMatchingOMRHelperConfig": {
+        "similarityThreshold": 0.7,
+        "templateLoader": null,
+        "omrCropper": {
+          "config": {
+            "image": null,
+            "omrSectionPosition": {
+              "FIRST": {
+                "first": 780,
+                "second": 373
+              },
+              "SECOND": {
+                "first": 0,
+                "second": 0
+              },
+              "THIRD": {
+                "first": 0,
+                "second": 0
+              }
+            },
+            "omrSectionSize": {
+              "first": 140,
+              "second": 220
+            }
+          }
+        }
+      }
     }
+  }
 }

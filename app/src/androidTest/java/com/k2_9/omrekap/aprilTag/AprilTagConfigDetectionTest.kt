@@ -46,7 +46,7 @@ class AprilTagConfigDetectionTest {
 //			assert(resultHash == compareHash)
 
 			val resultJSONString = gson.toJson(result!!.first)
-			val compareJSONString = gson.toJson(compare!!.configs["102"])
+			val compareJSONString = gson.toJson(compare!!.omrConfigs["102"])
 			Log.d("ConfigDetectionTestx2", resultJSONString)
 			Log.d("ConfigDetectionTestx2", compareJSONString)
 			assert(resultJSONString == compareJSONString)

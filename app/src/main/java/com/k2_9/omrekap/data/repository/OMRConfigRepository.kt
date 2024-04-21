@@ -18,7 +18,7 @@ object OMRConfigRepository {
 				.show()
 			null
 		} else {
-			OMRJsonConfigLoader.parsePlanoConfig(jsonString)
+			OMRJsonConfigLoader.parseJson(jsonString)
 		}
 	}
 

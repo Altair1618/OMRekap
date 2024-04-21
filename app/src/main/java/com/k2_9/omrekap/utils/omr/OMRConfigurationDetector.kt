@@ -2,8 +2,8 @@ package com.k2_9.omrekap.utils.omr
 
 import android.content.Context
 import android.util.Log
-import com.k2_9.omrekap.data.configs.omr.TemplateMatchingOMRHelperConfig
 import com.k2_9.omrekap.data.models.OMRBaseConfiguration
+import com.k2_9.omrekap.data.models.OMRConfigurationParameter
 import com.k2_9.omrekap.data.repository.OMRConfigRepository
 import com.k2_9.omrekap.utils.AprilTagHelper
 import kotlinx.coroutines.Dispatchers
@@ -28,10 +28,10 @@ object OMRConfigurationDetector {
 	 * @return Pair of OMR configuration and the image's tag corners that was used for configuration detector
 	 */
 	suspend fun detectConfiguration(imageMat: Mat):
-		Pair<TemplateMatchingOMRHelperConfig, Mat>? {
-		val configs = loadedConfig.configs
+		Pair<OMRConfigurationParameter, Mat>? {
+		val configs = loadedConfig.omrConfigs
 
-		var result: Pair<TemplateMatchingOMRHelperConfig, Mat>? = null
+		var result: Pair<OMRConfigurationParameter, Mat>? = null
 		withContext(Dispatchers.Default) {
 			// get detected AprilTags
 			val (ids, cornersList) = AprilTagHelper.getAprilTagId(imageMat)

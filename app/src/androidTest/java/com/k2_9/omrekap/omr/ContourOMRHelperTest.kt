@@ -3,6 +3,7 @@ package com.k2_9.omrekap.omr
 import android.util.Log
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.google.gson.Gson
 import com.k2_9.omrekap.R
 import com.k2_9.omrekap.data.configs.omr.ContourOMRHelperConfig
 import com.k2_9.omrekap.data.configs.omr.OMRCropper
@@ -52,7 +53,7 @@ class ContourOMRHelperTest {
 				0.9f,
 				230,
 			)
-
+		Log.d("ContourOMRHelperTest", Gson().toJson(config))
 		helper = ContourOMRHelper(config)
 	}
 

@@ -7,7 +7,7 @@ import com.k2_9.omrekap.data.models.OMRBaseConfiguration
 object OMRJsonConfigLoader {
 	private val gson = Gson()
 
-	fun parsePlanoConfig(jsonString: String): OMRBaseConfiguration? {
+	fun parseJson(jsonString: String): OMRBaseConfiguration? {
 		return gson.fromJson(jsonString, OMRBaseConfiguration::class.java)
 	}
 
