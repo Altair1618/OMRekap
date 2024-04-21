@@ -17,6 +17,7 @@ import com.k2_9.omrekap.data.models.ImageSaveData
 import com.k2_9.omrekap.data.view_models.ImageDataViewModel
 import com.k2_9.omrekap.utils.PermissionHelper
 import com.k2_9.omrekap.utils.SaveHelper
+import com.k2_9.omrekap.utils.omr.OMRConfigDetector
 import com.k2_9.omrekap.views.fragments.ResultPageFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -125,10 +126,15 @@ abstract class ResultActivity : MainActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
+		OMRConfigDetector.loadConfiguration(this)
 		OpenCVLoader.initLocal()
 
 		if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
-			PermissionHelper.requirePermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, false) {}
+			PermissionHelper.requirePermission(
+				this,
+				Manifest.permission.WRITE_EXTERNAL_STORAGE,
+				false
+			) {}
 		}
 
 		startSaveJob = savedInstanceState?.getBoolean("startSaveJob") ?: false
