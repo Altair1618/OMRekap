@@ -12,10 +12,9 @@ class ImageDataViewModel : ViewModel() {
 	private val _data = MutableLiveData<ImageSaveData>()
 	val data = _data as LiveData<ImageSaveData>
 
-	fun processImage(bitmap: Bitmap) {
+	fun processImage(data: ImageSaveData) {
 		viewModelScope.launch {
 			// TODO: Process the raw image using OMRHelper
-			val data = ImageSaveData(bitmap, bitmap, mapOf())
 			_data.value = data
 		}
 	}

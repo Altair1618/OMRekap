@@ -16,6 +16,7 @@ import com.k2_9.omrekap.R
 import com.k2_9.omrekap.data.models.ImageSaveData
 import com.k2_9.omrekap.data.view_models.PreviewViewModel
 import com.k2_9.omrekap.utils.CropHelper
+import com.k2_9.omrekap.utils.ImageSaveDataHolder
 import org.opencv.android.OpenCVLoader
 
 class PreviewActivity : AppCompatActivity() {
@@ -59,7 +60,8 @@ class PreviewActivity : AppCompatActivity() {
 		// Observe Data
 		val preprocessImageObserver =
 			Observer<ImageSaveData> { newValue ->
-				photoView.setImageBitmap(newValue.rawImage)
+				photoView.setImageBitmap(newValue.annotatedImage)
+				ImageSaveDataHolder.save(newValue)
 			}
 
 		viewModel.data.observe(this, preprocessImageObserver)
