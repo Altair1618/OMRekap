@@ -1,6 +1,7 @@
 package com.k2_9.omrekap.utils
 
 import android.graphics.Bitmap
+import android.util.Log
 import com.k2_9.omrekap.data.models.CornerPoints
 import org.opencv.android.Utils
 import org.opencv.core.CvType
@@ -8,6 +9,8 @@ import org.opencv.core.Mat
 import org.opencv.core.MatOfPoint2f
 import org.opencv.core.Point
 import org.opencv.imgproc.Imgproc
+import org.opencv.imgproc.Imgproc.COLOR_BGR2GRAY
+import org.opencv.imgproc.Imgproc.cvtColor
 import org.opencv.imgproc.Imgproc.getPerspectiveTransform
 import org.opencv.imgproc.Imgproc.warpPerspective
 import kotlin.math.pow
@@ -26,7 +29,9 @@ object CropHelper {
 		if (::pattern.isInitialized) return
 
 		this.pattern = Mat(patternBitmap.height, patternBitmap.width, CvType.CV_8UC1)
-		Utils.bitmapToMat(patternBitmap, this.pattern)
+		val cv8uc4pattern = Mat(patternBitmap.height, patternBitmap.width, CvType.CV_8UC1)
+		Utils.bitmapToMat(patternBitmap, cv8uc4pattern)
+		cvtColor(cv8uc4pattern, this.pattern, COLOR_BGR2GRAY)
 
 		PreprocessHelper.preprocessPattern(this.pattern)
 	}
@@ -37,6 +42,9 @@ object CropHelper {
 			throw Exception("Pattern not loaded!")
 		}
 
+		val imgGray = img.clone()
+		cvtColor(img, imgGray, COLOR_BGR2GRAY)
+
 		val resultMatrix =
 			Mat(
 				img.height() - pattern.height() + 1,
@@ -44,7 +52,7 @@ object CropHelper {
 				CvType.CV_8UC1,
 			)
 
-		Imgproc.matchTemplate(img, pattern, resultMatrix, Imgproc.TM_SQDIFF_NORMED)
+		Imgproc.matchTemplate(imgGray, pattern, resultMatrix, Imgproc.TM_SQDIFF_NORMED)
 
 		var upperLeftPoint = Point()
 		var upperRightPoint = Point()
@@ -79,12 +87,24 @@ object CropHelper {
 			if (needed[corner]) {
 				needed[corner] = false
 				needChange--
-				val pointFromIt = Point(it.x.toDouble(), it.y.toDouble())
+				val pointFromIt = Point(it.y.toDouble(), it.x.toDouble())
 				when (corner) {
-					UPPER_LEFT -> upperLeftPoint = pointFromIt
-					UPPER_RIGHT -> upperRightPoint = pointFromIt
-					LOWER_RIGHT -> lowerRightPoint = pointFromIt
-					LOWER_LEFT -> lowerLeftPoint = pointFromIt
+					UPPER_LEFT -> {
+						upperLeftPoint = pointFromIt
+					}
+					UPPER_RIGHT -> {
+						upperRightPoint = pointFromIt
+						upperRightPoint.x += pattern.height().toDouble()
+					}
+					LOWER_RIGHT -> {
+						lowerRightPoint = pointFromIt
+						lowerRightPoint.x += pattern.height().toDouble()
+						lowerRightPoint.y += pattern.width().toDouble()
+					}
+					LOWER_LEFT -> {
+						lowerLeftPoint = pointFromIt
+						lowerLeftPoint.y += pattern.width().toDouble()
+					}
 				}
 			}
 		}
@@ -93,6 +113,7 @@ object CropHelper {
 			throw Exception("Not all corner points found!")
 		}
 
+		Log.d("Corner", CornerPoints(upperLeftPoint, upperRightPoint, lowerRightPoint, lowerLeftPoint).toString())
 		return CornerPoints(upperLeftPoint, upperRightPoint, lowerRightPoint, lowerLeftPoint)
 	}
 

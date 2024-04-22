@@ -1,14 +1,17 @@
 package com.k2_9.omrekap.utils.omr
 
+import android.graphics.Bitmap
 import com.k2_9.omrekap.data.configs.omr.OMRSection
 import com.k2_9.omrekap.data.configs.omr.TemplateMatchingOMRHelperConfig
+import com.k2_9.omrekap.utils.ImageAnnotationHelper
+import org.opencv.android.Utils
 import org.opencv.core.Mat
 import org.opencv.core.Point
 import org.opencv.core.Rect
 import org.opencv.imgproc.Imgproc
-import kotlin.collections.ArrayList
 
-class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperConfig) : OMRHelper(config) {
+class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperConfig) :
+	OMRHelper(config) {
 	private var currentSectionGray: Mat? = null
 	private var currentSectionBinary: Mat? = null
 
@@ -20,11 +23,22 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperCon
 
 		// Apply binary thresholding to the template image
 		val templateBinary = Mat()
-		Imgproc.threshold(template, templateBinary, 0.0, 255.0, Imgproc.THRESH_BINARY_INV + Imgproc.THRESH_TRIANGLE)
+		Imgproc.threshold(
+			template,
+			templateBinary,
+			0.0,
+			255.0,
+			Imgproc.THRESH_BINARY_INV + Imgproc.THRESH_TRIANGLE
+		)
 
 		// Perform template matching
 		val result = Mat()
-		Imgproc.matchTemplate(currentSectionBinary, templateBinary, result, Imgproc.TM_CCOEFF_NORMED)
+		Imgproc.matchTemplate(
+			currentSectionBinary,
+			templateBinary,
+			result,
+			Imgproc.TM_CCOEFF_NORMED
+		)
 
 		// Set a threshold for template matching result
 		val threshold = config.similarityThreshold
@@ -96,6 +110,26 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperCon
 		return contourInfos.toList()
 	}
 
+	fun annotateImage(contourNumber: Int): Bitmap {
+		val annotatedImg = currentSectionGray!!.clone()
+		val matchedRectangles = getMatchRectangles()
+		val res = ImageAnnotationHelper.annotateTemplateMatchingOMR(
+			annotatedImg,
+			matchedRectangles,
+			contourNumber
+		)
+
+		// Convert the annotated Mat to Bitmap
+		val annotatedImageBitmap =
+			Bitmap.createBitmap(
+				res.width(),
+				res.height(),
+				Bitmap.Config.ARGB_8888,
+			)
+		Utils.matToBitmap(res, annotatedImageBitmap)
+		return annotatedImageBitmap
+	}
+
 	override fun detect(section: OMRSection): Int {
 		val omrSectionImage = config.omrCropper.crop(section)
 
@@ -105,7 +139,13 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperCon
 
 		// Apply binary thresholding
 		val binary = Mat()
-		Imgproc.threshold(gray, binary, 0.0, 255.0, Imgproc.THRESH_BINARY_INV + Imgproc.THRESH_TRIANGLE)
+		Imgproc.threshold(
+			gray,
+			binary,
+			0.0,
+			255.0,
+			Imgproc.THRESH_BINARY_INV + Imgproc.THRESH_TRIANGLE
+		)
 
 		// Update states
 		currentSectionGray = gray

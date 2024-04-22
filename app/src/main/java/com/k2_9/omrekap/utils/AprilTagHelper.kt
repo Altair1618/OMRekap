@@ -21,7 +21,7 @@ object AprilTagHelper {
 	 * @return List of possible IDs detected in the image,
 	 * returns empty list if no valid tag is found
 	 */
-	suspend fun getAprilTagId(imageBitmap: Bitmap): List<String> {
+	fun getAprilTagId(imageBitmap: Bitmap): Pair<List<String>, List<Mat>> {
 		val grayImageMat: Mat = prepareImage(imageBitmap)
 		return getAprilTagId(grayImageMat)
 	}
@@ -36,7 +36,7 @@ object AprilTagHelper {
 	 * returns empty list if no valid tag is found
 	 */
 
-	suspend fun getAprilTagId(imageMat: Mat): List<String> {
+	fun getAprilTagId(imageMat: Mat): Pair<List<String>, List<Mat>> {
 		// TODO refactor to singleton pattern if initiation behavior is well known
 		// TODO refactor AprilTag family to be read from config file
 		val detector: ArucoDetector =
@@ -45,10 +45,10 @@ object AprilTagHelper {
 			)
 
 		// prepare output data containers
-		val corners: List<Mat> = ArrayList()
+		val corners: MutableList<Mat> = ArrayList()
 		val idMat = Mat()
 		// added in case needed in the future or for debugging purpose
-		val rejectedCandidates: List<Mat> = ArrayList()
+		val rejectedCandidates: MutableList<Mat> = ArrayList()
 
 		// perform detection
 		detector.detectMarkers(imageMat, corners, idMat, rejectedCandidates)
@@ -59,22 +59,32 @@ object AprilTagHelper {
 		val nId: Int = idMat.size().height.toInt()
 		logDebug("found $nId IDs")
 		for (i in 0..<nId) {
-			val id = idMat[i, 0][0].toInt()
+			val id = idMat[i, 0][0].toInt().toString()
 			logDebug("detected tag with id: $id")
-			idList += id.toString()
+			val cornerPoints = corners[i]
+			logDebug(
+				"with corners at: (${cornerPoints[0, 0][0]},${cornerPoints[0, 0][1]}), " +
+					"(${cornerPoints[0, 1][0]},${cornerPoints[0, 1][1]}) " +
+					"(${cornerPoints[0, 2][0]},${cornerPoints[0, 2][1]}) " +
+					"(${cornerPoints[0, 3][0]},${cornerPoints[0, 3][1]})"
+			)
+			idList.add(id)
 		}
 
-		return idList
+		return (idList to corners)
 	}
 
-	fun annotateImage(
-		imageBitmap: Bitmap,
-		cornerPoints: List<Mat>,
-		id: String,
-	): Bitmap {
-		val imageMat = prepareImage(imageBitmap)
-		val annotatedImageMat = ImageAnnotationHelper.annotateAprilTag(imageMat, cornerPoints, id)
-		val annotatedImageBitmap = Bitmap.createBitmap(annotatedImageMat.width(), annotatedImageMat.height(), Bitmap.Config.ARGB_8888)
+	fun annotateImage(imageBitmap: Bitmap): Bitmap {
+		val res = getAprilTagId(imageBitmap)
+		val cornerPoints = res.second
+		val ids = (res.first)[0]
+		val annotatedImageMat =
+			ImageAnnotationHelper.annotateAprilTag(prepareImage(imageBitmap), cornerPoints, ids)
+		val annotatedImageBitmap = Bitmap.createBitmap(
+			annotatedImageMat.width(),
+			annotatedImageMat.height(),
+			Bitmap.Config.ARGB_8888
+		)
 		Utils.matToBitmap(annotatedImageMat, annotatedImageBitmap)
 		return annotatedImageBitmap
 	}
