@@ -27,6 +27,8 @@ object ImageAnnotationHelper {
 		id: String,
 	): Mat {
 		val imgWithAnnotations = img.clone()
+		/* Change image to color */
+		Imgproc.cvtColor(img, imgWithAnnotations, Imgproc.COLOR_GRAY2BGR)
 		if (id.isNotEmpty()) {
 			// points -> list<Point*s*>, inside list of points are corners of the detector
 			val points =
@@ -78,6 +80,8 @@ object ImageAnnotationHelper {
 		contourNumber: Int,
 	): Mat {
 		val imgWithAnnotations = img.clone()
+		/* Change image to color */
+		Imgproc.cvtColor(img, imgWithAnnotations, Imgproc.COLOR_GRAY2BGR)
 		for (rect in cornerPoints) {
 			Imgproc.rectangle(imgWithAnnotations, rect.tl(), rect.br(), Scalar(0.0, 255.0, 0.0), 1)
 		}
@@ -99,6 +103,7 @@ object ImageAnnotationHelper {
 		contourNumber: Int,
 	): Mat {
 		val imgWithAnnotations = img.clone()
+		Imgproc.cvtColor(img, imgWithAnnotations, Imgproc.COLOR_GRAY2BGR)
 		for (contour in cornerPoints) {
 			val rect = Imgproc.boundingRect(contour)
 			Imgproc.rectangle(imgWithAnnotations, rect.tl(), rect.br(), Scalar(0.0, 255.0, 0.0), 1)
