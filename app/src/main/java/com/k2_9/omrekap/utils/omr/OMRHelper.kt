@@ -6,6 +6,7 @@ import kotlin.math.floor
 
 abstract class OMRHelper(private val config: OMRHelperConfig) {
 	data class ContourInfo(val center: Pair<Int, Int>, val size: Pair<Int, Int>)
+	class DetectionError(message: String) : Exception(message)
 
 	protected fun getCombinedNumbers(numbers: List<Int>): Int {
 		// Combine the detected numbers into a single integer
@@ -13,7 +14,6 @@ abstract class OMRHelper(private val config: OMRHelperConfig) {
 	}
 
 	protected fun contourInfosToNumbers(contourInfos: List<ContourInfo?>): Int {
-		// TODO: consider gap height between circles
 		// Return the detected numbers based on the vertical position of the filled circles for each column
 		require(contourInfos.size == 3)
 
@@ -46,4 +46,14 @@ abstract class OMRHelper(private val config: OMRHelperConfig) {
 	}
 
 	abstract fun detect(section: OMRSection): Int
+
+	fun detect(): Map<OMRSection, Int> {
+		val results = mutableMapOf<OMRSection, Int>()
+
+		for (section in OMRSection.entries) {
+			results[section] = detect(section)
+		}
+
+		return results.toMap()
+	}
 }

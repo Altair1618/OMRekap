@@ -12,9 +12,11 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.k2_9.omrekap.R
+import com.k2_9.omrekap.data.view_models.ImageDataViewModel
 import com.k2_9.omrekap.views.activities.ExpandImageActivity
 import com.k2_9.omrekap.views.activities.HomeActivity
 import com.k2_9.omrekap.views.adapters.ResultAdapter
@@ -35,6 +37,8 @@ class ResultPageFragment : Fragment() {
 	private lateinit var recyclerView: RecyclerView
 	private lateinit var resultAdapter: ResultAdapter
 
+	private lateinit var viewModel: ImageDataViewModel
+
 	private fun onHomeButtonClick() {
 		val intent = Intent(context, HomeActivity::class.java)
 		intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
@@ -46,6 +50,8 @@ class ResultPageFragment : Fragment() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
+		viewModel = ViewModelProvider(requireActivity())[ImageDataViewModel::class.java]
+
 		// Retrieve the arguments
 		val args = arguments
 
@@ -54,6 +60,16 @@ class ResultPageFragment : Fragment() {
 			imageUriString = args.getString(ARG_NAME_IMAGE_URI_STRING)
 			if (imageUriString == null) {
 				throw IllegalArgumentException("Image URI string is null")
+			}
+		}
+
+		viewModel.data.observe(this) {
+			if (it.data != null) {
+				val result = it.data!!.toList().map { (key, value) ->
+					key to value.toString()
+				}
+
+				resultAdapter.submitList(result)
 			}
 		}
 	}
@@ -89,8 +105,10 @@ class ResultPageFragment : Fragment() {
 		// Set up RecyclerView
 		recyclerView = view.findViewById(R.id.result_recycler_view)
 		recyclerView.layoutManager = LinearLayoutManager(requireContext())
-		resultAdapter = ResultAdapter(resultData)
+		resultAdapter = ResultAdapter()
 		recyclerView.adapter = resultAdapter
+
+		resultAdapter.submitList(resultData)
 
 		// link image URI with view
 		val documentImageView: ImageView = view.findViewById(R.id.document_image)

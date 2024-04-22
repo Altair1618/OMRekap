@@ -36,13 +36,8 @@ abstract class ResultActivity : MainActivity() {
 	private var saveFileJob: Job? = null
 	private var startSaveJob: Boolean = false
 	private val omrHelperObserver =
-		Observer<ImageSaveData> { newValue ->
+		Observer<ImageSaveData> { _ ->
 			saveFile()
-
-//			TODO: save file when data is not empty after implemented
-//			if (newValue.data.isNotEmpty()) {
-//				saveFile()
-//			}
 		}
 
 	private lateinit var imageUriString: String

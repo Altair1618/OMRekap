@@ -42,7 +42,11 @@ object SaveHelper {
 		withContext(Dispatchers.IO) {
 			saveImage(context, data.rawImage, folderName, "raw_image.jpg")
 			saveImage(context, data.annotatedImage, folderName, "annotated_image.jpg")
-			saveJSON(context, data.data, folderName, "data.json")
+
+			if (data.data != null) {
+				// TODO: handle when data is null, that is detection failed for OMR
+				saveJSON(context, data.data!!, folderName, "data.json")
+			}
 		}
 	}
 

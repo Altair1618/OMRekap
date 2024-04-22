@@ -4,9 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.k2_9.omrekap.data.configs.omr.OMRCropperConfig
+import com.k2_9.omrekap.data.configs.omr.OMRSection
 import com.k2_9.omrekap.data.models.ImageSaveData
 import com.k2_9.omrekap.utils.AprilTagHelper
+import com.k2_9.omrekap.utils.omr.ContourOMRHelper
 import com.k2_9.omrekap.utils.omr.OMRConfigDetector
+import com.k2_9.omrekap.utils.omr.OMRHelper
+import com.k2_9.omrekap.utils.omr.TemplateMatchingOMRHelper
 import kotlinx.coroutines.launch
 import org.opencv.android.Utils
 import org.opencv.core.Mat
@@ -33,7 +38,37 @@ class ImageDataViewModel : ViewModel() {
 			// annotate the detected AprilTag
 			val annotatedImage = AprilTagHelper.annotateImage(rawImage)
 
-			// TODO: Process the raw image using OMRHelper
+			// process OMR
+			val contourOMRHelper = ContourOMRHelper(loadedConfig.contourOMRHelperConfig)
+
+			val result: Map<OMRSection, Int>? = try {
+				contourOMRHelper.detect()
+			} catch (e: OMRHelper.DetectionError) {
+				try {
+					val templateMatchingOMRHelper = TemplateMatchingOMRHelper(loadedConfig.templateMatchingOMRHelperConfig)
+					templateMatchingOMRHelper.detect()
+				} catch (e: OMRHelper.DetectionError) {
+					null
+				}
+			}
+
+			// TODO: move this to april tag
+			val customMap = mutableMapOf<OMRSection, String>()
+
+			customMap[OMRSection.FIRST] = "Anis"
+			customMap[OMRSection.SECOND] = "Bowo"
+			customMap[OMRSection.THIRD] = "Janggar"
+
+			val stringKeyResult = mutableMapOf<String, Int>()
+
+			result?.let {
+				for ((section, value) in it) {
+					stringKeyResult[customMap[section]!!] = value
+				}
+			}
+			data.data = stringKeyResult
+
+			// TODO: annotate omr result
 			data.annotatedImage = annotatedImage
 			_data.value = data
 		}

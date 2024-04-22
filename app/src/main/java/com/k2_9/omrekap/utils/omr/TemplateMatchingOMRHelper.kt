@@ -156,6 +156,10 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperCon
 		val contourInfos = getContourInfos(matchedRectangles)
 		val filteredContourInfos = filterContourInfos(contourInfos.toList())
 
+		if (filteredContourInfos.size != 3) {
+			throw DetectionError("Failed to detect 3 filled circle")
+		}
+
 		return contourInfosToNumbers(filteredContourInfos.toList())
 	}
 }

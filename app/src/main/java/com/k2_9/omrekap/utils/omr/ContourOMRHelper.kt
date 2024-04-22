@@ -65,6 +65,11 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 		}
 
 		val contourInfos = getContourInfo(filledContours)
+
+		if (contourInfos.size != 3) {
+			throw DetectionError("Failed to detect 3 filled circle")
+		}
+
 		return contourInfosToNumbers(contourInfos)
 	}
 
