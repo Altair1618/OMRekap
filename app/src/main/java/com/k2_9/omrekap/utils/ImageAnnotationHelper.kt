@@ -119,4 +119,11 @@ object ImageAnnotationHelper {
 		)
 		return imgWithAnnotations
 	}
+
+	fun annotateOMR(img: Mat, cornerPoints: MatOfPoint, result: Int ): Mat {
+		val imgWithAnnotations = img.clone()
+		Imgproc.cvtColor(img, imgWithAnnotations, Imgproc.COLOR_GRAY2BGR)
+		Imgproc.putText(imgWithAnnotations, "$result", cornerPoints.toList()[0], Imgproc.FONT_HERSHEY_SIMPLEX, 1.0, Scalar(0.0, 255.0, 0.0), 1)
+		return imgWithAnnotations
+	}
 }
