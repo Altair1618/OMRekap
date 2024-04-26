@@ -33,6 +33,10 @@ class OMRCropperConfig(
 			"OMR section position must be non-negative"
 		}
 
+		require(omrSectionPosition.values.all { it.first <= image.width() && it.second <= image.height() }) {
+			"OMR section position must be less than the image size"
+		}
+
 		this.image = image.clone()
 	}
 

@@ -39,6 +39,13 @@ class ImageDataViewModel : ViewModel() {
 			val annotatedImage = AprilTagHelper.annotateImage(rawImage)
 
 			// process OMR
+			val matImage = Mat()
+
+			Utils.bitmapToMat(data.rawImage, matImage)
+
+			loadedConfig.contourOMRHelperConfig.omrCropper.config.setImage(matImage)
+			loadedConfig.contourOMRHelperConfig.omrCropper.config.setImage(matImage)
+
 			val contourOMRHelper = ContourOMRHelper(loadedConfig.contourOMRHelperConfig)
 
 			val result: Map<OMRSection, Int>? = try {
