@@ -7,7 +7,6 @@ class ResultFromCameraActivity : ResultActivity() {
 	private fun onBackCamera() {
 		val intent = Intent(this, CameraActivity::class.java)
 		intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-		Log.d("wtf is this", "onBackCamera: ")
 		finish()
 		startActivity(intent)
 	}

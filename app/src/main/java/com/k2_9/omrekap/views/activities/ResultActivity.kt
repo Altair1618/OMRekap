@@ -46,11 +46,9 @@ abstract class ResultActivity : MainActivity() {
 
 	private fun updateStates(intent: Intent) {
 		isReset = intent.getBooleanExtra(EXTRA_NAME_IS_RESET, false)
-		Log.d("RESET GA YA", isReset.toString())
 
 		if (isReset) {
 			// TODO: reset view model (perlu diskusi dulu tentang stop proses kalau ganti page)
-			Log.d("CREATED GA YA", isCreated.toString())
 			if (isCreated) {
 				setFragment(intent)
 			}
@@ -82,7 +80,15 @@ abstract class ResultActivity : MainActivity() {
 
 	override fun getFragment(intent: Intent): Fragment {
 		val fragment = ResultPageFragment()
+
+		val arguments =
+			Bundle().apply {
+			}
+
+		// Set the arguments for the fragment
+		fragment.arguments = arguments
 		return fragment
+
 	}
 
 	override fun getGalleryPreviewIntent(imageUri: Uri): Intent {
@@ -105,8 +111,6 @@ abstract class ResultActivity : MainActivity() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-
-		Log.d("CREATE LAGI GA", "CREATE LAGI")
 
 		OMRConfigDetector.loadConfiguration(this)
 		OpenCVLoader.initLocal()
