@@ -20,8 +20,8 @@ import org.opencv.imgproc.Imgproc
 import java.time.Instant
 
 class ImageDataViewModel : ViewModel() {
-	private val _data = MutableLiveData<ImageSaveData>()
-	val data = _data as LiveData<ImageSaveData>
+	private val _data = MutableLiveData<ImageSaveData?>()
+	val data = _data as LiveData<ImageSaveData?>
 
 	fun processImage(
 		data: ImageSaveData,
@@ -99,5 +99,9 @@ class ImageDataViewModel : ViewModel() {
 			data.annotatedImage = annotatedImage
 			_data.value = data
 		}
+	}
+
+	fun resetState() {
+		_data.value = null
 	}
 }

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,6 +28,7 @@ import java.io.FileOutputStream
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import kotlin.math.log
 
 /**
  * A simple [Fragment] subclass.
@@ -66,10 +68,6 @@ class ResultPageFragment : Fragment() {
 		recyclerView.visibility = View.GONE
 	}
 
-	override fun onAttach(context: Context) {
-		super.onAttach(context)
-	}
-
 	private fun hideFailureText() {
 		failureTextView.visibility = View.GONE
 		recyclerView.visibility = View.VISIBLE
@@ -84,6 +82,12 @@ class ResultPageFragment : Fragment() {
 
 		viewModel.data.observe(this) {
 			// TODO: fix this block that making fragment cant be replaced
+
+			Log.d("yeee", it.toString())
+			if (it == null) {
+				return@observe
+			}
+
 			val dataList = it.data.toList()
 
 			if (dataList.isEmpty()) {
@@ -99,13 +103,13 @@ class ResultPageFragment : Fragment() {
 				resultAdapter.submitList(result)
 			}
 
-			val anotatedImage = it.annotatedImage
+			val annotatedImage = it.annotatedImage
 
 			// change expand image
-			imageBitmap = anotatedImage
+			imageBitmap = annotatedImage
 
 			// change result image
-			documentImageView.setImageBitmap(anotatedImage)
+			documentImageView.setImageBitmap(annotatedImage)
 
 			// change timestamp
 			timestampTextView.text = timestampToString(it.timestamp)
