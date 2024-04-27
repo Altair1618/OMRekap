@@ -25,7 +25,6 @@ import com.k2_9.omrekap.views.activities.HomeActivity
 import com.k2_9.omrekap.views.adapters.ResultAdapter
 import java.io.FileOutputStream
 
-
 /**
  * A simple [Fragment] subclass.
  * Use the [ResultPageFragment.newInstance] factory method to
@@ -59,11 +58,11 @@ class ResultPageFragment : Fragment() {
 
 		imageBitmap = ImageSaveDataHolder.get().annotatedImage
 
-
 		viewModel.data.observe(this) {
-			val result = it.data.toList().map { (key, value) ->
-				key to (value?.toString() ?: "undetected")
-			}
+			val result =
+				it.data.toList().map { (key, value) ->
+					key to (value?.toString() ?: "undetected")
+				}
 
 			resultAdapter.submitList(result)
 

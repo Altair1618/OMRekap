@@ -32,18 +32,18 @@ class AprilTagConfigDetectionTest {
 
 		CoroutineScope(Dispatchers.Default).launch {
 			OMRConfigDetector.loadConfiguration(
-				appContext
+				appContext,
 			)
 			val result = OMRConfigDetector.detectConfiguration(grayImageMat)
 			val gson = Gson()
 			Log.d("ConfigDetectionTestx", gson.toJson(result))
 			val compare = OMRConfigRepository.loadConfigurations(appContext)
 
-//			val resultHash = result!!.first.hashCode()
-//			val compareHash = compare!!.configs["102"].hashCode()
-//			Log.d("ConfigDetectionTestx1", resultHash.toString())
-//			Log.d("ConfigDetectionTestx1", compareHash.toString())
-//			assert(resultHash == compareHash)
+// 			val resultHash = result!!.first.hashCode()
+// 			val compareHash = compare!!.configs["102"].hashCode()
+// 			Log.d("ConfigDetectionTestx1", resultHash.toString())
+// 			Log.d("ConfigDetectionTestx1", compareHash.toString())
+// 			assert(resultHash == compareHash)
 
 			val resultJSONString = gson.toJson(result!!.first)
 			val compareJSONString = gson.toJson(compare!!.omrConfigs["102"])

@@ -29,10 +29,10 @@ class OMRCropperConfig(
 			"OMR section position must be non-negative"
 		}
 
-		this.image = null;
+		this.image = null
 
 		if (image != null) {
-			setImage(image);
+			setImage(image)
 		}
 	}
 

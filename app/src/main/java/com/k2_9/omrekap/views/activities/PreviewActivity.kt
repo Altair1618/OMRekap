@@ -80,7 +80,7 @@ class PreviewActivity : AppCompatActivity() {
 
 			newIntent.putExtra(
 				EXTRA_NAME_IS_RESET,
-				intent.extras?.getBoolean(EXTRA_NAME_IS_RESET, false) ?: false
+				intent.extras?.getBoolean(EXTRA_NAME_IS_RESET, false) ?: false,
 			)
 
 			newIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_SINGLE_TOP)

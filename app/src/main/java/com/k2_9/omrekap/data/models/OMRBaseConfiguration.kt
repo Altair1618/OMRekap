@@ -7,10 +7,10 @@ import com.k2_9.omrekap.data.configs.omr.TemplateMatchingOMRHelperConfig
  * Scanned image's OMR detection template
  */
 data class OMRBaseConfiguration(
-	val omrConfigs: Map<String, OMRConfigurationParameter>
+	val omrConfigs: Map<String, OMRConfigurationParameter>,
 )
 
 data class OMRConfigurationParameter(
 	val contourOMRHelperConfig: ContourOMRHelperConfig,
-	val templateMatchingOMRHelperConfig: TemplateMatchingOMRHelperConfig
+	val templateMatchingOMRHelperConfig: TemplateMatchingOMRHelperConfig,
 )

@@ -28,7 +28,7 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperCon
 			templateBinary,
 			0.0,
 			255.0,
-			Imgproc.THRESH_BINARY_INV + Imgproc.THRESH_TRIANGLE
+			Imgproc.THRESH_BINARY_INV + Imgproc.THRESH_TRIANGLE,
 		)
 
 		// Perform template matching
@@ -37,7 +37,7 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperCon
 			currentSectionBinary,
 			templateBinary,
 			result,
-			Imgproc.TM_CCOEFF_NORMED
+			Imgproc.TM_CCOEFF_NORMED,
 		)
 
 		// Set a threshold for template matching result
@@ -68,6 +68,7 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperCon
 
 		return matchedRectangles
 	}
+
 	private fun getContourInfos(matchedRectangles: List<Rect>): List<ContourInfo?> {
 		// Initialize a set to keep track of added rectangles
 		val addedRectangles = mutableSetOf<Rect>()
@@ -112,11 +113,12 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperCon
 	fun annotateImage(contourNumber: Int): Bitmap {
 		val annotatedImg = currentSectionGray!!.clone()
 		val matchedRectangles = getMatchRectangles()
-		val res = ImageAnnotationHelper.annotateTemplateMatchingOMR(
-			annotatedImg,
-			matchedRectangles,
-			contourNumber
-		)
+		val res =
+			ImageAnnotationHelper.annotateTemplateMatchingOMR(
+				annotatedImg,
+				matchedRectangles,
+				contourNumber,
+			)
 
 		// Convert the annotated Mat to Bitmap
 		val annotatedImageBitmap =
@@ -143,7 +145,7 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperCon
 			binary,
 			0.0,
 			255.0,
-			Imgproc.THRESH_BINARY_INV + Imgproc.THRESH_TRIANGLE
+			Imgproc.THRESH_BINARY_INV + Imgproc.THRESH_TRIANGLE,
 		)
 
 		// Update states

@@ -123,8 +123,9 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 		// Loop through each column
 		for (col in 0 until 3) {
 			// Get contours for the current column and sort by rows
-			val colContours = contoursSorted.subList(col * 10, (col + 1) * 10)
-				.sortedBy { Imgproc.boundingRect(it).y }
+			val colContours =
+				contoursSorted.subList(col * 10, (col + 1) * 10)
+					.sortedBy { Imgproc.boundingRect(it).y }
 
 			val darkestRow = getDarkestRow(colContours)
 
@@ -149,7 +150,7 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 			contours,
 			hierarchy,
 			Imgproc.RETR_EXTERNAL,
-			Imgproc.CHAIN_APPROX_SIMPLE
+			Imgproc.CHAIN_APPROX_SIMPLE,
 		)
 
 		// Initialize a list to store filtered contours
@@ -169,7 +170,7 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 			} else {
 				Log.d(
 					"ContourOMRHelper",
-					"Contour with aspect ratio $ar and size ${rect.width} x ${rect.height} filtered out"
+					"Contour with aspect ratio $ar and size ${rect.width} x ${rect.height} filtered out",
 				)
 			}
 		}
@@ -183,11 +184,12 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 		annotatedImg =
 			ImageAnnotationHelper.annotateContourOMR(annotatedImg, contours, contourNumber)
 
-		val annotatedImageBitmap = Bitmap.createBitmap(
-			annotatedImg.width(),
-			annotatedImg.height(),
-			Bitmap.Config.ARGB_8888
-		)
+		val annotatedImageBitmap =
+			Bitmap.createBitmap(
+				annotatedImg.width(),
+				annotatedImg.height(),
+				Bitmap.Config.ARGB_8888,
+			)
 		Utils.matToBitmap(annotatedImg, annotatedImageBitmap)
 		return annotatedImageBitmap
 	}
@@ -206,7 +208,7 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 			binary,
 			0.0,
 			255.0,
-			Imgproc.THRESH_BINARY_INV + Imgproc.THRESH_TRIANGLE
+			Imgproc.THRESH_BINARY_INV + Imgproc.THRESH_TRIANGLE,
 		)
 
 		// Update states
@@ -218,7 +220,7 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 		return if (contours.size != 30) {
 			Log.d(
 				"ContourOMRHelper",
-				"Some circles are not detected, considering only filled circles"
+				"Some circles are not detected, considering only filled circles",
 			)
 			predictForFilledCircle(contours)
 		} else {

@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.k2_9.omrekap.R
 import com.k2_9.omrekap.data.configs.omr.CircleTemplateLoader
 import com.k2_9.omrekap.data.configs.omr.OMRSection
 import com.k2_9.omrekap.data.models.ImageSaveData
@@ -23,11 +22,14 @@ class ImageDataViewModel : ViewModel() {
 	private val _data = MutableLiveData<ImageSaveData>()
 	val data = _data as LiveData<ImageSaveData>
 
-	fun processImage(data: ImageSaveData, circleTemplateLoader: CircleTemplateLoader) {
+	fun processImage(
+		data: ImageSaveData,
+		circleTemplateLoader: CircleTemplateLoader,
+	) {
 		viewModelScope.launch {
 			val rawImage = data.rawImage
 			val imageMat = Mat()
-//			val annotatedImageMat = Mat()
+// 			val annotatedImageMat = Mat()
 			Utils.bitmapToMat(rawImage, imageMat)
 
 			// convert image to gray

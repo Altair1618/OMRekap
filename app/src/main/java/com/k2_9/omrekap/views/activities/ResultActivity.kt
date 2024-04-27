@@ -38,7 +38,7 @@ abstract class ResultActivity : MainActivity() {
 	private val omrHelperObserver =
 		Observer<ImageSaveData> { data ->
 			// TODO: save to file
-//			saveFile()
+// 			saveFile()
 		}
 
 	private var isReset: Boolean = false // reset ViewModel for new OMR process
@@ -113,7 +113,7 @@ abstract class ResultActivity : MainActivity() {
 			PermissionHelper.requirePermission(
 				this,
 				Manifest.permission.WRITE_EXTERNAL_STORAGE,
-				false
+				false,
 			) {}
 		}
 

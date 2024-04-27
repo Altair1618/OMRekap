@@ -6,6 +6,7 @@ import kotlin.math.floor
 
 abstract class OMRHelper(private val config: OMRHelperConfig) {
 	data class ContourInfo(val center: Pair<Int, Int>, val size: Pair<Int, Int>)
+
 	class DetectionError(message: String) : Exception(message)
 
 	protected fun getCombinedNumbers(numbers: List<Int>): Int {

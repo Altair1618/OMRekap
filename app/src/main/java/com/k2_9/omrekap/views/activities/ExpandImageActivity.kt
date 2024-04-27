@@ -1,13 +1,10 @@
 package com.k2_9.omrekap.views.activities
 
 import android.graphics.BitmapFactory
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.github.chrisbanes.photoview.PhotoView
 import com.k2_9.omrekap.R
-
 
 class ExpandImageActivity : AppCompatActivity() {
 	companion object {
@@ -31,7 +28,6 @@ class ExpandImageActivity : AppCompatActivity() {
 			photoView.setImageBitmap(bitmap)
 
 			deleteFile(imageResource)
-
 		} else {
 			// Retrieve the image resource ID from the intent
 			val drawableResource = intent.getIntExtra(EXTRA_NAME_DRAWABLE_RESOURCE, 0)

@@ -10,9 +10,10 @@ import java.io.IOException
 
 object OMRConfigRepository {
 	suspend fun loadConfigurations(context: Context): OMRBaseConfiguration? {
-		val jsonString = withContext(Dispatchers.IO) {
-			readConfigString(context)
-		}
+		val jsonString =
+			withContext(Dispatchers.IO) {
+				readConfigString(context)
+			}
 		return if (jsonString == null) {
 			Toast.makeText(context, "Error! Unable to read configuration", Toast.LENGTH_SHORT)
 				.show()
@@ -33,7 +34,7 @@ object OMRConfigRepository {
 		return try {
 			val buffer = ByteArray(inputStream.available())
 			inputStream.read(buffer)
-//			Log.d("OMRConfigLoader", String(buffer))
+// 			Log.d("OMRConfigLoader", String(buffer))
 
 			String(buffer)
 		} catch (e: IOException) {
