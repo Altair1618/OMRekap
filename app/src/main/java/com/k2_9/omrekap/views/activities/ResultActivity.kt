@@ -2,7 +2,6 @@ package com.k2_9.omrekap.views.activities
 
 import android.Manifest
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -13,6 +12,8 @@ import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import com.k2_9.omrekap.R
+import com.k2_9.omrekap.data.configs.omr.CircleTemplateLoader
 import com.k2_9.omrekap.data.models.ImageSaveData
 import com.k2_9.omrekap.data.view_models.ImageDataViewModel
 import com.k2_9.omrekap.utils.ImageSaveDataHolder
@@ -28,7 +29,6 @@ import org.opencv.android.OpenCVLoader
 
 abstract class ResultActivity : MainActivity() {
 	companion object {
-		const val EXTRA_NAME_IMAGE_URI_STRING = "IMAGE_URI_STRING"
 		const val EXTRA_NAME_IS_RESET = "IS_RESET"
 	}
 
@@ -36,42 +36,28 @@ abstract class ResultActivity : MainActivity() {
 	private var saveFileJob: Job? = null
 	private var startSaveJob: Boolean = false
 	private val omrHelperObserver =
-		Observer<ImageSaveData> { newValue ->
-			saveFile()
-
-//			TODO: save file when data is not empty after implemented
-//			if (newValue.data.isNotEmpty()) {
-//				saveFile()
-//			}
+		Observer<ImageSaveData> { data ->
+			// TODO: save to file
+// 			saveFile()
 		}
 
-	private lateinit var imageUriString: String
-	private lateinit var imageBitmap: Bitmap
 	private var isReset: Boolean = false // reset ViewModel for new OMR process
 	private var isCreated = false
 
 	private fun updateStates(intent: Intent) {
 		isReset = intent.getBooleanExtra(EXTRA_NAME_IS_RESET, false)
-		Log.d("RESET GA YA", isReset.toString())
-		val uriString =
-			intent.getStringExtra(EXTRA_NAME_IMAGE_URI_STRING)
-				?: throw IllegalArgumentException("Image URI string is null")
-
-		imageUriString = uriString
 
 		if (isReset) {
 			// TODO: reset view model (perlu diskusi dulu tentang stop proses kalau ganti page)
-			Log.d("CREATED GA YA", isCreated.toString())
 			if (isCreated) {
 				setFragment(intent)
 			}
 		}
 
-		imageBitmap = SaveHelper.uriToBitmap(applicationContext, Uri.parse(imageUriString))
-
 		if (viewModel.data.value == null) {
-			viewModel.processImage(ImageSaveDataHolder.get())
 			viewModel.data.observe(this, omrHelperObserver)
+			val templateLoader = CircleTemplateLoader(applicationContext, R.raw.circle_template)
+			viewModel.processImage(ImageSaveDataHolder.get(), templateLoader)
 		}
 	}
 
@@ -95,13 +81,8 @@ abstract class ResultActivity : MainActivity() {
 	override fun getFragment(intent: Intent): Fragment {
 		val fragment = ResultPageFragment()
 
-		val uriString =
-			intent.getStringExtra(EXTRA_NAME_IMAGE_URI_STRING)
-				?: throw IllegalArgumentException("Image URI string is null")
-
 		val arguments =
 			Bundle().apply {
-				putString(ResultPageFragment.ARG_NAME_IMAGE_URI_STRING, uriString)
 			}
 
 		// Set the arguments for the fragment
@@ -137,7 +118,7 @@ abstract class ResultActivity : MainActivity() {
 			PermissionHelper.requirePermission(
 				this,
 				Manifest.permission.WRITE_EXTERNAL_STORAGE,
-				false
+				false,
 			) {}
 		}
 

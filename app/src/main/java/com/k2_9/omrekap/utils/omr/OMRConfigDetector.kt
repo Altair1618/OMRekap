@@ -23,10 +23,11 @@ object OMRConfigDetector {
 	 */
 	fun loadConfiguration(context: Context) {
 		if (!this::loadedConfig.isInitialized) {
-			job = CoroutineScope(Dispatchers.IO).launch {
-				loadedConfig = OMRConfigRepository.loadConfigurations(context)
-					?: throw Exception("Failed to load OMR Configuration!")
-			}
+			job =
+				CoroutineScope(Dispatchers.IO).launch {
+					loadedConfig = OMRConfigRepository.loadConfigurations(context)
+						?: throw Exception("Failed to load OMR Configuration!")
+				}
 		}
 	}
 
@@ -36,8 +37,7 @@ object OMRConfigDetector {
 	 * @return Triple of OMR configuration, the ID of the detected AprilTag,
 	 * and the image's tag corners that was used for configuration detector
 	 */
-	suspend fun detectConfiguration(imageMat: Mat):
-		Triple<OMRConfigurationParameter, String, Mat>? {
+	suspend fun detectConfiguration(imageMat: Mat): Triple<OMRConfigurationParameter, String, Mat>? {
 		job?.join().also { job = null }
 		val configs = loadedConfig.omrConfigs
 
@@ -54,7 +54,7 @@ object OMRConfigDetector {
 					} else {
 						Log.e(
 							"OMRConfigurationDetector",
-							"Multiple tags detected, unable to determine configuration"
+							"Multiple tags detected, unable to determine configuration",
 						)
 						result = null
 						break

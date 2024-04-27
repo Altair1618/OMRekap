@@ -2,32 +2,32 @@
   "omrConfigs": {
     "102": {
       "contourOMRHelperConfig": {
-        "darkIntensityThreshold": 230,
+        "darkIntensityThreshold": 70,
         "darkPercentageThreshold": 0.9,
         "maxAspectRatio": 1.5,
-        "maxRadius": 30,
+        "maxRadius": 15,
         "minAspectRatio": 0.5,
-        "minRadius": 12,
+        "minRadius": 8,
         "omrCropper": {
           "config": {
             "image": null,
             "omrSectionPosition": {
               "FIRST": {
-                "first": 780,
-                "second": 373
+                "first": 420,
+                "second": 180
               },
               "SECOND": {
-                "first": 0,
-                "second": 0
+                "first": 420,
+                "second": 356
               },
               "THIRD": {
-                "first": 0,
-                "second": 0
+                "first": 420,
+                "second": 529
               }
             },
             "omrSectionSize": {
-              "first": 140,
-              "second": 220
+              "first": 80,
+              "second": 124
             }
           }
         }
@@ -40,8 +40,8 @@
             "image": null,
             "omrSectionPosition": {
               "FIRST": {
-                "first": 780,
-                "second": 373
+                "first": 420,
+                "second": 180
               },
               "SECOND": {
                 "first": 0,
@@ -53,8 +53,8 @@
               }
             },
             "omrSectionSize": {
-              "first": 140,
-              "second": 220
+              "first": 80,
+              "second": 124
             }
           }
         }

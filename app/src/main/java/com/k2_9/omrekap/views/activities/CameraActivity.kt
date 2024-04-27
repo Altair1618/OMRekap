@@ -32,11 +32,11 @@ import java.util.concurrent.Executors
 
 class CameraActivity : AppCompatActivity() {
 	companion object {
-		const val EXTRA_NAME_IMAGE_URI_STRING = "IMAGE_URI_STRING"
+		const val EXTRA_NAME_IS_FROM_RESULT = "IS_FROM_RESULT"
 		const val EXTRA_NAME_IS_FROM_CAMERA_RESULT = "IS_FROM_CAMERA_RESULT"
 	}
 
-	private var imageUriString: String? = null
+	private var isFromResult: Boolean = false
 	private var isFromCameraResult: Boolean = false
 
 	private lateinit var previewView: PreviewView
@@ -54,16 +54,15 @@ class CameraActivity : AppCompatActivity() {
 
 		val intent = Intent(this, newIntentClass)
 
-		intent.putExtra(ResultActivity.EXTRA_NAME_IMAGE_URI_STRING, imageUriString)
 		intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_SINGLE_TOP)
 		startActivity(intent)
 	}
 
 	private fun handleBackNavigation() {
-		if (imageUriString == null) {
-			onBackHome()
-		} else {
+		if (isFromResult) {
 			onBackResult()
+		} else {
+			onBackHome()
 		}
 	}
 
@@ -71,7 +70,7 @@ class CameraActivity : AppCompatActivity() {
 		super.onNewIntent(intent)
 
 		if (intent != null) {
-			imageUriString = intent.getStringExtra(EXTRA_NAME_IMAGE_URI_STRING)
+			isFromResult = intent.getBooleanExtra(EXTRA_NAME_IS_FROM_RESULT, false)
 		}
 	}
 
@@ -79,7 +78,7 @@ class CameraActivity : AppCompatActivity() {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_camera)
 
-		imageUriString = intent.getStringExtra(EXTRA_NAME_IMAGE_URI_STRING)
+		isFromResult = intent.getBooleanExtra(EXTRA_NAME_IS_FROM_RESULT, false)
 		isFromCameraResult = intent.getBooleanExtra(EXTRA_NAME_IS_FROM_CAMERA_RESULT, false)
 
 		// back navigation

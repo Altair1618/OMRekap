@@ -55,7 +55,6 @@ abstract class MainActivity : AppCompatActivity() {
 
 		// Create an instance of your fragment
 		val fragment = getFragment(intent)
-
 		fragmentTransaction.replace(R.id.fragment_container_view, fragment)
 		fragmentTransaction.commit()
 	}

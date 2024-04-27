@@ -48,14 +48,14 @@ object ImageAnnotationHelper {
 				Imgproc.FONT_HERSHEY_SIMPLEX,
 				1.0,
 				Scalar(0.0, 255.0, 0.0),
-				5
+				5,
 			)
 			Imgproc.polylines(
 				imgWithAnnotations,
 				listOf(MatOfPoint(*points[0].toTypedArray())),
 				true,
 				Scalar(0.0, 255.0, 0.0),
-				5
+				5,
 			)
 		} else {
 			val topLeft = Point(cornerPoints[0].get(0, 0)[0], cornerPoints[0].get(1, 0)[0])
@@ -66,7 +66,7 @@ object ImageAnnotationHelper {
 				Imgproc.FONT_HERSHEY_SIMPLEX,
 				1.0,
 				Scalar(0.0, 255.0, 0.0),
-				5
+				5,
 			)
 		}
 		return imgWithAnnotations
