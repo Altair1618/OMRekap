@@ -42,7 +42,7 @@ abstract class ResultActivity : MainActivity() {
 				return@Observer
 			}
 
- 			saveFile()
+			saveFile()
 		}
 
 	private var isReset: Boolean = false // reset ViewModel for new OMR process
