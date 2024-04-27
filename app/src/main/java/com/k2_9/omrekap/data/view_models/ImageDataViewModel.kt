@@ -45,7 +45,7 @@ class ImageDataViewModel : ViewModel() {
 				return@launch
 			}
 
-			val (loadedConfig, id, corners) = configurationResult
+			val (loadedConfig, _, _) = configurationResult
 
 			// annotate the detected AprilTag
 			val annotatedImage = AprilTagHelper.annotateImage(rawImage)
