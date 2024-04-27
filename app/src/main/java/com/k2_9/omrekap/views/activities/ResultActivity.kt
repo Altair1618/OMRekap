@@ -13,6 +13,8 @@ import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import com.k2_9.omrekap.R
+import com.k2_9.omrekap.data.configs.omr.CircleTemplateLoader
 import com.k2_9.omrekap.data.models.ImageSaveData
 import com.k2_9.omrekap.data.view_models.ImageDataViewModel
 import com.k2_9.omrekap.utils.ImageSaveDataHolder
@@ -65,7 +67,8 @@ abstract class ResultActivity : MainActivity() {
 		imageBitmap = SaveHelper.uriToBitmap(applicationContext, Uri.parse(imageUriString))
 
 		if (viewModel.data.value == null) {
-			viewModel.processImage(ImageSaveDataHolder.get())
+			val templateLoader = CircleTemplateLoader(applicationContext, R.raw.circle_template)
+			viewModel.processImage(ImageSaveDataHolder.get(), templateLoader)
 			viewModel.data.observe(this, omrHelperObserver)
 		}
 	}

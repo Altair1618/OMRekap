@@ -4,7 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.k2_9.omrekap.data.configs.omr.OMRCropperConfig
+import com.k2_9.omrekap.R
+import com.k2_9.omrekap.data.configs.omr.CircleTemplateLoader
 import com.k2_9.omrekap.data.configs.omr.OMRSection
 import com.k2_9.omrekap.data.models.ImageSaveData
 import com.k2_9.omrekap.utils.AprilTagHelper
@@ -21,7 +22,7 @@ class ImageDataViewModel : ViewModel() {
 	private val _data = MutableLiveData<ImageSaveData>()
 	val data = _data as LiveData<ImageSaveData>
 
-	fun processImage(data: ImageSaveData) {
+	fun processImage(data: ImageSaveData, circleTemplateLoader: CircleTemplateLoader) {
 		viewModelScope.launch {
 			val rawImage = data.rawImage
 			val imageMat = Mat()
@@ -44,7 +45,8 @@ class ImageDataViewModel : ViewModel() {
 			Utils.bitmapToMat(data.rawImage, matImage)
 
 			loadedConfig.contourOMRHelperConfig.omrCropper.config.setImage(matImage)
-			loadedConfig.contourOMRHelperConfig.omrCropper.config.setImage(matImage)
+			loadedConfig.templateMatchingOMRHelperConfig.omrCropper.config.setImage(matImage)
+			loadedConfig.templateMatchingOMRHelperConfig.setTemplate(circleTemplateLoader)
 
 			val contourOMRHelper = ContourOMRHelper(loadedConfig.contourOMRHelperConfig)
 

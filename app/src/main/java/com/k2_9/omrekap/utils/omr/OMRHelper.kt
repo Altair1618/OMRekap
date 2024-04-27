@@ -15,7 +15,9 @@ abstract class OMRHelper(private val config: OMRHelperConfig) {
 
 	protected fun contourInfosToNumbers(contourInfos: List<ContourInfo?>): Int {
 		// Return the detected numbers based on the vertical position of the filled circles for each column
-		require(contourInfos.size == 3)
+		if (contourInfos.size != 3) {
+			throw DetectionError("Filled circles are not detected correctly")
+		}
 
 		val columnHeight = config.omrCropper.config.omrSectionSize.second // Define the column height based on your image
 

@@ -62,7 +62,7 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperCon
 		for (point in locations) {
 			val locX = point.x.toInt()
 			val locY = point.y.toInt()
-			val rect = Rect(locX, locY, template.width(), template.height())
+			val rect = Rect(locX, locY, template!!.width(), template.height())
 			matchedRectangles.add(rect)
 		}
 
