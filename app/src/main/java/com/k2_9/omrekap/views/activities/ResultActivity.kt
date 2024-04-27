@@ -106,6 +106,8 @@ abstract class ResultActivity : MainActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
+		Log.d("CREATE LAGI GA", "CREATE LAGI")
+
 		OMRConfigDetector.loadConfiguration(this)
 		OpenCVLoader.initLocal()
 

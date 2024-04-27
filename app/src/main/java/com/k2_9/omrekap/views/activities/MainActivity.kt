@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageButton
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResult
@@ -11,6 +12,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentContainerView
 import com.k2_9.omrekap.R
 
 abstract class MainActivity : AppCompatActivity() {
@@ -55,7 +57,6 @@ abstract class MainActivity : AppCompatActivity() {
 
 		// Create an instance of your fragment
 		val fragment = getFragment(intent)
-
 		fragmentTransaction.replace(R.id.fragment_container_view, fragment)
 		fragmentTransaction.commit()
 	}

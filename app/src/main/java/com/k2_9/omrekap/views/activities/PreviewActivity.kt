@@ -60,6 +60,7 @@ class PreviewActivity : AppCompatActivity() {
 		// Observe Data
 		val preprocessImageObserver =
 			Observer<ImageSaveData> { newValue ->
+				Log.d("WTFISTHIS", "LOH")
 				photoView.setImageBitmap(newValue.annotatedImage)
 				ImageSaveDataHolder.save(newValue)
 			}

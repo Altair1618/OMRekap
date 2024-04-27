@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -24,6 +25,10 @@ import com.k2_9.omrekap.views.activities.ExpandImageActivity
 import com.k2_9.omrekap.views.activities.HomeActivity
 import com.k2_9.omrekap.views.adapters.ResultAdapter
 import java.io.FileOutputStream
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import kotlin.math.log
 
 /**
  * A simple [Fragment] subclass.
@@ -40,6 +45,8 @@ class ResultPageFragment : Fragment() {
 	private lateinit var recyclerView: RecyclerView
 	private lateinit var resultAdapter: ResultAdapter
 	private lateinit var documentImageView: ImageView
+	private lateinit var timestampTextView: TextView
+	private lateinit var failureTextView: TextView
 
 	private lateinit var viewModel: ImageDataViewModel
 
@@ -51,23 +58,56 @@ class ResultPageFragment : Fragment() {
 		startActivity(intent)
 	}
 
+	private fun timestampToString(timestamp: Instant): String {
+		val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
+		return formatter.format(timestamp.atZone(ZoneId.systemDefault()))
+	}
+
+	private fun showFailureText() {
+		failureTextView.visibility = View.VISIBLE
+		recyclerView.visibility = View.GONE
+	}
+
+	private fun hideFailureText() {
+		failureTextView.visibility = View.GONE
+		recyclerView.visibility = View.VISIBLE
+	}
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
 		viewModel = ViewModelProvider(requireActivity())[ImageDataViewModel::class.java]
 
+		Log.d("WHATDAHEL", ImageSaveDataHolder.get().toString())
 		imageBitmap = ImageSaveDataHolder.get().annotatedImage
 
 		viewModel.data.observe(this) {
-			val result =
-				it.data.toList().map { (key, value) ->
-					key to (value?.toString() ?: "undetected")
-				}
+			val dataList = it.data.toList()
 
-			resultAdapter.submitList(result)
+			if (dataList.isEmpty()) {
+				showFailureText()
+
+			} else {
+				hideFailureText()
+
+				val result =
+					dataList.map { (key, value) ->
+						key to (value?.toString() ?: "undetected")
+					}
+
+				resultAdapter.submitList(result)
+			}
 
 			val anotatedImage = it.annotatedImage
+
+			// change expand image
+			imageBitmap = anotatedImage
+
+			// change result image
 			documentImageView.setImageBitmap(anotatedImage)
+
+			// change timestamp
+			timestampTextView.text = timestampToString(it.timestamp)
 		}
 	}
 
@@ -105,6 +145,14 @@ class ResultPageFragment : Fragment() {
 		documentImageView = view.findViewById(R.id.document_image)
 		documentImageView.setImageBitmap(imageBitmap)
 
+		// timestamp text
+		timestampTextView = view.findViewById(R.id.result_timestamp)
+			timestampTextView.text = timestampToString(ImageSaveDataHolder.get().timestamp)
+
+		// failure text
+		failureTextView = view.findViewById(R.id.failure_text)
+		hideFailureText()
+
 		// remove progress bar
 		val progressLoader: ProgressBar = view.findViewById(R.id.progress_loader)
 		progressLoader.visibility = View.GONE
@@ -126,8 +174,6 @@ class ResultPageFragment : Fragment() {
 						requireActivity().openFileOutput(BITMAP_FILE_NAME, Context.MODE_PRIVATE)
 					imageResource.compress(Bitmap.CompressFormat.PNG, 100, stream)
 					stream.close()
-
-					Log.d("wtfisthis", "bitmap file name: $BITMAP_FILE_NAME")
 
 					intent.putExtra(ExpandImageActivity.EXTRA_NAME_IMAGE_RESOURCE, BITMAP_FILE_NAME)
 				}

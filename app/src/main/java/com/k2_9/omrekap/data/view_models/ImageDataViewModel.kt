@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 import org.opencv.android.Utils
 import org.opencv.core.Mat
 import org.opencv.imgproc.Imgproc
+import java.time.Instant
 
 class ImageDataViewModel : ViewModel() {
 	private val _data = MutableLiveData<ImageSaveData>()
@@ -92,6 +93,7 @@ class ImageDataViewModel : ViewModel() {
 				}
 			}
 			data.data = stringKeyResult
+			data.timestamp = Instant.now()
 
 			// TODO: annotate omr result
 			data.annotatedImage = annotatedImage

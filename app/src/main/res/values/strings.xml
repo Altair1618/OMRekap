@@ -13,4 +13,5 @@
     <string name="title_activity_preview">PreviewActivity</string>
     <string name="desc_accept_preview">accept preview</string>
     <string name="desc_reject_preview">reject preview</string>
+    <string name="text_detection_failed">Detection failed</string>
 </resources>
