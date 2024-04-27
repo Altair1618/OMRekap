@@ -5,7 +5,6 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,7 +27,6 @@ import java.io.FileOutputStream
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import kotlin.math.log
 
 /**
  * A simple [Fragment] subclass.
@@ -90,7 +88,6 @@ class ResultPageFragment : Fragment() {
 
 			if (dataList.isEmpty()) {
 				showFailureText()
-
 			} else {
 				hideFailureText()
 
@@ -151,7 +148,7 @@ class ResultPageFragment : Fragment() {
 
 		// timestamp text
 		timestampTextView = view.findViewById(R.id.result_timestamp)
-			timestampTextView.text = timestampToString(ImageSaveDataHolder.get().timestamp)
+		timestampTextView.text = timestampToString(ImageSaveDataHolder.get().timestamp)
 
 		// failure text
 		failureTextView = view.findViewById(R.id.failure_text)

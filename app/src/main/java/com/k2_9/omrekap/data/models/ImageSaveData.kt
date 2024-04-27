@@ -7,5 +7,5 @@ data class ImageSaveData(
 	val rawImage: Bitmap,
 	var annotatedImage: Bitmap,
 	var data: Map<String, Int?>,
-	var timestamp: Instant
+	var timestamp: Instant,
 )

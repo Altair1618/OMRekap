@@ -1,7 +1,6 @@
 package com.k2_9.omrekap.views.activities
 
 import android.content.Intent
-import android.util.Log
 
 class ResultFromCameraActivity : ResultActivity() {
 	private fun onBackCamera() {

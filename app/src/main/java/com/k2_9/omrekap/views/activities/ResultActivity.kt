@@ -88,7 +88,6 @@ abstract class ResultActivity : MainActivity() {
 		// Set the arguments for the fragment
 		fragment.arguments = arguments
 		return fragment
-
 	}
 
 	override fun getGalleryPreviewIntent(imageUri: Uri): Intent {
