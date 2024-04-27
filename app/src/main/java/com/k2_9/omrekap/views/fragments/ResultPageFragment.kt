@@ -81,9 +81,6 @@ class ResultPageFragment : Fragment() {
 		imageBitmap = ImageSaveDataHolder.get().annotatedImage
 
 		viewModel.data.observe(this) {
-			// TODO: fix this block that making fragment cant be replaced
-
-			Log.d("yeee", it.toString())
 			if (it == null) {
 				return@observe
 			}
