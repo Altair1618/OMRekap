@@ -21,7 +21,7 @@ import org.opencv.android.OpenCVLoader
 
 class PreviewActivity : AppCompatActivity() {
 	companion object {
-		const val EXTRA_NAME_IMAGE_URI_STRING = ResultActivity.EXTRA_NAME_IMAGE_URI_STRING
+		const val EXTRA_NAME_IMAGE_URI_STRING = "IMAGE_URI_STRING"
 		const val EXTRA_NAME_IS_RESET = ResultActivity.EXTRA_NAME_IS_RESET
 		const val EXTRA_NAME_IS_FROM_CAMERA = "IS_FROM_CAMERA"
 	}
@@ -77,6 +77,11 @@ class PreviewActivity : AppCompatActivity() {
 			intent.extras?.let { extras ->
 				newIntent.putExtras(extras)
 			}
+
+			newIntent.putExtra(
+				EXTRA_NAME_IS_RESET,
+				intent.extras?.getBoolean(EXTRA_NAME_IS_RESET, false) ?: false
+			)
 
 			newIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_SINGLE_TOP)
 			finish()

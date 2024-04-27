@@ -43,10 +43,9 @@ object SaveHelper {
 			saveImage(context, data.rawImage, folderName, "raw_image.jpg")
 			saveImage(context, data.annotatedImage, folderName, "annotated_image.jpg")
 
-			if (data.data != null) {
-				// TODO: handle when data is null, that is detection failed for OMR
-				saveJSON(context, data.data!!, folderName, "data.json")
-			}
+			// TODO: handle when data is null, that is detection failed for OMR
+			saveJSON(context, data.data, folderName, "data.json")
+
 		}
 	}
 
@@ -83,7 +82,7 @@ object SaveHelper {
 
 	private fun saveJSON(
 		context: Context,
-		data: Map<String, Int>,
+		data: Map<String, Int?>,
 		folderName: String,
 		fileName: String,
 	) {
@@ -152,7 +151,7 @@ object SaveHelper {
 	}
 
 	private fun saveJSONBeforeAndroidQ(
-		data: Map<String, Int>,
+		data: Map<String, Int?>,
 		folderName: String,
 		fileName: String,
 	) {
@@ -178,7 +177,7 @@ object SaveHelper {
 	@RequiresApi(Build.VERSION_CODES.Q)
 	private fun saveJSONAndroidQandAbove(
 		context: Context,
-		data: Map<String, Int>,
+		data: Map<String, Int?>,
 		folderName: String,
 		fileName: String,
 	) {

@@ -5,5 +5,5 @@ import android.graphics.Bitmap
 data class ImageSaveData(
 	val rawImage: Bitmap,
 	var annotatedImage: Bitmap,
-	var data: Map<String, Int>?,
+	var data: Map<String, Int?>,
 )

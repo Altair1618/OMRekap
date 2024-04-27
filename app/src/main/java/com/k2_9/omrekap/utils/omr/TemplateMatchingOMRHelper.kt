@@ -68,7 +68,6 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperCon
 
 		return matchedRectangles
 	}
-
 	private fun getContourInfos(matchedRectangles: List<Rect>): List<ContourInfo?> {
 		// Initialize a set to keep track of added rectangles
 		val addedRectangles = mutableSetOf<Rect>()

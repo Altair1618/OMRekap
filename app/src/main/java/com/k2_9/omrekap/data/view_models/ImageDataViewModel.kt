@@ -1,5 +1,6 @@
 package com.k2_9.omrekap.data.view_models
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -34,7 +35,14 @@ class ImageDataViewModel : ViewModel() {
 			Imgproc.cvtColor(imageMat, grayImageMat, Imgproc.COLOR_BGR2GRAY)
 
 			// load configuration
-			val (loadedConfig, id, corners) = OMRConfigDetector.detectConfiguration(grayImageMat)!!
+			val configurationResult = OMRConfigDetector.detectConfiguration(grayImageMat)
+
+			if (configurationResult == null) {
+				_data.value = data
+				return@launch
+			}
+
+			val (loadedConfig, id, corners) = configurationResult
 
 			// annotate the detected AprilTag
 			val annotatedImage = AprilTagHelper.annotateImage(rawImage)
@@ -49,15 +57,19 @@ class ImageDataViewModel : ViewModel() {
 			loadedConfig.templateMatchingOMRHelperConfig.setTemplate(circleTemplateLoader)
 
 			val contourOMRHelper = ContourOMRHelper(loadedConfig.contourOMRHelperConfig)
+			val templateMatchingOMRHelper = TemplateMatchingOMRHelper(loadedConfig.templateMatchingOMRHelperConfig)
 
-			val result: Map<OMRSection, Int>? = try {
-				contourOMRHelper.detect()
-			} catch (e: OMRHelper.DetectionError) {
+			val result: MutableMap<OMRSection, Int?> = mutableMapOf()
+
+			for (section in OMRSection.entries) {
 				try {
-					val templateMatchingOMRHelper = TemplateMatchingOMRHelper(loadedConfig.templateMatchingOMRHelperConfig)
-					templateMatchingOMRHelper.detect()
+					result[section] = contourOMRHelper.detect(section)
 				} catch (e: OMRHelper.DetectionError) {
-					null
+					try {
+						result[section] = templateMatchingOMRHelper.detect(section)
+					} catch (e: OMRHelper.DetectionError) {
+						result[section] = null
+					}
 				}
 			}
 
@@ -68,11 +80,13 @@ class ImageDataViewModel : ViewModel() {
 			customMap[OMRSection.SECOND] = "Bowo"
 			customMap[OMRSection.THIRD] = "Janggar"
 
-			val stringKeyResult = mutableMapOf<String, Int>()
+			val stringKeyResult = mutableMapOf<String, Int?>()
 
-			result?.let {
+			result.let {
 				for ((section, value) in it) {
 					stringKeyResult[customMap[section]!!] = value
+
+					Log.d("Result", "${customMap[section]}: $value")
 				}
 			}
 			data.data = stringKeyResult

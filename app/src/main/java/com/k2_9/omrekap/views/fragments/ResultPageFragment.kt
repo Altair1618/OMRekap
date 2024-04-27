@@ -1,9 +1,11 @@
 package com.k2_9.omrekap.views.fragments
 
+import android.content.Context
 import android.content.Intent
-import android.net.Uri
+import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,9 +19,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.k2_9.omrekap.R
 import com.k2_9.omrekap.data.view_models.ImageDataViewModel
+import com.k2_9.omrekap.utils.ImageSaveDataHolder
 import com.k2_9.omrekap.views.activities.ExpandImageActivity
 import com.k2_9.omrekap.views.activities.HomeActivity
 import com.k2_9.omrekap.views.adapters.ResultAdapter
+import java.io.FileOutputStream
+
 
 /**
  * A simple [Fragment] subclass.
@@ -28,14 +33,14 @@ import com.k2_9.omrekap.views.adapters.ResultAdapter
  */
 class ResultPageFragment : Fragment() {
 	companion object {
-		const val ARG_NAME_IS_FROM_CAMERA = "IS_FROM_CAMERA"
-		const val ARG_NAME_IMAGE_URI_STRING = "IMAGE_URI_STRING"
+		const val BITMAP_FILE_NAME = "temp.png"
 	}
 
-	private var imageUriString: String? = null
+	private var imageBitmap: Bitmap? = null
 
 	private lateinit var recyclerView: RecyclerView
 	private lateinit var resultAdapter: ResultAdapter
+	private lateinit var documentImageView: ImageView
 
 	private lateinit var viewModel: ImageDataViewModel
 
@@ -52,25 +57,18 @@ class ResultPageFragment : Fragment() {
 
 		viewModel = ViewModelProvider(requireActivity())[ImageDataViewModel::class.java]
 
-		// Retrieve the arguments
-		val args = arguments
+		imageBitmap = ImageSaveDataHolder.get().annotatedImage
 
-		// Check if arguments are not null and retrieve values
-		if (args != null) {
-			imageUriString = args.getString(ARG_NAME_IMAGE_URI_STRING)
-			if (imageUriString == null) {
-				throw IllegalArgumentException("Image URI string is null")
-			}
-		}
 
 		viewModel.data.observe(this) {
-			if (it.data != null) {
-				val result = it.data!!.toList().map { (key, value) ->
-					key to value.toString()
-				}
-
-				resultAdapter.submitList(result)
+			val result = it.data.toList().map { (key, value) ->
+				key to (value?.toString() ?: "undetected")
 			}
+
+			resultAdapter.submitList(result)
+
+			val anotatedImage = it.annotatedImage
+			documentImageView.setImageBitmap(anotatedImage)
 		}
 	}
 
@@ -84,13 +82,7 @@ class ResultPageFragment : Fragment() {
 		// Initialize your data (list of key-value pairs)
 		val resultData =
 			listOf(
-				Pair("Prabowo Subianto Djojohadikusumo", "270,20 juta"),
-				Pair("Key2", "Value2"),
-				Pair("Key3", "Value3"),
-				Pair("Key4", "Value4"),
-				Pair("Key5", "Value5"),
-				Pair("Key6", "Value6"),
-				// ... add more key-value pairs as needed
+				Pair("Candidate", "Vote count"),
 			)
 
 		// remove shadow
@@ -111,9 +103,8 @@ class ResultPageFragment : Fragment() {
 		resultAdapter.submitList(resultData)
 
 		// link image URI with view
-		val documentImageView: ImageView = view.findViewById(R.id.document_image)
-		documentImageView.tag = imageUriString
-		documentImageView.setImageURI(Uri.parse(imageUriString))
+		documentImageView = view.findViewById(R.id.document_image)
+		documentImageView.setImageBitmap(imageBitmap)
 
 		// remove progress bar
 		val progressLoader: ProgressBar = view.findViewById(R.id.progress_loader)
@@ -123,7 +114,7 @@ class ResultPageFragment : Fragment() {
 		val expandButton: ImageButton = view.findViewById(R.id.expand_button)
 		expandButton.setOnClickListener {
 			// Pass the image resource ID to ExpandImageActivity
-			val imageResource = documentImageView.tag ?: R.drawable.ic_image
+			val imageResource = imageBitmap ?: R.drawable.ic_image
 			val intent = Intent(requireContext(), ExpandImageActivity::class.java)
 
 			// Choose the appropriate constant based on the type of resource
@@ -131,8 +122,15 @@ class ResultPageFragment : Fragment() {
 				is Int -> {
 					intent.putExtra(ExpandImageActivity.EXTRA_NAME_DRAWABLE_RESOURCE, imageResource)
 				}
-				is String -> {
-					intent.putExtra(ExpandImageActivity.EXTRA_NAME_IMAGE_RESOURCE, imageResource.toString())
+				is Bitmap -> {
+					val stream: FileOutputStream =
+						requireActivity().openFileOutput(BITMAP_FILE_NAME, Context.MODE_PRIVATE)
+					imageResource.compress(Bitmap.CompressFormat.PNG, 100, stream)
+					stream.close()
+
+					Log.d("wtfisthis", "bitmap file name: $BITMAP_FILE_NAME")
+
+					intent.putExtra(ExpandImageActivity.EXTRA_NAME_IMAGE_RESOURCE, BITMAP_FILE_NAME)
 				}
 				else -> {
 					throw IllegalArgumentException("Unsupported resource type")
