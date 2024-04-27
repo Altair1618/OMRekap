@@ -35,11 +35,12 @@ class CropHelperTest {
 		image = Utils.loadResource(appContext, R.raw.example, CvType.CV_8UC1)
 		patternImage = Utils.loadResource(appContext, R.raw.corner_pattern, CvType.CV_8UC4)
 
-		patternBitmap = Bitmap.createBitmap(
-			patternImage.width(),
-			patternImage.height(),
-			Bitmap.Config.ARGB_8888
-		)
+		patternBitmap =
+			Bitmap.createBitmap(
+				patternImage.width(),
+				patternImage.height(),
+				Bitmap.Config.ARGB_8888,
+			)
 		imageBitmap = Bitmap.createBitmap(image.width(), image.height(), Bitmap.Config.ARGB_8888)
 		Utils.matToBitmap(image, imageBitmap)
 		Utils.matToBitmap(patternImage, patternBitmap)
@@ -64,7 +65,7 @@ class CropHelperTest {
 			appContext,
 			imageSaveData.annotatedImage,
 			"test",
-			"test_preprocess_annotated"
+			"test_preprocess_annotated",
 		)
 	}
 

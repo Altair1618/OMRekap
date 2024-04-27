@@ -3,13 +3,13 @@ package com.k2_9.omrekap.data.configs.omr
 import org.opencv.core.Mat
 
 class OMRCropperConfig(
-	image: Mat,
+	image: Mat?,
 	val omrSectionSize: Pair<Int, Int>,
 	omrSectionPosition: Map<OMRSection, Pair<Int, Int>>,
 ) {
-	var image: Mat
+	var image: Mat?
 		private set
-		get() = field.clone()
+		get() = field?.clone()
 
 	// Check if all the sections are present
 	init {
@@ -21,10 +21,6 @@ class OMRCropperConfig(
 			"OMR section size must be non-negative"
 		}
 
-		require(omrSectionSize.first <= image.width() && omrSectionSize.second <= image.height()) {
-			"OMR section size must be less than or equal to the image size"
-		}
-
 		require(omrSectionPosition.keys.containsAll(OMRSection.entries)) {
 			"All OMR sections must be present"
 		}
@@ -33,7 +29,11 @@ class OMRCropperConfig(
 			"OMR section position must be non-negative"
 		}
 
-		this.image = image.clone()
+		this.image = null
+
+		if (image != null) {
+			setImage(image)
+		}
 	}
 
 	private val omrSectionPosition: Map<OMRSection, Pair<Int, Int>> = omrSectionPosition.toMap()
@@ -43,6 +43,14 @@ class OMRCropperConfig(
 	}
 
 	fun setImage(image: Mat) {
-		this.image = image
+		require(omrSectionSize.first <= image.width() && omrSectionSize.second <= image.height()) {
+			"OMR section size must be less than or equal to the image size"
+		}
+
+		require(omrSectionPosition.values.all { it.first <= image.width() && it.second <= image.height() }) {
+			"OMR section position must be less than the image size"
+		}
+
+		this.image = image.clone()
 	}
 }

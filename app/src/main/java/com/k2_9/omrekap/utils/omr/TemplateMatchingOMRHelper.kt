@@ -28,7 +28,7 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperCon
 			templateBinary,
 			0.0,
 			255.0,
-			Imgproc.THRESH_BINARY_INV + Imgproc.THRESH_TRIANGLE
+			Imgproc.THRESH_BINARY_INV + Imgproc.THRESH_TRIANGLE,
 		)
 
 		// Perform template matching
@@ -37,7 +37,7 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperCon
 			currentSectionBinary,
 			templateBinary,
 			result,
-			Imgproc.TM_CCOEFF_NORMED
+			Imgproc.TM_CCOEFF_NORMED,
 		)
 
 		// Set a threshold for template matching result
@@ -62,7 +62,7 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperCon
 		for (point in locations) {
 			val locX = point.x.toInt()
 			val locY = point.y.toInt()
-			val rect = Rect(locX, locY, template.width(), template.height())
+			val rect = Rect(locX, locY, template!!.width(), template.height())
 			matchedRectangles.add(rect)
 		}
 
@@ -113,11 +113,12 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperCon
 	fun annotateImage(contourNumber: Int): Bitmap {
 		val annotatedImg = currentSectionGray!!.clone()
 		val matchedRectangles = getMatchRectangles()
-		val res = ImageAnnotationHelper.annotateTemplateMatchingOMR(
-			annotatedImg,
-			matchedRectangles,
-			contourNumber
-		)
+		val res =
+			ImageAnnotationHelper.annotateTemplateMatchingOMR(
+				annotatedImg,
+				matchedRectangles,
+				contourNumber,
+			)
 
 		// Convert the annotated Mat to Bitmap
 		val annotatedImageBitmap =
@@ -144,7 +145,7 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperCon
 			binary,
 			0.0,
 			255.0,
-			Imgproc.THRESH_BINARY_INV + Imgproc.THRESH_TRIANGLE
+			Imgproc.THRESH_BINARY_INV + Imgproc.THRESH_TRIANGLE,
 		)
 
 		// Update states
@@ -155,6 +156,10 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperCon
 
 		val contourInfos = getContourInfos(matchedRectangles)
 		val filteredContourInfos = filterContourInfos(contourInfos.toList())
+
+		if (filteredContourInfos.size != 3) {
+			throw DetectionError("Failed to detect 3 filled circle")
+		}
 
 		return contourInfosToNumbers(filteredContourInfos.toList())
 	}

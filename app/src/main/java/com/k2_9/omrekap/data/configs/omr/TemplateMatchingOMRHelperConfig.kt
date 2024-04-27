@@ -4,12 +4,12 @@ import org.opencv.core.Mat
 
 class TemplateMatchingOMRHelperConfig(
 	omrCropper: OMRCropper,
-	templateLoader: CircleTemplateLoader,
+	templateLoader: CircleTemplateLoader?,
 	similarityThreshold: Float,
 ) : OMRHelperConfig(omrCropper) {
-	var template: Mat
+	var template: Mat?
 		private set
-		get() = field.clone()
+		get() = field?.clone()
 
 	var similarityThreshold: Float
 		private set
@@ -19,7 +19,11 @@ class TemplateMatchingOMRHelperConfig(
 			"similarity_threshold must be between 0 and 1"
 		}
 
-		this.template = templateLoader.loadTemplateImage()
+		this.template = templateLoader?.loadTemplateImage()
 		this.similarityThreshold = similarityThreshold
+	}
+
+	public fun setTemplate(templateLoader: CircleTemplateLoader) {
+		this.template = templateLoader.loadTemplateImage()
 	}
 }
