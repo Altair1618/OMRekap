@@ -4,18 +4,19 @@ import android.content.Context
 import android.util.Log
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.google.gson.Gson
 import com.k2_9.omrekap.R
-import com.k2_9.omrekap.data.configs.omr.ContourOMRHelperConfig
-import com.k2_9.omrekap.data.configs.omr.OMRCropper
-import com.k2_9.omrekap.data.configs.omr.OMRCropperConfig
+import com.k2_9.omrekap.data.configs.omr.CircleTemplateLoader
 import com.k2_9.omrekap.data.configs.omr.OMRSection
 import com.k2_9.omrekap.utils.SaveHelper
 import com.k2_9.omrekap.utils.omr.ContourOMRHelper
+import com.k2_9.omrekap.utils.omr.OMRConfigDetector
+import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.opencv.android.OpenCVLoader
 import org.opencv.android.Utils
+import org.opencv.core.Mat
+import org.opencv.imgproc.Imgproc
 
 @RunWith(AndroidJUnit4::class)
 class ContourOMRHelperTest {
@@ -28,44 +29,54 @@ class ContourOMRHelperTest {
 		appContext = InstrumentationRegistry.getInstrumentation().targetContext
 
 		// Load the image resource as a Bitmap
-		val image = Utils.loadResource(appContext, R.raw.example)
+		val imageMat = Utils.loadResource(appContext, R.raw.example)
+		val templateLoader = CircleTemplateLoader(appContext, R.raw.circle_template)
 
-		val sectionPositions =
-			mapOf(
-				OMRSection.FIRST to Pair(780, 373),
-				OMRSection.SECOND to Pair(0, 0),
-				OMRSection.THIRD to Pair(0, 0),
-			)
+		// Convert if image is not grayscale
+		val grayscaleImageMat = if (imageMat.channels() == 3) {
+			val grayImageMat = Mat()
+			Imgproc.cvtColor(imageMat, grayImageMat, Imgproc.COLOR_BGR2GRAY)
+			grayImageMat
+		} else {
+			imageMat
+		}
 
-		val cropperConfig =
-			OMRCropperConfig(
-				image,
-				Pair(140, 220),
-				sectionPositions,
-			)
+		runBlocking {
+			// Get OMR Config by AprilTag
+			OMRConfigDetector.loadConfiguration(appContext)
+			val configResult = OMRConfigDetector.detectConfiguration(grayscaleImageMat)
+			assert(configResult != null)
 
-		val cropper = OMRCropper(cropperConfig)
+			val config = configResult!!.first
 
-		val config =
-			ContourOMRHelperConfig(
-				cropper,
-				12,
-				30,
-				0.5f,
-				1.5f,
-				0.9f,
-				230,
-			)
-		Log.d("ContourOMRHelperTest", Gson().toJson(config))
-		helper = ContourOMRHelper(config)
+			config.contourOMRHelperConfig.omrCropper.config.setImage(grayscaleImageMat)
+			config.templateMatchingOMRHelperConfig.omrCropper.config.setImage(grayscaleImageMat)
+			config.templateMatchingOMRHelperConfig.setTemplate(templateLoader)
+
+			helper = ContourOMRHelper(config.contourOMRHelperConfig)
+		}
 	}
 
 	@Test
-	fun test_detect() {
-		val result = helper.detect(OMRSection.FIRST)
-		val imageAnnotated = helper.annotateImage(result)
-		Log.d("ContourOMRHelperTest", result.toString())
-		assert(result == 172)
-		SaveHelper.saveImage(appContext, imageAnnotated, "test", "test_detect")
+	fun test_contour_omr() {
+		val resultFirst = helper.detect(OMRSection.FIRST)
+		val resultSecond = helper.detect(OMRSection.SECOND)
+		val resultThird = helper.detect(OMRSection.THIRD)
+
+		val imgFirst = helper.annotateImage(resultFirst)
+		val imgSecond = helper.annotateImage(resultSecond)
+		val imgThird = helper.annotateImage(resultThird)
+
+		Log.d("ContourOMRHelperTest", resultFirst.toString())
+		Log.d("ContourOMRHelperTest", resultSecond.toString())
+		Log.d("ContourOMRHelperTest", resultThird.toString())
+
+		SaveHelper.saveImage(appContext, imgFirst, "test", "test_contour_omr_first")
+		SaveHelper.saveImage(appContext, imgSecond, "test", "test_contour_omr_second")
+		SaveHelper.saveImage(appContext, imgThird, "test", "test_contour_omr_third")
+
+		assert(resultFirst == 172)
+		assert(resultSecond == 24)
+		assert(resultThird == 2)
 	}
 }

@@ -17,6 +17,7 @@ import org.opencv.android.OpenCVLoader
 import org.opencv.android.Utils
 import org.opencv.core.CvType
 import org.opencv.core.Mat
+import java.time.Instant
 
 @RunWith(JUnit4::class)
 class CropHelperTest {
@@ -35,23 +36,24 @@ class CropHelperTest {
 		image = Utils.loadResource(appContext, R.raw.example, CvType.CV_8UC1)
 		patternImage = Utils.loadResource(appContext, R.raw.corner_pattern, CvType.CV_8UC4)
 
-		patternBitmap = Bitmap.createBitmap(
-			patternImage.width(),
-			patternImage.height(),
-			Bitmap.Config.ARGB_8888
-		)
+		patternBitmap =
+			Bitmap.createBitmap(
+				patternImage.width(),
+				patternImage.height(),
+				Bitmap.Config.ARGB_8888,
+			)
 		imageBitmap = Bitmap.createBitmap(image.width(), image.height(), Bitmap.Config.ARGB_8888)
 		Utils.matToBitmap(image, imageBitmap)
 		Utils.matToBitmap(patternImage, patternBitmap)
 
 		CropHelper.loadPattern(patternBitmap)
 
-		imageSaveData = ImageSaveData(imageBitmap, imageBitmap, mutableMapOf<String, Int>())
+		imageSaveData = ImageSaveData(imageBitmap, imageBitmap, mutableMapOf<String, Int>(), Instant.now())
 	}
 
 	@Before
 	fun beforeEachTest() {
-		imageSaveData = ImageSaveData(imageBitmap, imageBitmap, mutableMapOf<String, Int>())
+		imageSaveData = ImageSaveData(imageBitmap, imageBitmap, mutableMapOf<String, Int>(), Instant.now())
 	}
 
 	@Test
@@ -64,7 +66,7 @@ class CropHelperTest {
 			appContext,
 			imageSaveData.annotatedImage,
 			"test",
-			"test_preprocess_annotated"
+			"test_preprocess_annotated",
 		)
 	}
 

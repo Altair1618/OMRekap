@@ -7,6 +7,7 @@ import org.opencv.core.Core
 import org.opencv.core.Mat
 import org.opencv.core.Size
 import org.opencv.imgproc.Imgproc
+import java.time.Instant
 
 object PreprocessHelper {
 	private const val FINAL_WIDTH = 540.0
@@ -46,7 +47,7 @@ object PreprocessHelper {
 		Utils.matToBitmap(mainImageResult, mainImageBitmap)
 		Utils.matToBitmap(annotatedImageResult, annotatedImageBitmap)
 
-		return ImageSaveData(mainImageBitmap, annotatedImageBitmap, data.data)
+		return ImageSaveData(mainImageBitmap, annotatedImageBitmap, data.data, Instant.now())
 	}
 
 	private fun preprocessMat(img: Mat): Mat {

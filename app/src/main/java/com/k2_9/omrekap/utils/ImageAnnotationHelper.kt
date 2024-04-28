@@ -68,7 +68,7 @@ object ImageAnnotationHelper {
 				Imgproc.FONT_HERSHEY_SIMPLEX,
 				1.0,
 				Scalar(0.0, 255.0, 0.0),
-				5
+				5,
 			)
 		}
 		return imgWithAnnotations
