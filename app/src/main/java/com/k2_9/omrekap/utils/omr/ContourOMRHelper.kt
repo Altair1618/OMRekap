@@ -10,6 +10,7 @@ import org.opencv.core.Core
 import org.opencv.core.CvType
 import org.opencv.core.Mat
 import org.opencv.core.MatOfPoint
+import org.opencv.core.Rect
 import org.opencv.core.Scalar
 import org.opencv.imgproc.Imgproc
 
@@ -177,23 +178,6 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 
 		return filteredContours
 	}
-
-	fun annotateImage(contourNumber: Int): Bitmap {
-		var annotatedImg = currentSectionGray!!.clone()
-		val contours = getAllContours()
-		annotatedImg =
-			ImageAnnotationHelper.annotateContourOMR(annotatedImg, contours, contourNumber)
-
-		val annotatedImageBitmap =
-			Bitmap.createBitmap(
-				annotatedImg.width(),
-				annotatedImg.height(),
-				Bitmap.Config.ARGB_8888,
-			)
-		Utils.matToBitmap(annotatedImg, annotatedImageBitmap)
-		return annotatedImageBitmap
-	}
-
 	override fun detect(section: OMRSection): Int {
 		val omrSectionImage = config.omrCropper.crop(section)
 
@@ -227,5 +211,27 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 			Log.d("ContourOMRHelper", "All 30 circles are detected")
 			compareAll(contours)
 		}
+	}
+
+
+	//Get Section Position For Annotating Purpose
+	fun getSectionPosition(section: OMRSection): Rect {
+		return config.omrCropper.sectionPosition(section)
+	}
+	// Annotating Image For Testing Purpose
+	fun annotateImage(contourNumber: Int): Bitmap {
+		var annotatedImg = currentSectionGray!!.clone()
+		val contours = getAllContours()
+		annotatedImg =
+			ImageAnnotationHelper.annotateContourOMR(annotatedImg, contours, contourNumber)
+
+		val annotatedImageBitmap =
+			Bitmap.createBitmap(
+				annotatedImg.width(),
+				annotatedImg.height(),
+				Bitmap.Config.ARGB_8888,
+			)
+		Utils.matToBitmap(annotatedImg, annotatedImageBitmap)
+		return annotatedImageBitmap
 	}
 }
