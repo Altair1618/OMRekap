@@ -11,6 +11,8 @@ class OMRCropperConfig(
 		private set
 		get() = field?.clone()
 
+	private val omrSectionPosition: Map<OMRSection, Pair<Int, Int>>
+
 	// Check if all the sections are present
 	init {
 
@@ -30,13 +32,12 @@ class OMRCropperConfig(
 		}
 
 		this.image = null
+		this.omrSectionPosition = omrSectionPosition.toMap()
 
 		if (image != null) {
 			setImage(image)
 		}
 	}
-
-	private val omrSectionPosition: Map<OMRSection, Pair<Int, Int>> = omrSectionPosition.toMap()
 
 	fun getSectionPosition(section: OMRSection): Pair<Int, Int> {
 		return omrSectionPosition[section]!!
