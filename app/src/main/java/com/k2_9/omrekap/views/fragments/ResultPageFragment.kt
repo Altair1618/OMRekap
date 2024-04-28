@@ -66,10 +66,6 @@ class ResultPageFragment : Fragment() {
 		recyclerView.visibility = View.GONE
 	}
 
-	override fun onAttach(context: Context) {
-		super.onAttach(context)
-	}
-
 	private fun hideFailureText() {
 		failureTextView.visibility = View.GONE
 		recyclerView.visibility = View.VISIBLE
@@ -83,7 +79,10 @@ class ResultPageFragment : Fragment() {
 		imageBitmap = ImageSaveDataHolder.get().annotatedImage
 
 		viewModel.data.observe(this) {
-			// TODO: fix this block that making fragment cant be replaced
+			if (it == null) {
+				return@observe
+			}
+
 			val dataList = it.data.toList()
 
 			if (dataList.isEmpty()) {
@@ -99,13 +98,13 @@ class ResultPageFragment : Fragment() {
 				resultAdapter.submitList(result)
 			}
 
-			val anotatedImage = it.annotatedImage
+			val annotatedImage = it.annotatedImage
 
 			// change expand image
-			imageBitmap = anotatedImage
+			imageBitmap = annotatedImage
 
 			// change result image
-			documentImageView.setImageBitmap(anotatedImage)
+			documentImageView.setImageBitmap(annotatedImage)
 
 			// change timestamp
 			timestampTextView.text = timestampToString(it.timestamp)

@@ -36,9 +36,13 @@ abstract class ResultActivity : MainActivity() {
 	private var saveFileJob: Job? = null
 	private var startSaveJob: Boolean = false
 	private val omrHelperObserver =
-		Observer<ImageSaveData> { data ->
-			// TODO: save to file
-// 			saveFile()
+		Observer<ImageSaveData?> { data ->
+			if (data == null) {
+				Log.e("MainActivity", "Data is null")
+				return@Observer
+			}
+
+			saveFile()
 		}
 
 	private var isReset: Boolean = false // reset ViewModel for new OMR process
@@ -48,7 +52,8 @@ abstract class ResultActivity : MainActivity() {
 		isReset = intent.getBooleanExtra(EXTRA_NAME_IS_RESET, false)
 
 		if (isReset) {
-			// TODO: reset view model (perlu diskusi dulu tentang stop proses kalau ganti page)
+			viewModel.resetState()
+
 			if (isCreated) {
 				setFragment(intent)
 			}

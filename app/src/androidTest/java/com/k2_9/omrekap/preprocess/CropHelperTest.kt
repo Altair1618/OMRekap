@@ -17,6 +17,7 @@ import org.opencv.android.OpenCVLoader
 import org.opencv.android.Utils
 import org.opencv.core.CvType
 import org.opencv.core.Mat
+import java.time.Instant
 
 @RunWith(JUnit4::class)
 class CropHelperTest {
@@ -47,12 +48,12 @@ class CropHelperTest {
 
 		CropHelper.loadPattern(patternBitmap)
 
-		imageSaveData = ImageSaveData(imageBitmap, imageBitmap, mutableMapOf<String, Int>())
+		imageSaveData = ImageSaveData(imageBitmap, imageBitmap, mutableMapOf<String, Int>(), Instant.now())
 	}
 
 	@Before
 	fun beforeEachTest() {
-		imageSaveData = ImageSaveData(imageBitmap, imageBitmap, mutableMapOf<String, Int>())
+		imageSaveData = ImageSaveData(imageBitmap, imageBitmap, mutableMapOf<String, Int>(), Instant.now())
 	}
 
 	@Test
