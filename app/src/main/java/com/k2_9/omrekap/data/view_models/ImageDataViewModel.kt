@@ -99,15 +99,14 @@ class ImageDataViewModel : ViewModel() {
 			data.data = stringKeyResult
 			data.timestamp = Instant.now()
 
-
 			// TODO: annotate omr result
 			val annotatedImageBitmap =
-			Bitmap.createBitmap(
-				annotatedImage.width(),
-				annotatedImage.height(),
-				Bitmap.Config.ARGB_8888,
-			)
-		Utils.matToBitmap(annotatedImage, annotatedImageBitmap)
+				Bitmap.createBitmap(
+					annotatedImage.width(),
+					annotatedImage.height(),
+					Bitmap.Config.ARGB_8888,
+				)
+			Utils.matToBitmap(annotatedImage, annotatedImageBitmap)
 			data.annotatedImage = annotatedImageBitmap
 			_data.value = data
 		}

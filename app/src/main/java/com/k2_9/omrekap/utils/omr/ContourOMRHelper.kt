@@ -178,6 +178,7 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 
 		return filteredContours
 	}
+
 	override fun detect(section: OMRSection): Int {
 		val omrSectionImage = config.omrCropper.crop(section)
 
@@ -213,11 +214,11 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 		}
 	}
 
-
-	//Get Section Position For Annotating Purpose
+	// Get Section Position For Annotating Purpose
 	fun getSectionPosition(section: OMRSection): Rect {
 		return config.omrCropper.sectionPosition(section)
 	}
+
 	// Annotating Image For Testing Purpose
 	fun annotateImage(contourNumber: Int): Bitmap {
 		var annotatedImg = currentSectionGray!!.clone()
