@@ -41,12 +41,14 @@ object ImageAnnotationHelper {
 					}
 					points
 				}
-
 			// Draw ID and bounding box
+			val originalPoint = points[0][0]
+			val drawnPoint = Point(originalPoint.x - 30, originalPoint.y - 40.0)
+
 			Imgproc.putText(
 				imgWithAnnotations,
 				id,
-				points[0][0],
+				drawnPoint,
 				Imgproc.FONT_HERSHEY_SIMPLEX,
 				0.5,
 				Scalar(0.0, 255.0, 0.0),
@@ -127,7 +129,7 @@ object ImageAnnotationHelper {
 			Imgproc.putText(
 				imgWithAnnotations,
 				"Not Detected",
-				Point(section.x.toDouble()-15.0, section.y.toDouble() - 20.0),
+				Point(section.x.toDouble() - 13.0, section.y.toDouble() - 20.0),
 				Imgproc.FONT_HERSHEY_SIMPLEX,
 				0.5,
 				Scalar(0.0, 255.0, 0.0),
@@ -137,7 +139,7 @@ object ImageAnnotationHelper {
 			Imgproc.putText(
 				imgWithAnnotations,
 				"$result",
-				Point(section.x.toDouble() + 50.0, section.y.toDouble() - 30.0),
+				Point(section.x.toDouble() + 50.0, section.y.toDouble() - 10.0),
 				Imgproc.FONT_HERSHEY_SIMPLEX,
 				1.0,
 				Scalar(0.0, 255.0, 0.0),
