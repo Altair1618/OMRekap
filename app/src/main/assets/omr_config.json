@@ -13,21 +13,21 @@
             "image": null,
             "omrSectionPosition": {
               "FIRST": {
-                "first": 420,
-                "second": 180
+                "first": 712,
+                "second": 296
               },
               "SECOND": {
-                "first": 420,
-                "second": 356
+                "first": 712,
+                "second": 588
               },
               "THIRD": {
-                "first": 420,
-                "second": 529
+                "first": 712,
+                "second": 880
               }
             },
             "omrSectionSize": {
-              "first": 80,
-              "second": 124
+              "first": 120,
+              "second": 205
             }
           }
         }
@@ -40,21 +40,21 @@
             "image": null,
             "omrSectionPosition": {
               "FIRST": {
-                "first": 420,
-                "second": 180
+                "first": 712,
+                "second": 296
               },
               "SECOND": {
-                "first": 0,
-                "second": 0
+                "first": 712,
+                "second": 588
               },
               "THIRD": {
-                "first": 0,
-                "second": 0
+                "first": 712,
+                "second": 880
               }
             },
             "omrSectionSize": {
-              "first": 80,
-              "second": 124
+              "first": 120,
+              "second": 205
             }
           }
         }

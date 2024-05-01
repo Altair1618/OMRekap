@@ -29,7 +29,7 @@ class TemplateMatchingOMRHelperTest {
 		appContext = InstrumentationRegistry.getInstrumentation().targetContext
 
 		// Load the image resource as a Bitmap
-		val imageMat = Utils.loadResource(appContext, R.raw.example)
+		val imageMat = Utils.loadResource(appContext, R.raw.test)
 		val templateLoader = CircleTemplateLoader(appContext, R.raw.circle_template)
 
 		// Convert if image is not grayscale
