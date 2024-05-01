@@ -33,13 +33,14 @@ class OMRCropperTest {
 		val templateLoader = CircleTemplateLoader(appContext, R.raw.circle_template)
 
 		// Convert if image is not grayscale
-		val grayscaleImageMat = if (imageMat.channels() == 3) {
-			val grayImageMat = Mat()
-			Imgproc.cvtColor(imageMat, grayImageMat, Imgproc.COLOR_BGR2GRAY)
-			grayImageMat
-		} else {
-			imageMat
-		}
+		val grayscaleImageMat =
+			if (imageMat.channels() == 3) {
+				val grayImageMat = Mat()
+				Imgproc.cvtColor(imageMat, grayImageMat, Imgproc.COLOR_BGR2GRAY)
+				grayImageMat
+			} else {
+				imageMat
+			}
 
 		runBlocking {
 			// Get OMR Config by AprilTag

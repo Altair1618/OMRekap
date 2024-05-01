@@ -6,12 +6,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.k2_9.omrekap.R
 import com.k2_9.omrekap.data.configs.omr.CircleTemplateLoader
-import com.k2_9.omrekap.data.configs.omr.OMRCropper
-import com.k2_9.omrekap.data.configs.omr.OMRCropperConfig
 import com.k2_9.omrekap.data.configs.omr.OMRSection
-import com.k2_9.omrekap.data.configs.omr.TemplateMatchingOMRHelperConfig
 import com.k2_9.omrekap.utils.SaveHelper
-import com.k2_9.omrekap.utils.omr.ContourOMRHelper
 import com.k2_9.omrekap.utils.omr.OMRConfigDetector
 import com.k2_9.omrekap.utils.omr.TemplateMatchingOMRHelper
 import kotlinx.coroutines.runBlocking
@@ -33,17 +29,18 @@ class TemplateMatchingOMRHelperTest {
 		appContext = InstrumentationRegistry.getInstrumentation().targetContext
 
 		// Load the image resource as a Bitmap
-		val imageMat = Utils.loadResource(appContext, R.raw.example)
+		val imageMat = Utils.loadResource(appContext, R.raw.test)
 		val templateLoader = CircleTemplateLoader(appContext, R.raw.circle_template)
 
 		// Convert if image is not grayscale
-		val grayscaleImageMat = if (imageMat.channels() == 3) {
-			val grayImageMat = Mat()
-			Imgproc.cvtColor(imageMat, grayImageMat, Imgproc.COLOR_BGR2GRAY)
-			grayImageMat
-		} else {
-			imageMat
-		}
+		val grayscaleImageMat =
+			if (imageMat.channels() == 3) {
+				val grayImageMat = Mat()
+				Imgproc.cvtColor(imageMat, grayImageMat, Imgproc.COLOR_BGR2GRAY)
+				grayImageMat
+			} else {
+				imageMat
+			}
 
 		runBlocking {
 			// Get OMR Config by AprilTag
