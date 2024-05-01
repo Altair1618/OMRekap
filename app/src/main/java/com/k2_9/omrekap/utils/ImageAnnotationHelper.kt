@@ -27,6 +27,8 @@ object ImageAnnotationHelper {
 		id: String,
 	): Mat {
 		val imgWithAnnotations = img.clone()
+		// Change image to color
+		Imgproc.cvtColor(img, imgWithAnnotations, Imgproc.COLOR_GRAY2BGR)
 		if (id.isNotEmpty()) {
 			// points -> list<Point*s*>, inside list of points are corners of the detector
 			val points =
@@ -39,29 +41,31 @@ object ImageAnnotationHelper {
 					}
 					points
 				}
-
 			// Draw ID and bounding box
+			val originalPoint = points[0][0]
+			val drawnPoint = Point(originalPoint.x - 30, originalPoint.y - 40.0)
+
 			Imgproc.putText(
 				imgWithAnnotations,
 				id,
-				points[0][0],
+				drawnPoint,
 				Imgproc.FONT_HERSHEY_SIMPLEX,
-				1.0,
+				0.5,
 				Scalar(0.0, 255.0, 0.0),
-				5,
+				1,
 			)
 			Imgproc.polylines(
 				imgWithAnnotations,
 				listOf(MatOfPoint(*points[0].toTypedArray())),
 				true,
 				Scalar(0.0, 255.0, 0.0),
-				5,
+				1,
 			)
 		} else {
 			val topLeft = Point(cornerPoints[0].get(0, 0)[0], cornerPoints[0].get(1, 0)[0])
 			Imgproc.putText(
 				imgWithAnnotations,
-				"April Tag Not Detected",
+				"Not Detected",
 				topLeft,
 				Imgproc.FONT_HERSHEY_SIMPLEX,
 				1.0,
@@ -78,6 +82,8 @@ object ImageAnnotationHelper {
 		contourNumber: Int,
 	): Mat {
 		val imgWithAnnotations = img.clone()
+		// Change image to color
+		Imgproc.cvtColor(img, imgWithAnnotations, Imgproc.COLOR_GRAY2BGR)
 		for (rect in cornerPoints) {
 			Imgproc.rectangle(imgWithAnnotations, rect.tl(), rect.br(), Scalar(0.0, 255.0, 0.0), 1)
 		}
@@ -111,6 +117,45 @@ object ImageAnnotationHelper {
 			0.5,
 			Scalar(0.0, 255.0, 0.0),
 			1,
+		)
+		return imgWithAnnotations
+	}
+
+	fun annotateOMR(
+		img: Mat,
+		section: Rect,
+		result: Int?,
+	): Mat {
+		val imgWithAnnotations = img.clone()
+
+		// Draw text on the image
+		if (result == null) {
+			Imgproc.putText(
+				imgWithAnnotations,
+				"Not Detected",
+				Point(section.x.toDouble() - 13.0, section.y.toDouble() - 20.0),
+				Imgproc.FONT_HERSHEY_SIMPLEX,
+				0.5,
+				Scalar(0.0, 255.0, 0.0),
+				1,
+			)
+		} else {
+			Imgproc.putText(
+				imgWithAnnotations,
+				"$result",
+				Point(section.x.toDouble() + 50.0, section.y.toDouble() - 10.0),
+				Imgproc.FONT_HERSHEY_SIMPLEX,
+				1.0,
+				Scalar(0.0, 255.0, 0.0),
+				2,
+			)
+		}
+		Imgproc.rectangle(
+			imgWithAnnotations,
+			section.tl(),
+			section.br(),
+			Scalar(0.0, 255.0, 0.0),
+			2,
 		)
 		return imgWithAnnotations
 	}
