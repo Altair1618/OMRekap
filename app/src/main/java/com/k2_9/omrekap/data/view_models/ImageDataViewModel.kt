@@ -1,5 +1,6 @@
 package com.k2_9.omrekap.data.view_models
 
+import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -9,6 +10,7 @@ import com.k2_9.omrekap.data.configs.omr.CircleTemplateLoader
 import com.k2_9.omrekap.data.configs.omr.OMRSection
 import com.k2_9.omrekap.data.models.ImageSaveData
 import com.k2_9.omrekap.utils.AprilTagHelper
+import com.k2_9.omrekap.utils.ImageAnnotationHelper
 import com.k2_9.omrekap.utils.omr.ContourOMRHelper
 import com.k2_9.omrekap.utils.omr.OMRConfigDetector
 import com.k2_9.omrekap.utils.omr.OMRHelper
@@ -48,7 +50,7 @@ class ImageDataViewModel : ViewModel() {
 			val (loadedConfig, _, _) = configurationResult
 
 			// annotate the detected AprilTag
-			val annotatedImage = AprilTagHelper.annotateImage(rawImage)
+			var annotatedImage = AprilTagHelper.annotateImage(rawImage)
 
 			// process OMR
 			val matImage = Mat()
@@ -89,14 +91,23 @@ class ImageDataViewModel : ViewModel() {
 				for ((section, value) in it) {
 					stringKeyResult[customMap[section]!!] = value
 
+					annotatedImage = ImageAnnotationHelper.annotateOMR(annotatedImage, contourOMRHelper.getSectionPosition(section), value)
 					Log.d("Result", "${customMap[section]}: $value")
 				}
 			}
+
 			data.data = stringKeyResult
 			data.timestamp = Instant.now()
 
 			// TODO: annotate omr result
-			data.annotatedImage = annotatedImage
+			val annotatedImageBitmap =
+				Bitmap.createBitmap(
+					annotatedImage.width(),
+					annotatedImage.height(),
+					Bitmap.Config.ARGB_8888,
+				)
+			Utils.matToBitmap(annotatedImage, annotatedImageBitmap)
+			data.annotatedImage = annotatedImageBitmap
 			_data.value = data
 		}
 	}
