@@ -199,9 +199,15 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 	override fun detect(section: OMRSection): Int {
 		val omrSectionImage = config.omrCropper.crop(section)
 
-		// Convert image to grayscale
-		val gray = Mat()
-		Imgproc.cvtColor(omrSectionImage, gray, Imgproc.COLOR_BGR2GRAY)
+		// Convert image to grayscale if it is not
+		val gray =
+			if (omrSectionImage.channels() == 3) {
+				val grayImageMat = Mat()
+				Imgproc.cvtColor(omrSectionImage, grayImageMat, Imgproc.COLOR_BGR2GRAY)
+				grayImageMat
+			} else {
+				omrSectionImage
+			}
 
 		// Apply binary thresholding
 		val binary = Mat()
