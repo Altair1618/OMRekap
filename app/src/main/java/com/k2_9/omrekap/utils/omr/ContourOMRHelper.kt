@@ -128,8 +128,10 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 				contoursSorted.subList(col * 10, (col + 1) * 10)
 					.sortedBy { Imgproc.boundingRect(it).y }
 
-			val darkestRow = getDarkestRow(colContours)
+			var darkestRow = getDarkestRow(colContours)
 
+			darkestRow = darkestRow ?: 0
+			
 			// Append the darkest row for the current column to the list
 			darkestRows.add(darkestRow)
 		}
