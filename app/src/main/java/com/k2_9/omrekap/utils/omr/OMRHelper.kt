@@ -64,7 +64,7 @@ abstract class OMRHelper(private val config: OMRHelperConfig) {
 
 	protected fun filterContourInfos(
 		contourInfos: List<ContourInfo>,
-		filledIntensities: List<Double>
+		filledIntensities: List<Double>,
 	): List<ContourInfo?> {
 		val mutableContourInfos = contourInfos.toMutableList()
 		val uniqueContourInfos = mutableListOf<ContourInfo?>()

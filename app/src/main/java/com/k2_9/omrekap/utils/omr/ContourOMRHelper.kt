@@ -25,7 +25,10 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 		return ContourInfo(Pair(centerX, centerY), Pair(rect.width, rect.height))
 	}
 
-	private fun getContourInfo(filledContours: List<Mat>, filledIntensities: List<Int>): List<ContourInfo?> {
+	private fun getContourInfo(
+		filledContours: List<Mat>,
+		filledIntensities: List<Int>,
+	): List<ContourInfo?> {
 		val contourInfos = mutableListOf<ContourInfo>()
 
 		// Zip filledContours with filledIntensities
