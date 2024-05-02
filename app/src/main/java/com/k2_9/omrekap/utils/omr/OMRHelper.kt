@@ -31,9 +31,7 @@ abstract class OMRHelper(private val config: OMRHelperConfig) {
 			} else {
 				// Detect number based on vertical position of the contour
 				val centerY = contourInfo.center.second
-				val h = contourInfo.size.second
-
-				val columnIndex = floor(((centerY.toDouble() - h.toDouble() / 2.0) / columnHeight.toDouble()) * 10).toInt()
+				val columnIndex = floor((centerY.toDouble() / columnHeight.toDouble()) * 10).toInt()
 
 				result.add(columnIndex)
 			}
