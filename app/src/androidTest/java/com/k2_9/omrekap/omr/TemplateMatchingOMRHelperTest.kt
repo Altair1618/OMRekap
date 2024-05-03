@@ -34,7 +34,7 @@ class TemplateMatchingOMRHelperTest {
 
 		// Convert if image is not grayscale
 		val grayscaleImageMat =
-			if (imageMat.channels() == 3) {
+			if (imageMat.channels() != 1) {
 				val grayImageMat = Mat()
 				Imgproc.cvtColor(imageMat, grayImageMat, Imgproc.COLOR_BGR2GRAY)
 				grayImageMat

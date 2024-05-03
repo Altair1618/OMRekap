@@ -141,7 +141,7 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperCon
 
 		// Convert image to grayscale if it is not
 		val gray =
-			if (omrSectionImage.channels() == 3) {
+			if (omrSectionImage.channels() != 1) {
 				val grayImageMat = Mat()
 				Imgproc.cvtColor(omrSectionImage, grayImageMat, Imgproc.COLOR_BGR2GRAY)
 				grayImageMat
