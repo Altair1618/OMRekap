@@ -76,8 +76,11 @@ class OMRCropperTest {
 		SaveHelper.saveImage(appContext, bitmapSecond, "test", "test_crop_second.png")
 		SaveHelper.saveImage(appContext, bitmapThird, "test", "test_crop_third.png")
 
-		assert(resultFirst.width() == 80 && resultFirst.height() == 124)
-		assert(resultSecond.width() == 80 && resultSecond.height() == 124)
-		assert(resultThird.width() == 80 && resultThird.height() == 124)
+		val width = cropper.config.omrSectionSize.first
+		val height = cropper.config.omrSectionSize.second
+
+		assert(resultFirst.width() == width && resultFirst.height() == height)
+		assert(resultSecond.width() == width && resultSecond.height() == height)
+		assert(resultThird.width() == width && resultThird.height() == height)
 	}
 }
