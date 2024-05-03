@@ -2,10 +2,33 @@ package com.k2_9.omrekap.utils.omr
 
 import com.k2_9.omrekap.data.configs.omr.OMRHelperConfig
 import com.k2_9.omrekap.data.configs.omr.OMRSection
+import kotlin.math.abs
 import kotlin.math.floor
 
 abstract class OMRHelper(private val config: OMRHelperConfig) {
-	data class ContourInfo(val center: Pair<Int, Int>, val size: Pair<Int, Int>)
+	class ContourInfo(val center: Pair<Int, Int>, val size: Pair<Int, Int>) {
+		fun isOverlapping(other: ContourInfo): Boolean {
+			return isColumnOverlapping(other) && isRowOverlapping(other)
+		}
+
+		fun isColumnOverlapping(other: ContourInfo): Boolean {
+			val x1 = center.first
+			val x2 = other.center.first
+			val w1 = size.first
+			val w2 = other.size.first
+
+			return abs(x1 - x2) * 2 < w1 + w2
+		}
+
+		fun isRowOverlapping(other: ContourInfo): Boolean {
+			val y1 = center.second
+			val y2 = other.center.second
+			val h1 = size.second
+			val h2 = other.size.second
+
+			return abs(y1 - y2) * 2 < h1 + h2
+		}
+	}
 
 	class DetectionError(message: String) : Exception(message)
 
@@ -39,22 +62,44 @@ abstract class OMRHelper(private val config: OMRHelperConfig) {
 		return getCombinedNumbers(result)
 	}
 
-	protected fun filterContourInfos(contourInfos: List<ContourInfo?>): List<ContourInfo?> {
-		// TODO: Handle when 1 column has more than 1 filled circle
-		// TODO: Handle when no filled circle for each column (assume that the number is 0, with null as representation of the ContourInfo)
+	protected fun filterContourInfos(
+		contourInfos: List<ContourInfo>,
+		filledIntensities: List<Double>,
+	): List<ContourInfo?> {
+		val mutableContourInfos = contourInfos.toMutableList()
+		val uniqueContourInfos = mutableListOf<ContourInfo?>()
 
-		return contourInfos
+		// Group by overlapping contour infos and choose the one with the highest intensity
+		for (i in 0 until mutableContourInfos.size - 1) {
+			if (mutableContourInfos[i].isColumnOverlapping(mutableContourInfos[i + 1])) {
+				if (filledIntensities[i] > filledIntensities[i + 1]) {
+					mutableContourInfos[i + 1] = mutableContourInfos[i]
+				}
+				continue
+			} else {
+				uniqueContourInfos.add(mutableContourInfos[i])
+			}
+		}
+
+		if (mutableContourInfos.isNotEmpty()) {
+			uniqueContourInfos.add(mutableContourInfos.last())
+		}
+
+		assert(uniqueContourInfos.size <= 3)
+
+		val sectionWidth = config.omrCropper.config.omrSectionSize.first
+		val finalContourInfos = arrayOfNulls<ContourInfo>(3)
+
+		uniqueContourInfos.forEach { contourInfo ->
+			if (contourInfo != null) {
+				val centerX = contourInfo.center.first
+				val columnIndex = floor((centerX.toDouble() / sectionWidth) * 3).toInt()
+				finalContourInfos[columnIndex] = contourInfo
+			}
+		}
+
+		return finalContourInfos.toList()
 	}
 
 	abstract fun detect(section: OMRSection): Int
-
-	fun detect(): Map<OMRSection, Int> {
-		val results = mutableMapOf<OMRSection, Int>()
-
-		for (section in OMRSection.entries) {
-			results[section] = detect(section)
-		}
-
-		return results.toMap()
-	}
 }
