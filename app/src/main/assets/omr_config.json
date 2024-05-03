@@ -2,12 +2,12 @@
   "omrConfigs": {
     "102": {
       "contourOMRHelperConfig": {
-        "darkIntensityThreshold": 70,
+        "darkIntensityThreshold": 200,
         "darkPercentageThreshold": 0.9,
         "maxAspectRatio": 1.5,
-        "maxRadius": 15,
+        "maxRadius": 25,
         "minAspectRatio": 0.5,
-        "minRadius": 8,
+        "minRadius": 12,
         "omrCropper": {
           "config": {
             "image": null,

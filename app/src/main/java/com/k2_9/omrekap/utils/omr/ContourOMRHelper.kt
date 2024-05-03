@@ -25,21 +25,35 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 		return ContourInfo(Pair(centerX, centerY), Pair(rect.width, rect.height))
 	}
 
-	private fun getContourInfo(filledContours: List<Mat>): List<ContourInfo?> {
-		val contourInfos = mutableListOf<ContourInfo?>()
-		val sortedContours = filledContours.sortedBy { Imgproc.boundingRect(it).x }
+	private fun getContourInfo(
+		filledContours: List<Mat>,
+		filledIntensities: List<Int>,
+	): List<ContourInfo?> {
+		val contourInfos = mutableListOf<ContourInfo>()
 
-		// Sort the filled contours from left to right and get the center and size of each contour
+		// Zip filledContours with filledIntensities
+		val contoursWithIntensities = filledContours.zip(filledIntensities)
+
+		// Sort contours and intensities based on the x-coordinate of bounding rectangles
+		val sortedContoursWithIntensities = contoursWithIntensities.sortedBy { (contour, _) -> Imgproc.boundingRect(contour).x }
+
+		// Unzip sorted contours and intensities
+		val (sortedContours, sortedIntensities) = sortedContoursWithIntensities.unzip()
+
+		// Get contour info for each sorted contour
 		for (contour in sortedContours) {
 			contourInfos.add(createContourInfo(contour))
 		}
-		return filterContourInfos(contourInfos)
+
+		// Filter contour infos with sorted intensities
+		return filterContourInfos(contourInfos, sortedIntensities.map { it.toDouble() })
 	}
 
 	private fun predictForFilledCircle(contours: List<MatOfPoint>): Int {
 		// Predict the number based on the filled circle contours
 
 		val filledContours = mutableListOf<Mat>()
+		val filledIntensities = mutableListOf<Int>()
 
 		for (contour in contours) {
 			val mask = Mat.zeros(currentSectionBinary!!.size(), CvType.CV_8UC1)
@@ -62,10 +76,11 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 				percentageDarkPixels >= config.darkPercentageThreshold
 			) {
 				filledContours.add(contour)
+				filledIntensities.add(totalIntensity)
 			}
 		}
 
-		val contourInfos = getContourInfo(filledContours)
+		val contourInfos = getContourInfo(filledContours, filledIntensities)
 
 		if (contourInfos.size != 3) {
 			throw DetectionError("Failed to detect 3 filled circle")
@@ -128,7 +143,9 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 				contoursSorted.subList(col * 10, (col + 1) * 10)
 					.sortedBy { Imgproc.boundingRect(it).y }
 
-			val darkestRow = getDarkestRow(colContours)
+			var darkestRow = getDarkestRow(colContours)
+
+			darkestRow = darkestRow ?: 0
 
 			// Append the darkest row for the current column to the list
 			darkestRows.add(darkestRow)
@@ -182,9 +199,15 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 	override fun detect(section: OMRSection): Int {
 		val omrSectionImage = config.omrCropper.crop(section)
 
-		// Convert image to grayscale
-		val gray = Mat()
-		Imgproc.cvtColor(omrSectionImage, gray, Imgproc.COLOR_BGR2GRAY)
+		// Convert image to grayscale if it is not
+		val gray =
+			if (omrSectionImage.channels() == 3) {
+				val grayImageMat = Mat()
+				Imgproc.cvtColor(omrSectionImage, grayImageMat, Imgproc.COLOR_BGR2GRAY)
+				grayImageMat
+			} else {
+				omrSectionImage
+			}
 
 		// Apply binary thresholding
 		val binary = Mat()
