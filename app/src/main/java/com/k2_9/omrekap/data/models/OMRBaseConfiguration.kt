@@ -1,6 +1,7 @@
 package com.k2_9.omrekap.data.models
 
 import com.k2_9.omrekap.data.configs.omr.ContourOMRHelperConfig
+import com.k2_9.omrekap.data.configs.omr.OMRSection
 import com.k2_9.omrekap.data.configs.omr.TemplateMatchingOMRHelperConfig
 
 /**
@@ -11,6 +12,7 @@ data class OMRBaseConfiguration(
 )
 
 data class OMRConfigurationParameter(
+	val contents: Map<OMRSection, String>,
 	val contourOMRHelperConfig: ContourOMRHelperConfig,
 	val templateMatchingOMRHelperConfig: TemplateMatchingOMRHelperConfig,
 )
