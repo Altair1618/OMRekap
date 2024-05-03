@@ -10,8 +10,8 @@ import org.opencv.imgproc.Imgproc
 import java.time.Instant
 
 object PreprocessHelper {
-	private const val FINAL_WIDTH = 540.0
-	private const val FINAL_HEIGHT = 960.0
+	private const val FINAL_WIDTH = 900.0
+	private const val FINAL_HEIGHT = 1600.0
 
 	fun preprocessImage(data: ImageSaveData): ImageSaveData {
 		// Initialize Mats
@@ -29,7 +29,6 @@ object PreprocessHelper {
 		val cornerPoints = CropHelper.detectCorner(mainImageResult)
 
 		// Annotate annotated image
-		// TODO: Call function to annotate image
 		annotatedImageResult = ImageAnnotationHelper.annotateCorner(annotatedImageResult, cornerPoints)
 
 		// Crop both images
@@ -53,7 +52,7 @@ object PreprocessHelper {
 	private fun preprocessMat(img: Mat): Mat {
 		return img.apply {
 			resizeMat(this)
-			normalize(this)
+//			normalize(this)
 		}
 	}
 
