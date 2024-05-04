@@ -62,7 +62,8 @@ class ImageDataViewModel : ViewModel() {
 			loadedConfig.templateMatchingOMRHelperConfig.setTemplate(circleTemplateLoader)
 
 			val contourOMRHelper = ContourOMRHelper(loadedConfig.contourOMRHelperConfig)
-			val templateMatchingOMRHelper = TemplateMatchingOMRHelper(loadedConfig.templateMatchingOMRHelperConfig)
+			val templateMatchingOMRHelper =
+				TemplateMatchingOMRHelper(loadedConfig.templateMatchingOMRHelperConfig)
 
 			val result: MutableMap<OMRSection, Int?> = mutableMapOf()
 
@@ -78,21 +79,19 @@ class ImageDataViewModel : ViewModel() {
 				}
 			}
 
-			// TODO: move this to april tag
-			val customMap = mutableMapOf<OMRSection, String>()
-
-			customMap[OMRSection.FIRST] = "Anis"
-			customMap[OMRSection.SECOND] = "Bowo"
-			customMap[OMRSection.THIRD] = "Janggar"
-
+			val pageContent = loadedConfig.contents
 			val stringKeyResult = mutableMapOf<String, Int?>()
 
 			result.let {
 				for ((section, value) in it) {
-					stringKeyResult[customMap[section]!!] = value
+					stringKeyResult[pageContent[section]!!] = value
 
-					annotatedImage = ImageAnnotationHelper.annotateOMR(annotatedImage, contourOMRHelper.getSectionPosition(section), value)
-					Log.d("Result", "${customMap[section]}: $value")
+					annotatedImage = ImageAnnotationHelper.annotateOMR(
+						annotatedImage,
+						contourOMRHelper.getSectionPosition(section),
+						value
+					)
+					Log.d("Result", "${pageContent[section]}: $value")
 				}
 			}
 

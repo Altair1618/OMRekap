@@ -1,6 +1,11 @@
 {
   "omrConfigs": {
     "102": {
+      "contents": {
+        "FIRST": "Anis",
+        "SECOND": "Bowo",
+        "THIRD": "Janggar"
+      },
       "contourOMRHelperConfig": {
         "darkIntensityThreshold": 200,
         "darkPercentageThreshold": 0.9,
