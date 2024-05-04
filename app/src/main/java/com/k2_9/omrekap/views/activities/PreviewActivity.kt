@@ -48,7 +48,8 @@ class PreviewActivity : AppCompatActivity() {
 		}
 
 		val bitmapOptions = BitmapFactory.Options()
-		bitmapOptions.inPreferredConfig = Bitmap.Config.ARGB_8888
+		bitmapOptions.inPreferredConfig = Bitmap.Config.ALPHA_8
+		bitmapOptions.inScaled = false
 		val cornerPatternBitmap: Bitmap = BitmapFactory.decodeResource(resources, R.raw.corner_pattern, bitmapOptions)
 
 		CropHelper.loadPattern(cornerPatternBitmap)
