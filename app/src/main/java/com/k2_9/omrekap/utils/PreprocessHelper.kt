@@ -50,27 +50,22 @@ object PreprocessHelper {
 	}
 
 	private fun preprocessMat(img: Mat): Mat {
-		return img.apply {
-			resizeMat(this)
-//			normalize(this)
-		}
+		return resizeMat(img)
 	}
 
 	fun preprocessPattern(img: Mat): Mat {
-		return img.apply {
-			normalize(this)
-		}
+		return normalize(img)
 	}
 
 	private fun resizeMat(img: Mat): Mat {
-		val resizedImg = Mat()
-		Imgproc.resize(img, resizedImg, Size(FINAL_WIDTH, FINAL_HEIGHT))
+		val resizedImg = Mat(Size(FINAL_WIDTH, FINAL_HEIGHT), img.type())
+		Imgproc.resize(img, resizedImg, Size(FINAL_WIDTH, FINAL_HEIGHT), 0.0, 0.0, Imgproc.INTER_CUBIC)
 		return resizedImg
 	}
 
 	private fun normalize(img: Mat): Mat {
 		val normalizedImg = Mat()
-		Core.normalize(img, normalizedImg)
+		Core.normalize(img, normalizedImg, 0.0, 255.0, Core.NORM_MINMAX)
 		return normalizedImg
 	}
 }
