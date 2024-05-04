@@ -181,7 +181,6 @@ class CameraActivity : AppCompatActivity() {
 				override fun onCaptureSuccess(image: ImageProxy) {
 					super.onCaptureSuccess(image)
 					playShutterSound()
-					freezeImage(image)
 					runOnUiThread {
 						Toast.makeText(this@CameraActivity, "Photo taken", Toast.LENGTH_SHORT).show()
 					}
@@ -190,6 +189,7 @@ class CameraActivity : AppCompatActivity() {
 							saveImageOnCache(image)
 						}
 					}
+					freezeImage(image)
 				}
 			},
 		)
