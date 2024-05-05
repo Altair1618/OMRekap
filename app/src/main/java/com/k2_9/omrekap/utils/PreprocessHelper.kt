@@ -7,10 +7,11 @@ import org.opencv.core.Core
 import org.opencv.core.Mat
 import org.opencv.core.Size
 import org.opencv.imgproc.Imgproc
+import java.time.Instant
 
 object PreprocessHelper {
-	private const val FINAL_WIDTH = 540.0
-	private const val FINAL_HEIGHT = 960.0
+	private const val FINAL_WIDTH = 900.0
+	private const val FINAL_HEIGHT = 1600.0
 
 	fun preprocessImage(data: ImageSaveData): ImageSaveData {
 		// Initialize Mats
@@ -28,7 +29,6 @@ object PreprocessHelper {
 		val cornerPoints = CropHelper.detectCorner(mainImageResult)
 
 		// Annotate annotated image
-		// TODO: Call function to annotate image
 		annotatedImageResult = ImageAnnotationHelper.annotateCorner(annotatedImageResult, cornerPoints)
 
 		// Crop both images
@@ -46,31 +46,26 @@ object PreprocessHelper {
 		Utils.matToBitmap(mainImageResult, mainImageBitmap)
 		Utils.matToBitmap(annotatedImageResult, annotatedImageBitmap)
 
-		return ImageSaveData(mainImageBitmap, annotatedImageBitmap, data.data)
+		return ImageSaveData(mainImageBitmap, annotatedImageBitmap, data.data, Instant.now())
 	}
 
 	private fun preprocessMat(img: Mat): Mat {
-		return img.apply {
-			resizeMat(this)
-			normalize(this)
-		}
+		return resizeMat(img)
 	}
 
 	fun preprocessPattern(img: Mat): Mat {
-		return img.apply {
-			normalize(this)
-		}
+		return normalize(img)
 	}
 
 	private fun resizeMat(img: Mat): Mat {
-		val resizedImg = Mat()
-		Imgproc.resize(img, resizedImg, Size(FINAL_WIDTH, FINAL_HEIGHT))
+		val resizedImg = Mat(Size(FINAL_WIDTH, FINAL_HEIGHT), img.type())
+		Imgproc.resize(img, resizedImg, Size(FINAL_WIDTH, FINAL_HEIGHT), 0.0, 0.0, Imgproc.INTER_CUBIC)
 		return resizedImg
 	}
 
 	private fun normalize(img: Mat): Mat {
 		val normalizedImg = Mat()
-		Core.normalize(img, normalizedImg)
+		Core.normalize(img, normalizedImg, 0.0, 255.0, Core.NORM_MINMAX)
 		return normalizedImg
 	}
 }

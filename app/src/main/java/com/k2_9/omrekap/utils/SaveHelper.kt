@@ -26,10 +26,10 @@ object SaveHelper {
 	) {
 		val folderName: String = generateFolderName()
 
-//		TODO: Uncomment after implemented
-//		if (data.data.isEmpty()) {
-//			throw RuntimeException("Image has not been processed yet")
-//		}
+// 		TODO: Uncomment after implemented
+// 		if (data.data.isEmpty()) {
+// 			throw RuntimeException("Image has not been processed yet")
+// 		}
 
 		if (data.rawImage.width <= 0 || data.rawImage.height <= 0) {
 			throw RuntimeException("The raw image bitmap is empty")
@@ -42,6 +42,8 @@ object SaveHelper {
 		withContext(Dispatchers.IO) {
 			saveImage(context, data.rawImage, folderName, "raw_image.jpg")
 			saveImage(context, data.annotatedImage, folderName, "annotated_image.jpg")
+
+			// TODO: handle when data is null, that is detection failed for OMR
 			saveJSON(context, data.data, folderName, "data.json")
 		}
 	}
@@ -79,7 +81,7 @@ object SaveHelper {
 
 	private fun saveJSON(
 		context: Context,
-		data: Map<String, Int>,
+		data: Map<String, Int?>,
 		folderName: String,
 		fileName: String,
 	) {
@@ -148,7 +150,7 @@ object SaveHelper {
 	}
 
 	private fun saveJSONBeforeAndroidQ(
-		data: Map<String, Int>,
+		data: Map<String, Int?>,
 		folderName: String,
 		fileName: String,
 	) {
@@ -174,7 +176,7 @@ object SaveHelper {
 	@RequiresApi(Build.VERSION_CODES.Q)
 	private fun saveJSONAndroidQandAbove(
 		context: Context,
-		data: Map<String, Int>,
+		data: Map<String, Int?>,
 		folderName: String,
 		fileName: String,
 	) {

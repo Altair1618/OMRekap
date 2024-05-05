@@ -148,6 +148,12 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="2" />
+            <TextView
+                android:id="@+id/failure_text"
+                android:theme="@style/TextAppearance.ResultText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_detection_failed"/>
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/result_recycler_view"
                 android:theme="@style/TextAppearance.ResultText"

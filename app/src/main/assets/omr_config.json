@@ -1,11 +1,16 @@
 {
   "omrConfigs": {
     "102": {
+      "contents": {
+        "FIRST": "Anis",
+        "SECOND": "Bowo",
+        "THIRD": "Janggar"
+      },
       "contourOMRHelperConfig": {
-        "darkIntensityThreshold": 230,
+        "darkIntensityThreshold": 200,
         "darkPercentageThreshold": 0.9,
         "maxAspectRatio": 1.5,
-        "maxRadius": 30,
+        "maxRadius": 25,
         "minAspectRatio": 0.5,
         "minRadius": 12,
         "omrCropper": {
@@ -13,21 +18,21 @@
             "image": null,
             "omrSectionPosition": {
               "FIRST": {
-                "first": 780,
-                "second": 373
+                "first": 712,
+                "second": 296
               },
               "SECOND": {
-                "first": 0,
-                "second": 0
+                "first": 712,
+                "second": 588
               },
               "THIRD": {
-                "first": 0,
-                "second": 0
+                "first": 712,
+                "second": 880
               }
             },
             "omrSectionSize": {
-              "first": 140,
-              "second": 220
+              "first": 120,
+              "second": 205
             }
           }
         }
@@ -40,21 +45,21 @@
             "image": null,
             "omrSectionPosition": {
               "FIRST": {
-                "first": 780,
-                "second": 373
+                "first": 712,
+                "second": 296
               },
               "SECOND": {
-                "first": 0,
-                "second": 0
+                "first": 712,
+                "second": 588
               },
               "THIRD": {
-                "first": 0,
-                "second": 0
+                "first": 712,
+                "second": 880
               }
             },
             "omrSectionSize": {
-              "first": 140,
-              "second": 220
+              "first": 120,
+              "second": 205
             }
           }
         }

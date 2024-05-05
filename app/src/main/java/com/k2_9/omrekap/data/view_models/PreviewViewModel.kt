@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.k2_9.omrekap.data.models.ImageSaveData
 import com.k2_9.omrekap.utils.PreprocessHelper
 import kotlinx.coroutines.launch
+import java.time.Instant
 
 class PreviewViewModel : ViewModel() {
 	private val _data = MutableLiveData<ImageSaveData>()
@@ -15,7 +16,7 @@ class PreviewViewModel : ViewModel() {
 
 	fun preprocessImage(img: Bitmap) {
 		viewModelScope.launch {
-			val data = ImageSaveData(img, img, mapOf())
+			val data = ImageSaveData(img, img, mapOf(), Instant.now())
 			_data.value = PreprocessHelper.preprocessImage(data)
 		}
 	}

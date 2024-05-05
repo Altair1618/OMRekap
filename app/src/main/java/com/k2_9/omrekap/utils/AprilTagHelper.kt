@@ -66,7 +66,7 @@ object AprilTagHelper {
 				"with corners at: (${cornerPoints[0, 0][0]},${cornerPoints[0, 0][1]}), " +
 					"(${cornerPoints[0, 1][0]},${cornerPoints[0, 1][1]}) " +
 					"(${cornerPoints[0, 2][0]},${cornerPoints[0, 2][1]}) " +
-					"(${cornerPoints[0, 3][0]},${cornerPoints[0, 3][1]})"
+					"(${cornerPoints[0, 3][0]},${cornerPoints[0, 3][1]})",
 			)
 			idList.add(id)
 		}
@@ -74,19 +74,11 @@ object AprilTagHelper {
 		return (idList to corners)
 	}
 
-	fun annotateImage(imageBitmap: Bitmap): Bitmap {
+	fun annotateImage(imageBitmap: Bitmap): Mat {
 		val res = getAprilTagId(imageBitmap)
 		val cornerPoints = res.second
 		val ids = (res.first)[0]
-		val annotatedImageMat =
-			ImageAnnotationHelper.annotateAprilTag(prepareImage(imageBitmap), cornerPoints, ids)
-		val annotatedImageBitmap = Bitmap.createBitmap(
-			annotatedImageMat.width(),
-			annotatedImageMat.height(),
-			Bitmap.Config.ARGB_8888
-		)
-		Utils.matToBitmap(annotatedImageMat, annotatedImageBitmap)
-		return annotatedImageBitmap
+		return ImageAnnotationHelper.annotateAprilTag(prepareImage(imageBitmap), cornerPoints, ids)
 	}
 
 	private fun prepareDetector(detectorDictionary: Dictionary): ArucoDetector {

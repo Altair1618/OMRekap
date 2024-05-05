@@ -15,9 +15,7 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperCon
 	private var currentSectionGray: Mat? = null
 	private var currentSectionBinary: Mat? = null
 
-	private fun getMatchRectangles(): List<Rect> {
-		// TODO: fix algorithm bug
-
+	private fun getMatchRectangles(): List<Pair<Rect, Double>> {
 		// Load the template image
 		val template = config.template
 
@@ -28,7 +26,7 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperCon
 			templateBinary,
 			0.0,
 			255.0,
-			Imgproc.THRESH_BINARY_INV + Imgproc.THRESH_TRIANGLE
+			Imgproc.THRESH_BINARY_INV + Imgproc.THRESH_TRIANGLE,
 		)
 
 		// Perform template matching
@@ -37,7 +35,7 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperCon
 			currentSectionBinary,
 			templateBinary,
 			result,
-			Imgproc.TM_CCOEFF_NORMED
+			Imgproc.TM_CCOEFF_NORMED,
 		)
 
 		// Set a threshold for template matching result
@@ -58,29 +56,30 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperCon
 		}
 
 		// Get the bounding rectangles for the matched locations
-		val matchedRectangles = ArrayList<Rect>()
+		val matchedRectangles = ArrayList<Pair<Rect, Double>>()
 		for (point in locations) {
 			val locX = point.x.toInt()
 			val locY = point.y.toInt()
-			val rect = Rect(locX, locY, template.width(), template.height())
-			matchedRectangles.add(rect)
+			val rect = Rect(locX, locY, template!!.width(), template.height())
+			matchedRectangles.add(Pair(rect, result.get(locY, locX)[0]))
 		}
 
 		return matchedRectangles
 	}
 
-	private fun getContourInfos(matchedRectangles: List<Rect>): List<ContourInfo?> {
+	private fun getContourInfos(matchedRectangles: List<Pair<Rect, Double>>): Pair<List<ContourInfo>, List<Double>> {
 		// Initialize a set to keep track of added rectangles
 		val addedRectangles = mutableSetOf<Rect>()
 
 		val contourInfos = mutableListOf<ContourInfo>()
+		val similarities = matchedRectangles.map { it.second }
 
 		// Iterate through the rectangles
 		for (rect in matchedRectangles) {
-			val x = rect.x
-			val y = rect.y
-			val w = rect.width
-			val h = rect.height
+			val x = rect.first.x
+			val y = rect.first.y
+			val w = rect.first.width
+			val h = rect.first.height
 
 			// Calculate the center of the rectangle
 			val centerX = x + w / 2
@@ -104,20 +103,27 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperCon
 			}
 		}
 
-		// short by center_x
-		contourInfos.sortBy { it.center.first }
+		// Sort contourInfos by center_x
+		val sortedContourInfos = contourInfos.sortedBy { it.center.first }
 
-		return contourInfos.toList()
+		// Zip sorted contourInfos with similarities
+		val zippedContourInfos = sortedContourInfos.zip(similarities)
+
+		// Unzip zipped contourInfos to separate lists
+		val (sortedContours, sortedSimilarities) = zippedContourInfos.unzip()
+
+		return Pair(sortedContours, sortedSimilarities)
 	}
 
 	fun annotateImage(contourNumber: Int): Bitmap {
 		val annotatedImg = currentSectionGray!!.clone()
 		val matchedRectangles = getMatchRectangles()
-		val res = ImageAnnotationHelper.annotateTemplateMatchingOMR(
-			annotatedImg,
-			matchedRectangles,
-			contourNumber
-		)
+		val res =
+			ImageAnnotationHelper.annotateTemplateMatchingOMR(
+				annotatedImg,
+				matchedRectangles.map { it.first },
+				contourNumber,
+			)
 
 		// Convert the annotated Mat to Bitmap
 		val annotatedImageBitmap =
@@ -133,9 +139,15 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperCon
 	override fun detect(section: OMRSection): Int {
 		val omrSectionImage = config.omrCropper.crop(section)
 
-		// Convert image to grayscale
-		val gray = Mat()
-		Imgproc.cvtColor(omrSectionImage, gray, Imgproc.COLOR_BGR2GRAY)
+		// Convert image to grayscale if it is not
+		val gray =
+			if (omrSectionImage.channels() != 1) {
+				val grayImageMat = Mat()
+				Imgproc.cvtColor(omrSectionImage, grayImageMat, Imgproc.COLOR_BGR2GRAY)
+				grayImageMat
+			} else {
+				omrSectionImage
+			}
 
 		// Apply binary thresholding
 		val binary = Mat()
@@ -144,7 +156,7 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperCon
 			binary,
 			0.0,
 			255.0,
-			Imgproc.THRESH_BINARY_INV + Imgproc.THRESH_TRIANGLE
+			Imgproc.THRESH_BINARY_INV + Imgproc.THRESH_TRIANGLE,
 		)
 
 		// Update states
@@ -154,7 +166,11 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperCon
 		val matchedRectangles = getMatchRectangles()
 
 		val contourInfos = getContourInfos(matchedRectangles)
-		val filteredContourInfos = filterContourInfos(contourInfos.toList())
+		val filteredContourInfos = filterContourInfos(contourInfos.first, contourInfos.second)
+
+		if (filteredContourInfos.size != 3) {
+			throw DetectionError("Failed to detect 3 filled circle")
+		}
 
 		return contourInfosToNumbers(filteredContourInfos.toList())
 	}

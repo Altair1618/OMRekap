@@ -12,4 +12,11 @@ class OMRCropper(val config: OMRCropperConfig) {
 
 		return Mat(config.image, roi)
 	}
+
+	fun sectionPosition(section: OMRSection): Rect {
+		val (x, y) = config.getSectionPosition(section)
+		val (width, height) = config.omrSectionSize
+
+		return Rect(x, y, width, height)
+	}
 }

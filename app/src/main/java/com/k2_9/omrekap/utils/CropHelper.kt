@@ -33,7 +33,7 @@ object CropHelper {
 		Utils.bitmapToMat(patternBitmap, cv8uc4pattern)
 		cvtColor(cv8uc4pattern, this.pattern, COLOR_BGR2GRAY)
 
-		PreprocessHelper.preprocessPattern(this.pattern)
+		this.pattern = PreprocessHelper.preprocessPattern(this.pattern)
 	}
 
 	fun detectCorner(img: Mat): CornerPoints {
