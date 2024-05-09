@@ -39,8 +39,7 @@
   </ol>
 </details>
 
-
-## Development
+# Development
 ### Clone the repository
 ```bash
 git clone https://gitlab.informatika.org/k-02-09/omrekap
@@ -71,3 +70,14 @@ git clone https://gitlab.informatika.org/k-02-09/omrekap
 * [![Gradle](https://img.shields.io/badge/Gradle-%2302303A.svg?&style=flat&logo=gradle&logoColor=white)](https://gradle.org/)
 * [![OpenCV](https://img.shields.io/badge/OpenCV-%23opencv.svg?&style=flat&logo=opencv&logoColor=white)](https://opencv.org/)
 
+# About The Project
+OMRekap adalah aplikasi rekapitulasi pemilihan umum yang dibuat untuk memudahkan proses rekapitulasi suara pada pemilihan umum.
+Aplikasi ini dibuat menggunakan bahasa pemrograman Kotlin dan menggunakan OpenCV untuk mendeteksi dan mengenali lembar suara.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+# Usage
+
+# Contact
+
+# Acknowledgments
