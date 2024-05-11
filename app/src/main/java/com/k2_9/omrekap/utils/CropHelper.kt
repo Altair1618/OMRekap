@@ -1,7 +1,9 @@
 package com.k2_9.omrekap.utils
 
+import android.content.res.Resources.NotFoundException
 import android.graphics.Bitmap
 import android.util.Log
+import android.widget.Toast
 import com.k2_9.omrekap.data.models.CornerPoints
 import org.opencv.android.Utils
 import org.opencv.core.CvType
@@ -24,6 +26,12 @@ object CropHelper {
 
 	private lateinit var pattern: Mat
 
+	/**
+	 * Uses OpenCV module, remember OpenCVLoader.initLocal() has been run before
+	 * load corner pattern
+	 *
+	 * @param patternBitmap corner pattern in Bitmap
+	 */
 	fun loadPattern(patternBitmap: Bitmap) {
 		// Load only if pattern hasn't been loaded
 		if (::pattern.isInitialized) return
@@ -36,6 +44,18 @@ object CropHelper {
 		this.pattern = PreprocessHelper.preprocessPattern(this.pattern)
 	}
 
+	/**
+	 * Uses OpenCV module, remember OpenCVLoader.initLocal() has been run before
+	 *
+	 * todo @exception if corner found are bad
+	 *
+	 * Initialize corner pattern first using [CropHelper.loadPattern]
+	 *
+	 *
+	 * @param img Mat that has been scaled, in grayscale (CV_8UC1)
+	 *
+	 * @return CornerPoints if four corners are found
+	 */
 	fun detectCorner(img: Mat): CornerPoints {
 		// If pattern hasn't been loaded, throw exception
 		if (!::pattern.isInitialized) {
@@ -70,8 +90,8 @@ object CropHelper {
 
 		val pointsList: MutableList<PointsAndWeight> = mutableListOf()
 
-		for (i in 0 until resultMatrix.height() step 4) {
-			for (j in 0 until resultMatrix.width() step 4) {
+		for (i in 0 until resultMatrix.height() step 2) {
+			for (j in 0 until resultMatrix.width() step 2) {
 				pointsList.add(PointsAndWeight(i, j, resultMatrix.get(i, j)[0]))
 			}
 		}
@@ -81,8 +101,20 @@ object CropHelper {
 		pointsList.forEach {
 			if (needChange == 0) return@forEach
 
-			val corner = nearWhichCorner(it.x, it.y, resultMatrix.height(), resultMatrix.width(), limFrac = 0.1F)
+			val corner = nearWhichCorner(it.x, it.y, resultMatrix.height(), resultMatrix.width(), limFrac = 0.4F)
 			if (corner == -1) return@forEach
+
+			if (it.weight > 0.45) {
+				// Corner not found, throw exception
+				val exceptionMessage = "Not all corners found: {" +
+					(if (needed[0]) "Upper left," else "") +
+					(if (needed[1]) "Upper right," else "") +
+					(if (needed[2]) "Lower right," else "") +
+					(if (needed[3]) "Lower left," else "") +
+					"}"
+				// throw NotFoundException(exceptionMessage);
+				Log.e("Corner",  exceptionMessage);
+			}
 
 			if (needed[corner]) {
 				needed[corner] = false
@@ -117,6 +149,16 @@ object CropHelper {
 		return CornerPoints(upperLeftPoint, upperRightPoint, lowerRightPoint, lowerLeftPoint)
 	}
 
+	/**
+	 * Uses OpenCV module, remember OpenCVLoader.initLocal() has been run before
+	 *
+	 * Crop an image based on four corners, with some padding set by #mult
+	 *
+	 * @param img image to crop
+	 * @param points corner points to crop image
+	 *
+	 * @return cropped image
+	 */
 	fun fourPointTransform(
 		img: Mat,
 		points: CornerPoints,
