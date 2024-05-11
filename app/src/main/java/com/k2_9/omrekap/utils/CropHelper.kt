@@ -120,6 +120,7 @@ object CropHelper {
 				needed[corner] = false
 				needChange--
 				val pointFromIt = Point(it.y.toDouble(), it.x.toDouble())
+				Log.d("Corner", "Difference: ${it.weight}; corner: $corner")
 				when (corner) {
 					UPPER_LEFT -> {
 						upperLeftPoint = pointFromIt
