@@ -29,7 +29,7 @@ class ContourOMRHelperTest {
 		appContext = InstrumentationRegistry.getInstrumentation().targetContext
 
 		// Load the image resource as a Bitmap
-		val imageMat = Utils.loadResource(appContext, R.raw.test)
+		val imageMat = Utils.loadResource(appContext, R.raw.test2)
 		val templateLoader = CircleTemplateLoader(appContext, R.raw.circle_template)
 
 		// Convert if image is not grayscale
@@ -55,6 +55,8 @@ class ContourOMRHelperTest {
 			config.templateMatchingOMRHelperConfig.setTemplate(templateLoader)
 
 			helper = ContourOMRHelper(config.contourOMRHelperConfig)
+
+			helper.appContext = appContext
 		}
 	}
 
@@ -76,8 +78,8 @@ class ContourOMRHelperTest {
 		SaveHelper.saveImage(appContext, imgSecond, "test", "test_contour_omr_second")
 		SaveHelper.saveImage(appContext, imgThird, "test", "test_contour_omr_third")
 
-		assert(resultFirst == 172)
-		assert(resultSecond == 24)
-		assert(resultThird == 2)
+		assert(resultFirst == 87)
+		assert(resultSecond == 91)
+		assert(resultThird == 22)
 	}
 }

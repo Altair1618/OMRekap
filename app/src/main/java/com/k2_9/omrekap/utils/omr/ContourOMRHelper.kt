@@ -1,22 +1,30 @@
 package com.k2_9.omrekap.utils.omr
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
 import com.k2_9.omrekap.data.configs.omr.ContourOMRHelperConfig
 import com.k2_9.omrekap.data.configs.omr.OMRSection
 import com.k2_9.omrekap.utils.ImageAnnotationHelper
+import com.k2_9.omrekap.utils.SaveHelper
 import org.opencv.android.Utils
 import org.opencv.core.Core
 import org.opencv.core.CvType
 import org.opencv.core.Mat
 import org.opencv.core.MatOfPoint
+import org.opencv.core.Point
 import org.opencv.core.Rect
 import org.opencv.core.Scalar
 import org.opencv.imgproc.Imgproc
+import kotlin.math.cos
+import kotlin.math.floor
+import kotlin.math.max
+import kotlin.math.sin
 
 class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(config) {
 	private var currentSectionGray: Mat? = null
 	private var currentSectionBinary: Mat? = null
+	public var appContext: Context? = null
 
 	private fun createContourInfo(contour: Mat): ContourInfo {
 		val rect = Imgproc.boundingRect(contour)
@@ -129,6 +137,29 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 		return darkestRow
 	}
 
+	private fun getPerfectCircle(x: Double, y: Double, radius: Double): MatOfPoint {
+		val numPoints = 100  // Adjust as needed
+		val theta = DoubleArray(numPoints) { it * 2 * Math.PI / numPoints }
+		val circleX = DoubleArray(numPoints) { x + radius * cos(theta[it]) }
+		val circleY = DoubleArray(numPoints) { y + radius * sin(theta[it]) }
+
+		val circleContour = MatOfPoint()
+		for (i in 0 until numPoints) {
+			circleContour.push_back(MatOfPoint(Point(circleX[i], circleY[i])));
+		}
+
+		return circleContour
+	}
+
+	private fun replaceWithPerfectCircle(contour: MatOfPoint): MatOfPoint {
+		val rect = Imgproc.boundingRect(contour)
+		val centroidX = rect.x + rect.width.toDouble() / 2
+		val centroidY = rect.y + rect.height.toDouble() / 2
+		val radius = maxOf(rect.width.toDouble(), rect.height.toDouble()) / 2
+
+		return getPerfectCircle(centroidX, centroidY, radius)
+	}
+
 	private fun compareAll(contours: List<MatOfPoint>): Int {
 		// Sort contours by column and then by row
 		val contoursSorted = contours.sortedBy { Imgproc.boundingRect(it).x }
@@ -158,6 +189,99 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 		}
 		return getCombinedNumbers(darkestRows.map { it ?: 0 })
 	}
+	private fun completeMissingContours(contours: List<MatOfPoint>): List<MatOfPoint> {
+		val sortedContours = contours.sortedBy { Imgproc.boundingRect(it).y }
+		val columnMap = Array(3) { mutableListOf<MatOfPoint>() }
+		val rectColumnMap = Array(3) { mutableListOf<Rect>() }
+		val sortedRects = sortedContours.map { Imgproc.boundingRect(it) }
+
+		fun getColumnIndex(index: Int): Int {
+			return floor((sortedRects[index].x.toDouble() / config.omrCropper.config.omrSectionSize.first.toDouble()) * 3.0).toInt()
+		}
+
+		for ((idx, rect) in sortedRects.withIndex()) {
+			val columnIndex = getColumnIndex(idx)
+			columnMap[columnIndex].add(contours[idx])
+			rectColumnMap[columnIndex].add(rect)
+		}
+
+		val averageX = DoubleArray(3)
+
+		for ((idx, columns) in columnMap.withIndex()) {
+			if (columns.isEmpty()) {
+				// no contour in this column, skip entirely
+				return contours
+			}
+			averageX[idx] = rectColumnMap[idx].sumOf { it.x + it.width / 2.0 } / columns.size
+		}
+
+		val result = mutableListOf<MatOfPoint>()
+		val fillRecord = booleanArrayOf(false, false, false)
+		var ySum = 0.0
+		var radiusSum = 0.0
+		var lowestY = -1
+
+		var idx = 0
+
+		fun getLowestY(index: Int) = sortedRects[index].y + sortedRects[index].height
+
+		while (idx < sortedContours.size) {
+			val contour = sortedContours[idx]
+			val columnIndex = getColumnIndex(idx)
+			val currentLowestY = getLowestY(idx)
+
+			if (fillRecord[columnIndex] || (lowestY != -1 && sortedRects[idx].y > lowestY)) {
+				val nonFilledColumn = (0 until 3).filter { !fillRecord[it] }
+				val filledCount = 3 - nonFilledColumn.size
+
+				if (filledCount == 0) {
+					lowestY = currentLowestY
+					continue
+				}
+
+				val y = ySum / filledCount
+				val radius = radiusSum / filledCount
+
+				for (i in nonFilledColumn) {
+					val x = averageX[i]
+					result.add(getPerfectCircle(x, y, radius))
+					fillRecord[i] = true
+				}
+				lowestY = currentLowestY
+			} else {
+				result.add(contour)
+				ySum += sortedRects[idx].y + sortedRects[idx].height.toDouble() / 2
+				radiusSum += max(sortedRects[idx].width.toDouble(), sortedRects[idx].height.toDouble()) / 2
+				fillRecord[columnIndex] = true
+				idx++
+				lowestY = max(lowestY, currentLowestY)
+			}
+
+			val allFilled = fillRecord.all { it }
+
+			if (allFilled) {
+				fillRecord.fill(false)
+				ySum = 0.0
+				radiusSum = 0.0
+			}
+		}
+
+		val nonFilledColumn = (0 until 3).filter { !fillRecord[it] }
+		val filledCount = 3 - nonFilledColumn.size
+
+		if (filledCount > 0) {
+			val y = ySum / filledCount
+			val radius = radiusSum / filledCount
+
+			for (i in nonFilledColumn) {
+				val x = averageX[i]
+				result.add(getPerfectCircle(x, y, radius))
+				fillRecord[i] = true
+			}
+		}
+
+		return result
+	}
 
 	private fun getAllContours(): List<MatOfPoint> {
 		// Find circle contours in cropped OMR section
@@ -184,13 +308,34 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 			val maxAR = config.maxAspectRatio
 
 			if (rect.width in minLength..maxLength && rect.height in minLength..maxLength && ar >= minAR && ar <= maxAR) {
-				filteredContours.add(contour)
+				filteredContours.add(replaceWithPerfectCircle(contour))
 			} else {
 				Log.d(
 					"ContourOMRHelper",
 					"Contour with aspect ratio $ar and size ${rect.width} x ${rect.height} filtered out",
 				)
 			}
+		}
+
+		if (filteredContours.size < 30) {
+			Log.d(
+				"ContourOMRHelper",
+				"Detected ${filteredContours.size} contours, attempting to complete missing contours",
+			)
+			val completedContours = completeMissingContours(filteredContours)
+			Log.d(
+				"ContourOMRHelper",
+				"Completed missing contours, now have ${completedContours.size} contours",
+			)
+
+			val display = currentSectionGray!!.clone()
+			Imgproc.drawContours(display, completedContours, -1, Scalar(255.0), -1)
+
+			val bitmap = Bitmap.createBitmap(display.cols(), display.rows(), Bitmap.Config.ARGB_8888)
+
+			Utils.matToBitmap(display, bitmap)
+			SaveHelper.saveImage(appContext!!, bitmap, "test", "lol.png")
+
 		}
 
 		return filteredContours
