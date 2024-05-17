@@ -6,10 +6,12 @@ import android.util.Log
 import android.widget.Toast
 import com.k2_9.omrekap.data.models.CornerPoints
 import org.opencv.android.Utils
+import org.opencv.core.Core
 import org.opencv.core.CvType
 import org.opencv.core.Mat
 import org.opencv.core.MatOfPoint2f
 import org.opencv.core.Point
+import org.opencv.core.Size
 import org.opencv.imgproc.Imgproc
 import org.opencv.imgproc.Imgproc.COLOR_BGR2GRAY
 import org.opencv.imgproc.Imgproc.cvtColor
@@ -62,8 +64,11 @@ object CropHelper {
 			throw Exception("Pattern not loaded!")
 		}
 
-		val imgGray = img.clone()
+		var imgGray = img.clone()
 		cvtColor(img, imgGray, COLOR_BGR2GRAY)
+
+		// do local normalization here
+		imgGray = localNormalize(imgGray)
 
 		val resultMatrix =
 			Mat(
@@ -262,5 +267,44 @@ object CropHelper {
 			// Not in corner
 			else -> -1
 		}
+	}
+
+	/**
+	 * Apply local normalization to an image
+	 * source: https://stackoverflow.com/questions/43240604/python-local-normalization-in-opencv
+	 * @see - https://bigwww.epfl.ch/demo/ip/demos/local-normalization/
+	 *
+	 * @param img input matrix
+	 * @return local normalized img
+	 */
+	private fun localNormalize(img: Mat): Mat {
+		// convert img to CV_32F
+		val gray = Mat()
+		img.convertTo(gray, CvType.CV_32F, 1.0 / 255.0)
+
+		val blur = Mat()
+		Imgproc.GaussianBlur(gray, blur, Size(0.0, 0.0), 2.0, 2.0)
+
+		val num = Mat()
+		Core.subtract(gray, blur, num)
+
+		val numSquared = Mat()
+		Core.multiply(num, num, numSquared)
+		val blur2 = Mat()
+		Imgproc.GaussianBlur(numSquared, blur2, Size(0.0, 0.0), 20.0, 20.0)
+
+		val den = Mat()
+		Core.sqrt(blur2, den)
+
+		val div = Mat()
+		Core.divide(num, den, div)
+
+		Core.normalize(div, div, 0.0, 1.0, Core.NORM_MINMAX)
+
+		// Convert back to uint8
+		val result = Mat()
+		div.convertTo(result, CvType.CV_8U, 255.0)
+
+		return result
 	}
 }
