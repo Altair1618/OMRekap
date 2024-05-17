@@ -86,11 +86,12 @@ class ImageDataViewModel : ViewModel() {
 				for ((section, value) in it) {
 					stringKeyResult[pageContent[section]!!] = value
 
-					annotatedImage = ImageAnnotationHelper.annotateOMR(
-						annotatedImage,
-						contourOMRHelper.getSectionPosition(section),
-						value
-					)
+					annotatedImage =
+						ImageAnnotationHelper.annotateOMR(
+							annotatedImage,
+							contourOMRHelper.getSectionPosition(section),
+							value,
+						)
 					Log.d("Result", "${pageContent[section]}: $value")
 				}
 			}

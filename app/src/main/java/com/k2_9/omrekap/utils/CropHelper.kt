@@ -1,9 +1,7 @@
 package com.k2_9.omrekap.utils
 
-import android.content.res.Resources.NotFoundException
 import android.graphics.Bitmap
 import android.util.Log
-import android.widget.Toast
 import com.k2_9.omrekap.data.models.CornerPoints
 import org.opencv.android.Utils
 import org.opencv.core.Core
@@ -111,14 +109,15 @@ object CropHelper {
 
 			if (it.weight > 0.45) {
 				// Corner not found, throw exception
-				val exceptionMessage = "Not all corners found: {" +
-					(if (needed[0]) "Upper left," else "") +
-					(if (needed[1]) "Upper right," else "") +
-					(if (needed[2]) "Lower right," else "") +
-					(if (needed[3]) "Lower left," else "") +
-					"}"
+				val exceptionMessage =
+					"Not all corners found: {" +
+						(if (needed[0]) "Upper left," else "") +
+						(if (needed[1]) "Upper right," else "") +
+						(if (needed[2]) "Lower right," else "") +
+						(if (needed[3]) "Lower left," else "") +
+						"}"
 				// throw NotFoundException(exceptionMessage);
-				Log.e("Corner",  exceptionMessage);
+				Log.e("Corner", exceptionMessage)
 			}
 
 			if (needed[corner]) {
