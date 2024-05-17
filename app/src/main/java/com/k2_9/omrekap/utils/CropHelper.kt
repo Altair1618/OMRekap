@@ -15,6 +15,7 @@ import org.opencv.imgproc.Imgproc.COLOR_BGR2GRAY
 import org.opencv.imgproc.Imgproc.cvtColor
 import org.opencv.imgproc.Imgproc.getPerspectiveTransform
 import org.opencv.imgproc.Imgproc.warpPerspective
+import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -92,10 +93,22 @@ object CropHelper {
 		)
 
 		val pointsList: MutableList<PointsAndWeight> = mutableListOf()
+		val diagonalLength = (resultMatrix.height().toDouble().pow(2) * resultMatrix.width().toDouble().pow(2)).pow(1 / 2)
 
 		for (i in 0 until resultMatrix.height() step 2) {
 			for (j in 0 until resultMatrix.width() step 2) {
-				pointsList.add(PointsAndWeight(i, j, resultMatrix.get(i, j)[0]))
+				pointsList.add(
+					PointsAndWeight(
+						i,
+						j,
+						resultMatrix.get(i, j)[0] *
+							getWeight(
+								(
+									min(i, resultMatrix.height() - i).toDouble().pow(2) * min(j, resultMatrix.width() - j).toDouble().pow(2)
+								).pow(1 / 2) / diagonalLength,
+							),
+					),
+				)
 			}
 		}
 
@@ -305,5 +318,18 @@ object CropHelper {
 		div.convertTo(result, CvType.CV_8U, 255.0)
 
 		return result
+	}
+
+	/**
+	 * Weight for a point
+	 * Far from corner means bigger weight
+	 *
+	 * Smaller weight are more likely to be chosen as corner
+	 *
+	 * @param normDistance distance from nearest corner divided by diagonal
+	 * @return weight
+	 */
+	private fun getWeight(normDistance: Double): Double {
+		return 1 + 1 * normDistance.pow(1.5)
 	}
 }
