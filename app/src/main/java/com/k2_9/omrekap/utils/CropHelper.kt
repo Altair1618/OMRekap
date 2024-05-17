@@ -117,7 +117,7 @@ object CropHelper {
 		pointsList.forEach {
 			if (needChange == 0) return@forEach
 
-			val corner = nearWhichCorner(it.x, it.y, resultMatrix.height(), resultMatrix.width(), limFrac = 0.4F)
+			val corner = nearWhichCorner(it.x, it.y, resultMatrix.height(), resultMatrix.width(), limFrac = 0.6F)
 			if (corner == -1) return@forEach
 
 			if (it.weight > 0.45) {
