@@ -2,9 +2,9 @@
   "omrConfigs": {
     "102": {
       "contents": {
-        "FIRST": "Anis",
-        "SECOND": "Bowo",
-        "THIRD": "Janggar"
+        "FIRST": "Anies Rasyid Baswedan",
+        "SECOND": "Prabowo Subianto",
+        "THIRD": "Ganjar Pranowo"
       },
       "contourOMRHelperConfig": {
         "darkIntensityThreshold": 150,

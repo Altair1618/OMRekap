@@ -9,10 +9,18 @@ import org.opencv.core.Size
 import org.opencv.imgproc.Imgproc
 import java.time.Instant
 
+/**
+ * Helper class for preprocessing image
+ */
 object PreprocessHelper {
 	private const val FINAL_WIDTH = 900.0
 	private const val FINAL_HEIGHT = 1600.0
 
+	/**
+	 * Preprocess the image data
+	 * @param data image data to be preprocessed
+	 * @return preprocessed image data
+	 */
 	fun preprocessImage(data: ImageSaveData): ImageSaveData {
 		// Initialize Mats
 		val mainImageMat = Mat()

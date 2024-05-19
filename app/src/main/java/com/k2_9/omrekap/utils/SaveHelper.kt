@@ -19,7 +19,15 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+/**
+ * Helper class for saving images and JSON data
+ */
 object SaveHelper {
+	/**
+	 * Save the image and JSON data to the device
+	 * @param context the application context
+	 * @param data the image and JSON data to be saved
+	 */
 	suspend fun save(
 		context: Context,
 		data: ImageSaveData,
@@ -48,6 +56,12 @@ object SaveHelper {
 		}
 	}
 
+	/**
+	 * Convert the selected file URI to a Bitmap
+	 * @param context the application context
+	 * @param selectedFileUri the URI of the selected file
+	 * @return the converted Bitmap
+	 */
 	fun uriToBitmap(
 		context: Context,
 		selectedFileUri: Uri,
@@ -59,11 +73,22 @@ object SaveHelper {
 		return image
 	}
 
+	/**
+	 * Generate a folder name based on the current date and time
+	 * @return the generated folder name
+	 */
 	private fun generateFolderName(): String {
 		val sdf = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
 		return sdf.format(Date())
 	}
 
+	/**
+	 * Save the image to the Documents/OMRekap/folderName directory
+	 * @param context the application context
+	 * @param image the image to be saved
+	 * @param folderName the folder name where the image will be saved
+	 * @param fileName the file name of the image
+	 */
 	fun saveImage(
 		context: Context,
 		image: Bitmap,
@@ -79,6 +104,13 @@ object SaveHelper {
 		}
 	}
 
+	/**
+	 * Save the JSON to the Documents/OMRekap/folderName directory
+	 * @param context the application context
+	 * @param data the JSON data to be saved
+	 * @param folderName the folder name where the JSON will be saved
+	 * @param fileName the file name of the JSON
+	 */
 	private fun saveJSON(
 		context: Context,
 		data: Map<String, Int?>,

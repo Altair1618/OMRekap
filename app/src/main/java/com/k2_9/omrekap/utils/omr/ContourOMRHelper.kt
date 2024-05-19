@@ -21,11 +21,21 @@ import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.sin
 
+/**
+ * Helper for Optical Mark Recognition (OMR) using contours
+ * @param config configuration for the OMR helper
+ */
 class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(config) {
 	private var currentSectionGray: Mat? = null
 	private var currentSectionBinary: Mat? = null
 	public var appContext: Context? = null
 
+	/**
+	 * Create information object about the contour
+	 * @param center center of the contour
+	 * @param size size of the contour
+	 * @return ContourInfo object
+	 */
 	private fun createContourInfo(contour: Mat): ContourInfo {
 		val rect = Imgproc.boundingRect(contour)
 		val centerX = rect.x + rect.width / 2
@@ -33,6 +43,12 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 		return ContourInfo(Pair(centerX, centerY), Pair(rect.width, rect.height))
 	}
 
+	/**
+	 * Filter contours based on the intensities and return the filtered contour infos
+	 * @param contourInfos list of contour infos
+	 * @param intensities list of intensities
+	 * @return filtered list of contour infos
+	 */
 	private fun getContourInfo(
 		filledContours: List<Mat>,
 		filledIntensities: List<Int>,
@@ -57,6 +73,11 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 		return filterContourInfos(contourInfos, sortedIntensities.map { it.toDouble() })
 	}
 
+	/**
+	 * Predict the number based on the detected filled circle contours
+	 * @param contours list of filled circle contours
+	 * @return predicted number
+	 */
 	private fun predictForFilledCircle(contours: List<MatOfPoint>): Int {
 		// Predict the number based on the filled circle contours
 
@@ -97,6 +118,11 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 		return contourInfosToNumbers(contourInfos)
 	}
 
+	/**
+	 * Get the darkest row in the column
+	 * @param colContours list of contours in the column
+	 * @return index of the darkest row
+	 */
 	private fun getDarkestRow(colContours: List<MatOfPoint>): Int? {
 		// Initialize variables to store the darkest row and its intensity
 		var darkestRow: Int? = null
@@ -137,20 +163,36 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 		return darkestRow
 	}
 
-	private fun getPerfectCircle(x: Double, y: Double, radius: Double): MatOfPoint {
-		val numPoints = 100  // Adjust as needed
+	/**
+	 * Create a perfect circle contour
+	 * @param x x-coordinate of the center
+	 * @param y y-coordinate of the center
+	 * @param radius radius of the circle
+	 * @return perfect circle contour
+	 */
+	private fun getPerfectCircle(
+		x: Double,
+		y: Double,
+		radius: Double,
+	): MatOfPoint {
+		val numPoints = 100 // Adjust as needed
 		val theta = DoubleArray(numPoints) { it * 2 * Math.PI / numPoints }
 		val circleX = DoubleArray(numPoints) { x + radius * cos(theta[it]) }
 		val circleY = DoubleArray(numPoints) { y + radius * sin(theta[it]) }
 
 		val circleContour = MatOfPoint()
 		for (i in 0 until numPoints) {
-			circleContour.push_back(MatOfPoint(Point(circleX[i], circleY[i])));
+			circleContour.push_back(MatOfPoint(Point(circleX[i], circleY[i])))
 		}
 
 		return circleContour
 	}
 
+	/**
+	 * Replace the contour with a perfect circle
+	 * @param contour contour to be replaced
+	 * @return perfect circle contour
+	 */
 	private fun replaceWithPerfectCircle(contour: MatOfPoint): MatOfPoint {
 		val rect = Imgproc.boundingRect(contour)
 		val centroidX = rect.x + rect.width.toDouble() / 2
@@ -160,6 +202,11 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 		return getPerfectCircle(centroidX, centroidY, radius)
 	}
 
+	/**
+	 * Get the combined number from the darkest rows of each column, given 10 contours for each column
+	 * @param darkestRows list of 10 detected contours for each column
+	 * @return combined number
+	 */
 	private fun compareAll(contours: List<MatOfPoint>): Int {
 		// Sort contours by column and then by row
 		val contoursSorted = contours.sortedBy { Imgproc.boundingRect(it).x }
@@ -189,6 +236,12 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 		}
 		return getCombinedNumbers(darkestRows.map { it ?: 0 })
 	}
+
+	/**
+	 * Complete missing contours by filling the missing circles
+	 * @param contours list of detected contours
+	 * @return list of completed contours
+	 */
 	private fun completeMissingContours(contours: List<MatOfPoint>): List<MatOfPoint> {
 		val sortedContours = contours.sortedBy { Imgproc.boundingRect(it).y }
 		val columnMap = Array(3) { mutableListOf<MatOfPoint>() }
@@ -283,6 +336,10 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 		return result
 	}
 
+	/**
+	 * Detect the circles in the OMR section
+	 * @return list of detected contours
+	 */
 	private fun getAllContours(): List<MatOfPoint> {
 		// Find circle contours in cropped OMR section
 		val contours = mutableListOf<MatOfPoint>()
@@ -335,12 +392,16 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 
 			Utils.matToBitmap(display, bitmap)
 			SaveHelper.saveImage(appContext!!, bitmap, "test", "lol.png")
-
 		}
 
 		return filteredContours
 	}
 
+	/**
+	 * Detect the number for the OMR section
+	 * @param contours list of detected contours
+	 * @return detected number
+	 */
 	override fun detect(section: OMRSection): Int {
 		val omrSectionImage = config.omrCropper.crop(section)
 
@@ -382,12 +443,20 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 		}
 	}
 
-	// Get Section Position For Annotating Purpose
+	/**
+	 * Get the position of the OMR section
+	 * @param section OMR section
+	 * @return position of the OMR section
+	 */
 	fun getSectionPosition(section: OMRSection): Rect {
 		return config.omrCropper.sectionPosition(section)
 	}
 
-	// Annotating Image For Testing Purpose
+	/**
+	 * Annotate the image with the detected contour
+	 * @param contourNumber detected contour number
+	 * @return annotated image
+	 */
 	fun annotateImage(contourNumber: Int): Bitmap {
 		var annotatedImg = currentSectionGray!!.clone()
 		val contours = getAllContours()
