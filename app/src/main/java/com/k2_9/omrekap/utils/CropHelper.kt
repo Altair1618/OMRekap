@@ -4,15 +4,18 @@ import android.graphics.Bitmap
 import android.util.Log
 import com.k2_9.omrekap.data.models.CornerPoints
 import org.opencv.android.Utils
+import org.opencv.core.Core
 import org.opencv.core.CvType
 import org.opencv.core.Mat
 import org.opencv.core.MatOfPoint2f
 import org.opencv.core.Point
+import org.opencv.core.Size
 import org.opencv.imgproc.Imgproc
 import org.opencv.imgproc.Imgproc.COLOR_BGR2GRAY
 import org.opencv.imgproc.Imgproc.cvtColor
 import org.opencv.imgproc.Imgproc.getPerspectiveTransform
 import org.opencv.imgproc.Imgproc.warpPerspective
+import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -54,8 +57,11 @@ object CropHelper {
 			throw Exception("Pattern not loaded!")
 		}
 
-		val imgGray = img.clone()
+		var imgGray = img.clone()
 		cvtColor(img, imgGray, COLOR_BGR2GRAY)
+
+		// do local normalization here
+		imgGray = localNormalize(imgGray)
 
 		val resultMatrix =
 			Mat(
@@ -81,10 +87,22 @@ object CropHelper {
 		)
 
 		val pointsList: MutableList<PointsAndWeight> = mutableListOf()
+		val diagonalLength = (resultMatrix.height().toDouble().pow(2) * resultMatrix.width().toDouble().pow(2)).pow(1 / 2)
 
-		for (i in 0 until resultMatrix.height() step 4) {
-			for (j in 0 until resultMatrix.width() step 4) {
-				pointsList.add(PointsAndWeight(i, j, resultMatrix.get(i, j)[0]))
+		for (i in 0 until resultMatrix.height() step 2) {
+			for (j in 0 until resultMatrix.width() step 2) {
+				pointsList.add(
+					PointsAndWeight(
+						i,
+						j,
+						resultMatrix.get(i, j)[0] *
+							getWeight(
+								(
+									min(i, resultMatrix.height() - i).toDouble().pow(2) * min(j, resultMatrix.width() - j).toDouble().pow(2)
+								).pow(1 / 2) / diagonalLength,
+							),
+					),
+				)
 			}
 		}
 
@@ -93,8 +111,21 @@ object CropHelper {
 		pointsList.forEach {
 			if (needChange == 0) return@forEach
 
-			val corner = nearWhichCorner(it.x, it.y, resultMatrix.height(), resultMatrix.width(), limFrac = 0.1F)
+			val corner = nearWhichCorner(it.x, it.y, resultMatrix.height(), resultMatrix.width(), limFrac = 0.6F)
 			if (corner == -1) return@forEach
+
+			if (it.weight > 0.45) {
+				// Corner not found, throw exception
+				val exceptionMessage =
+					"Not all corners found: {" +
+						(if (needed[0]) "Upper left," else "") +
+						(if (needed[1]) "Upper right," else "") +
+						(if (needed[2]) "Lower right," else "") +
+						(if (needed[3]) "Lower left," else "") +
+						"}"
+				// throw NotFoundException(exceptionMessage);
+				Log.e("Corner", exceptionMessage)
+			}
 
 			if (needed[corner]) {
 				needed[corner] = false
@@ -237,5 +268,57 @@ object CropHelper {
 			// Not in corner
 			else -> -1
 		}
+	}
+
+	/**
+	 * Apply local normalization to an image
+	 * source: https://stackoverflow.com/questions/43240604/python-local-normalization-in-opencv
+	 * @see - https://bigwww.epfl.ch/demo/ip/demos/local-normalization/
+	 *
+	 * @param img input matrix
+	 * @return local normalized img
+	 */
+	private fun localNormalize(img: Mat): Mat {
+		// convert img to CV_32F
+		val gray = Mat()
+		img.convertTo(gray, CvType.CV_32F, 1.0 / 255.0)
+
+		val blur = Mat()
+		Imgproc.GaussianBlur(gray, blur, Size(0.0, 0.0), 2.0, 2.0)
+
+		val num = Mat()
+		Core.subtract(gray, blur, num)
+
+		val numSquared = Mat()
+		Core.multiply(num, num, numSquared)
+		val blur2 = Mat()
+		Imgproc.GaussianBlur(numSquared, blur2, Size(0.0, 0.0), 20.0, 20.0)
+
+		val den = Mat()
+		Core.sqrt(blur2, den)
+
+		val div = Mat()
+		Core.divide(num, den, div)
+
+		Core.normalize(div, div, 0.0, 1.0, Core.NORM_MINMAX)
+
+		// Convert back to uint8
+		val result = Mat()
+		div.convertTo(result, CvType.CV_8U, 255.0)
+
+		return result
+	}
+
+	/**
+	 * Weight for a point
+	 * Far from corner means bigger weight
+	 *
+	 * Smaller weight are more likely to be chosen as corner
+	 *
+	 * @param normDistance distance from nearest corner divided by diagonal
+	 * @return weight
+	 */
+	private fun getWeight(normDistance: Double): Double {
+		return 1 + 1 * normDistance.pow(1.5)
 	}
 }
