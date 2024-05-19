@@ -6,7 +6,17 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 
+/**
+ * Helper class for handling permissions
+ */
 object PermissionHelper {
+	/**
+	 * Request permission from the user
+	 * @param activity activity context
+	 * @param permission permission to be requested
+	 * @param verbose show toast message if permission is denied
+	 * @param operation operation to be executed if permission is granted
+	 */
 	fun requirePermission(
 		activity: AppCompatActivity,
 		permission: String,

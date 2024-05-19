@@ -16,6 +16,9 @@ import org.opencv.imgproc.Imgproc.warpPerspective
 import kotlin.math.pow
 import kotlin.math.sqrt
 
+/**
+ * Helper class for cropping image based on corner points detection
+ */
 object CropHelper {
 	private const val UPPER_LEFT: Int = 0
 	private const val UPPER_RIGHT: Int = 1
@@ -24,6 +27,10 @@ object CropHelper {
 
 	private lateinit var pattern: Mat
 
+	/**
+	 * Load corner pattern image
+	 * @param patternBitmap pattern image in Bitmap
+	 */
 	fun loadPattern(patternBitmap: Bitmap) {
 		// Load only if pattern hasn't been loaded
 		if (::pattern.isInitialized) return
@@ -36,6 +43,11 @@ object CropHelper {
 		this.pattern = PreprocessHelper.preprocessPattern(this.pattern)
 	}
 
+	/**
+	 * Detect corner points in the image
+	 * @param img image to be processed
+	 * @return corner points
+	 */
 	fun detectCorner(img: Mat): CornerPoints {
 		// If pattern hasn't been loaded, throw exception
 		if (!::pattern.isInitialized) {
@@ -117,6 +129,12 @@ object CropHelper {
 		return CornerPoints(upperLeftPoint, upperRightPoint, lowerRightPoint, lowerLeftPoint)
 	}
 
+	/**
+	 * Transform image based on corner points into a rectangle
+	 * @param img image to be processed
+	 * @param points corner points of the image
+	 * @return tilted corrected image
+	 */
 	fun fourPointTransform(
 		img: Mat,
 		points: CornerPoints,

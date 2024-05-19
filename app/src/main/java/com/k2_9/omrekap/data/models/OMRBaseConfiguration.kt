@@ -11,6 +11,12 @@ data class OMRBaseConfiguration(
 	val omrConfigs: Map<String, OMRConfigurationParameter>,
 )
 
+/**
+ * Configuration parameters for OMR detection
+ * @param contents map of OMR section and candidate name
+ * @param contourOMRHelperConfig configuration for contour-based OMR detection
+ * @param templateMatchingOMRHelperConfig configuration for template matching-based OMR detection
+ */
 data class OMRConfigurationParameter(
 	val contents: Map<OMRSection, String>,
 	val contourOMRHelperConfig: ContourOMRHelperConfig,
