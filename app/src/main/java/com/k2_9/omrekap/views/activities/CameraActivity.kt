@@ -148,14 +148,16 @@ class CameraActivity : AppCompatActivity() {
 		val preview = androidx.camera.core.Preview.Builder().build()
 		val imageCapture = ImageCapture.Builder().build()
 
-		val imageAnalysis = ImageAnalysis.Builder()
-			.build()
+		val imageAnalysis =
+			ImageAnalysis.Builder()
+				.build()
 
 		imageAnalysis.setAnalyzer(Executors.newSingleThreadExecutor(), LiveAnnotationHelper(annotatedCameraPreview))
 
-		val cameraSelector = CameraSelector.Builder()
-			.requireLensFacing(CameraSelector.LENS_FACING_BACK)
-			.build()
+		val cameraSelector =
+			CameraSelector.Builder()
+				.requireLensFacing(CameraSelector.LENS_FACING_BACK)
+				.build()
 
 		preview.setSurfaceProvider(previewView.surfaceProvider)
 		cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture, imageAnalysis)
