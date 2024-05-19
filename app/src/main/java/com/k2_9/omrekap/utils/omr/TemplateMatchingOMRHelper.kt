@@ -10,11 +10,18 @@ import org.opencv.core.Point
 import org.opencv.core.Rect
 import org.opencv.imgproc.Imgproc
 
+/**
+ * Helper for Optical Mark Recognition (OMR) using template matching
+ * @param config configuration for the OMR helper
+ */
 class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperConfig) :
 	OMRHelper(config) {
 	private var currentSectionGray: Mat? = null
 	private var currentSectionBinary: Mat? = null
 
+	/** Get the rectangles of the matched template in the current section
+	 * @return list of pairs of rectangles and their similarity scores
+	 */
 	private fun getMatchRectangles(): List<Pair<Rect, Double>> {
 		// Load the template image
 		val template = config.template
@@ -67,6 +74,10 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperCon
 		return matchedRectangles
 	}
 
+	/** Get the contour information from the matched rectangles
+	 * @param matchedRectangles list of pairs of rectangles and their similarity scores
+	 * @return pair of list of contour information and list of similarity scores
+	 */
 	private fun getContourInfos(matchedRectangles: List<Pair<Rect, Double>>): Pair<List<ContourInfo>, List<Double>> {
 		// Initialize a set to keep track of added rectangles
 		val addedRectangles = mutableSetOf<Rect>()
@@ -115,6 +126,10 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperCon
 		return Pair(sortedContours, sortedSimilarities)
 	}
 
+	/** Annotation for the image with the detected filled circles
+	 * @param contourNumber detected number for the filled circles
+	 * @return annotated image as Bitmap
+	 */
 	fun annotateImage(contourNumber: Int): Bitmap {
 		val annotatedImg = currentSectionGray!!.clone()
 		val matchedRectangles = getMatchRectangles()
@@ -136,6 +151,10 @@ class TemplateMatchingOMRHelper(private val config: TemplateMatchingOMRHelperCon
 		return annotatedImageBitmap
 	}
 
+	/** Detect the filled circles in the section
+	 * @param section the OMR section to detect
+	 * @return detected number for the filled circles
+	 */
 	override fun detect(section: OMRSection): Int {
 		val omrSectionImage = config.omrCropper.crop(section)
 

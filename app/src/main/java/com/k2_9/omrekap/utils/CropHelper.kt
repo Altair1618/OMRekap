@@ -19,6 +19,9 @@ import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sqrt
 
+/**
+ * Helper class for cropping image based on corner points detection
+ */
 object CropHelper {
 	private const val UPPER_LEFT: Int = 0
 	private const val UPPER_RIGHT: Int = 1
@@ -28,10 +31,8 @@ object CropHelper {
 	private lateinit var pattern: Mat
 
 	/**
-	 * Uses OpenCV module, remember OpenCVLoader.initLocal() has been run before
-	 * load corner pattern
-	 *
-	 * @param patternBitmap corner pattern in Bitmap
+	 * Load corner pattern image
+	 * @param patternBitmap pattern image in Bitmap
 	 */
 	fun loadPattern(patternBitmap: Bitmap) {
 		// Load only if pattern hasn't been loaded
@@ -46,16 +47,9 @@ object CropHelper {
 	}
 
 	/**
-	 * Uses OpenCV module, remember OpenCVLoader.initLocal() has been run before
-	 *
-	 * todo @exception if corner found are bad
-	 *
-	 * Initialize corner pattern first using [CropHelper.loadPattern]
-	 *
-	 *
-	 * @param img Mat that has been scaled, in grayscale (CV_8UC1)
-	 *
-	 * @return CornerPoints if four corners are found
+	 * Detect corner points in the image
+	 * @param img image to be processed
+	 * @return corner points
 	 */
 	fun detectCorner(img: Mat): CornerPoints {
 		// If pattern hasn't been loaded, throw exception
@@ -137,7 +131,6 @@ object CropHelper {
 				needed[corner] = false
 				needChange--
 				val pointFromIt = Point(it.y.toDouble(), it.x.toDouble())
-				Log.d("Corner", "Difference: ${it.weight}; corner: $corner")
 				when (corner) {
 					UPPER_LEFT -> {
 						upperLeftPoint = pointFromIt
@@ -168,14 +161,10 @@ object CropHelper {
 	}
 
 	/**
-	 * Uses OpenCV module, remember OpenCVLoader.initLocal() has been run before
-	 *
-	 * Crop an image based on four corners, with some padding set by #mult
-	 *
-	 * @param img image to crop
-	 * @param points corner points to crop image
-	 *
-	 * @return cropped image
+	 * Transform image based on corner points into a rectangle
+	 * @param img image to be processed
+	 * @param points corner points of the image
+	 * @return tilted corrected image
 	 */
 	fun fourPointTransform(
 		img: Mat,

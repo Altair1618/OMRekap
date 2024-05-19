@@ -9,19 +9,17 @@ import org.opencv.core.Size
 import org.opencv.imgproc.Imgproc
 import java.time.Instant
 
+/**
+ * Helper class for preprocessing image
+ */
 object PreprocessHelper {
 	private const val FINAL_WIDTH = 900.0
 	private const val FINAL_HEIGHT = 1600.0
 
 	/**
-	 * Uses OpenCV module, remember OpenCVLoader.initLocal() has been run before
-	 *
-	 * Initialize corner pattern first using [CropHelper.loadPattern]
-	 *
-	 * Preprocess image from photo result / gallery until it is cropped and ready for OMR
-	 * @param data Viewmodel containing raw and annotated image (before this method they are the same)
-	 *
-	 * @return new ImageSaveData viewmodel with cropped image
+	 * Preprocess the image data
+	 * @param data image data to be preprocessed
+	 * @return preprocessed image data
 	 */
 	fun preprocessImage(data: ImageSaveData): ImageSaveData {
 		// Initialize Mats

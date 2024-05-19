@@ -2,6 +2,12 @@ package com.k2_9.omrekap.data.configs.omr
 
 import org.opencv.core.Mat
 
+/**
+ * Configuration for the OMR helper using template matching
+ * @param omrCropper cropper for the OMR section
+ * @param templateLoader loader for the template image
+ * @param similarityThreshold threshold for the similarity between the template and the cropped image
+ */
 class TemplateMatchingOMRHelperConfig(
 	omrCropper: OMRCropper,
 	templateLoader: CircleTemplateLoader?,

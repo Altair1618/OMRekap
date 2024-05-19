@@ -8,7 +8,16 @@ import org.opencv.core.Rect
 import org.opencv.core.Scalar
 import org.opencv.imgproc.Imgproc
 
+/**
+ * Helper class for annotating image with detected objects
+ */
 object ImageAnnotationHelper {
+	/**
+	 * Annotate the corner points of a document
+	 * @param img image to be annotated
+	 * @param cornerPoints corner points of the document
+	 * @return image with annotations
+	 */
 	fun annotateCorner(
 		img: Mat,
 		cornerPoints: CornerPoints,
@@ -21,6 +30,13 @@ object ImageAnnotationHelper {
 		return imgWithAnnotations
 	}
 
+	/**
+	 * Annotate the detected AprilTag
+	 * @param img image to be annotated
+	 * @param cornerPoints corner points of the AprilTag
+	 * @param id ID of the AprilTag
+	 * @return image with annotations
+	 */
 	fun annotateAprilTag(
 		img: Mat,
 		cornerPoints: List<Mat>,
@@ -76,6 +92,13 @@ object ImageAnnotationHelper {
 		return imgWithAnnotations
 	}
 
+	/**
+	 * Annotate the detected vote count in the image gained from template matching
+	 * @param img image to be annotated
+	 * @param cornerPoints corner points of the detected object
+	 * @param contourNumber number of the detected object
+	 * @return image with annotations
+	 */
 	fun annotateTemplateMatchingOMR(
 		img: Mat,
 		cornerPoints: List<Rect>,
@@ -99,6 +122,13 @@ object ImageAnnotationHelper {
 		return imgWithAnnotations
 	}
 
+	/**
+	 * Annotate the detected vote count in the image gained from contour detection
+	 * @param img image to be annotated
+	 * @param cornerPoints corner points of the detected object
+	 * @param contourNumber number of the detected object
+	 * @return image with annotations
+	 */
 	fun annotateContourOMR(
 		img: Mat,
 		cornerPoints: List<MatOfPoint>,
@@ -121,6 +151,13 @@ object ImageAnnotationHelper {
 		return imgWithAnnotations
 	}
 
+	/**
+	 * Annotate the detected OMR result in the image
+	 * @param img image to be annotated
+	 * @param section section of the detected OMR
+	 * @param result result of the detected OMR
+	 * @return image with annotations
+	 */
 	fun annotateOMR(
 		img: Mat,
 		section: Rect,
