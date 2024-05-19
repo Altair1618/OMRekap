@@ -170,15 +170,19 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 	 * @param radius radius of the circle
 	 * @return perfect circle contour
 	 */
-	private fun getPerfectCircle(x: Double, y: Double, radius: Double): MatOfPoint {
-		val numPoints = 100  // Adjust as needed
+	private fun getPerfectCircle(
+		x: Double,
+		y: Double,
+		radius: Double,
+	): MatOfPoint {
+		val numPoints = 100 // Adjust as needed
 		val theta = DoubleArray(numPoints) { it * 2 * Math.PI / numPoints }
 		val circleX = DoubleArray(numPoints) { x + radius * cos(theta[it]) }
 		val circleY = DoubleArray(numPoints) { y + radius * sin(theta[it]) }
 
 		val circleContour = MatOfPoint()
 		for (i in 0 until numPoints) {
-			circleContour.push_back(MatOfPoint(Point(circleX[i], circleY[i])));
+			circleContour.push_back(MatOfPoint(Point(circleX[i], circleY[i])))
 		}
 
 		return circleContour
@@ -388,7 +392,6 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 
 			Utils.matToBitmap(display, bitmap)
 			SaveHelper.saveImage(appContext!!, bitmap, "test", "lol.png")
-
 		}
 
 		return filteredContours
