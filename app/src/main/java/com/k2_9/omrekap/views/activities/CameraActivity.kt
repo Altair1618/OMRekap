@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.media.AudioManager
 import android.media.MediaActionSound
@@ -13,18 +14,26 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
+import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.CameraController
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import com.google.common.util.concurrent.ListenableFuture
 import com.k2_9.omrekap.R
+import com.k2_9.omrekap.utils.AnnotatedCameraPreview
+import com.k2_9.omrekap.utils.CropHelper
+import com.k2_9.omrekap.utils.LiveAnnotationHelper
 import com.k2_9.omrekap.utils.PermissionHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.opencv.android.OpenCVLoader
 import java.io.File
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -40,6 +49,7 @@ class CameraActivity : AppCompatActivity() {
 	private var isFromCameraResult: Boolean = false
 
 	private lateinit var previewView: PreviewView
+	private lateinit var annotatedCameraPreview: AnnotatedCameraPreview
 	private lateinit var captureButton: ImageButton
 	private lateinit var cameraController: CameraController
 
@@ -96,10 +106,22 @@ class CameraActivity : AppCompatActivity() {
 	override fun onStart() {
 		super.onStart()
 		previewView = findViewById(R.id.preview_view)
+		annotatedCameraPreview = findViewById(R.id.annotated_camera_preview)
 		captureButton = findViewById(R.id.take_photo_button)
+
+		OpenCVLoader.initLocal()
+
+		val bitmapOptions = BitmapFactory.Options()
+		bitmapOptions.inPreferredConfig = Bitmap.Config.ALPHA_8
+		bitmapOptions.inScaled = false
+		val cornerPatternBitmap: Bitmap = BitmapFactory.decodeResource(resources, R.raw.corner_pattern, bitmapOptions)
+
+		CropHelper.loadPattern(cornerPatternBitmap)
+
 		captureButton.setOnClickListener {
 			takePhoto()
 		}
+
 		captureButton.isEnabled = true
 
 		PermissionHelper.requirePermission(this, Manifest.permission.CAMERA, true) {
@@ -108,6 +130,35 @@ class CameraActivity : AppCompatActivity() {
 			cameraController.cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 			previewView.controller = cameraController
 		}
+
+		startCamera()
+	}
+
+	private fun startCamera() {
+		val cameraProviderFuture: ListenableFuture<ProcessCameraProvider> = ProcessCameraProvider.getInstance(this)
+
+		cameraProviderFuture.addListener({
+			val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
+			cameraProvider.unbindAll()
+			bindPreview(cameraProvider)
+		}, ContextCompat.getMainExecutor(this))
+	}
+
+	private fun bindPreview(cameraProvider: ProcessCameraProvider) {
+		val preview = androidx.camera.core.Preview.Builder().build()
+		val imageCapture = ImageCapture.Builder().build()
+
+		val imageAnalysis = ImageAnalysis.Builder()
+			.build()
+
+		imageAnalysis.setAnalyzer(Executors.newSingleThreadExecutor(), LiveAnnotationHelper(annotatedCameraPreview))
+
+		val cameraSelector = CameraSelector.Builder()
+			.requireLensFacing(CameraSelector.LENS_FACING_BACK)
+			.build()
+
+		preview.setSurfaceProvider(previewView.surfaceProvider)
+		cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture, imageAnalysis)
 	}
 
 	fun saveImageOnCache(image: ImageProxy) {

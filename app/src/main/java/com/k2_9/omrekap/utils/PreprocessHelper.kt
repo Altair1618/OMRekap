@@ -57,6 +57,19 @@ object PreprocessHelper {
 		return ImageSaveData(mainImageBitmap, annotatedImageBitmap, data.data, Instant.now())
 	}
 
+	fun preprocessLiveImage(img: Bitmap): Bitmap {
+		val imgMat = Mat()
+		Utils.bitmapToMat(img, imgMat)
+
+		val cornerPoints = CropHelper.detectCorner(imgMat)
+		val processedMat = ImageAnnotationHelper.annotateCorner(imgMat, cornerPoints)
+
+		val processedImg = Bitmap.createBitmap(processedMat.width(), processedMat.height(), Bitmap.Config.ARGB_8888)
+		Utils.matToBitmap(processedMat, processedImg)
+
+		return processedImg
+	}
+
 	private fun preprocessMat(img: Mat): Mat {
 		return resizeMat(img)
 	}
