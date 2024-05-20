@@ -1,12 +1,10 @@
 package com.k2_9.omrekap.utils.omr
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
 import com.k2_9.omrekap.data.configs.omr.ContourOMRHelperConfig
 import com.k2_9.omrekap.data.configs.omr.OMRSection
 import com.k2_9.omrekap.utils.ImageAnnotationHelper
-import com.k2_9.omrekap.utils.SaveHelper
 import org.opencv.android.Utils
 import org.opencv.core.Core
 import org.opencv.core.CvType
@@ -28,7 +26,6 @@ import kotlin.math.sin
 class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(config) {
 	private var currentSectionGray: Mat? = null
 	private var currentSectionBinary: Mat? = null
-	public var appContext: Context? = null
 
 	/**
 	 * Create information object about the contour
@@ -384,14 +381,6 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 				"ContourOMRHelper",
 				"Completed missing contours, now have ${completedContours.size} contours",
 			)
-
-			val display = currentSectionGray!!.clone()
-			Imgproc.drawContours(display, completedContours, -1, Scalar(255.0), -1)
-
-			val bitmap = Bitmap.createBitmap(display.cols(), display.rows(), Bitmap.Config.ARGB_8888)
-
-			Utils.matToBitmap(display, bitmap)
-			SaveHelper.saveImage(appContext!!, bitmap, "test", "lol.png")
 		}
 
 		return filteredContours

@@ -55,8 +55,6 @@ class ContourOMRHelperTest {
 			config.templateMatchingOMRHelperConfig.setTemplate(templateLoader)
 
 			helper = ContourOMRHelper(config.contourOMRHelperConfig)
-
-			helper.appContext = appContext
 		}
 	}
 
