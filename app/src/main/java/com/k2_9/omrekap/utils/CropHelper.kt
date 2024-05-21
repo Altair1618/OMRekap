@@ -111,7 +111,7 @@ object CropHelper {
 		pointsList.forEach {
 			if (needChange == 0) return@forEach
 
-			val corner = nearWhichCorner(it.x, it.y, resultMatrix.height(), resultMatrix.width(), limFrac = 0.6F)
+			val corner = nearWhichCorner(it.x, it.y, resultMatrix.height(), resultMatrix.width(), limFrac = 0.4F)
 			if (corner == -1) return@forEach
 
 			if (it.weight > 0.45) {
@@ -130,23 +130,19 @@ object CropHelper {
 			if (needed[corner]) {
 				needed[corner] = false
 				needChange--
-				val pointFromIt = Point(it.y.toDouble(), it.x.toDouble())
+				val pointFromIt = Point(it.y.toDouble() + pattern.width().toDouble() / 2, it.x.toDouble() + pattern.height().toDouble() / 2)
 				when (corner) {
 					UPPER_LEFT -> {
 						upperLeftPoint = pointFromIt
 					}
 					UPPER_RIGHT -> {
 						upperRightPoint = pointFromIt
-						upperRightPoint.x += pattern.height().toDouble()
 					}
 					LOWER_RIGHT -> {
 						lowerRightPoint = pointFromIt
-						lowerRightPoint.x += pattern.height().toDouble()
-						lowerRightPoint.y += pattern.width().toDouble()
 					}
 					LOWER_LEFT -> {
 						lowerLeftPoint = pointFromIt
-						lowerLeftPoint.y += pattern.width().toDouble()
 					}
 				}
 			}
@@ -319,6 +315,6 @@ object CropHelper {
 	 * @return weight
 	 */
 	private fun getWeight(normDistance: Double): Double {
-		return 1 + 1 * normDistance.pow(1.5)
+		return 1 + 1 * normDistance.pow(0.5)
 	}
 }
