@@ -246,7 +246,7 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 		val sortedRects = sortedContours.map { Imgproc.boundingRect(it) }
 
 		fun getColumnIndex(index: Int): Int {
-			return floor((sortedRects[index].x.toDouble() / config.omrCropper.config.omrSectionSize.first.toDouble()) * 3.0).toInt()
+			return floor((max(0.0, sortedRects[index].x.toDouble()) / config.omrCropper.config.omrSectionSize.first.toDouble()) * 3.0).toInt()
 		}
 
 		for ((idx, rect) in sortedRects.withIndex()) {
@@ -280,7 +280,7 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 			val columnIndex = getColumnIndex(idx)
 			val currentLowestY = getLowestY(idx)
 
-			if (fillRecord[columnIndex] || (lowestY != -1 && sortedRects[idx].y > lowestY)) {
+			if (fillRecord[columnIndex] || (lowestY != -1 && (sortedRects[idx].y + sortedRects[idx].height / 2) > lowestY)) {
 				val nonFilledColumn = (0 until 3).filter { !fillRecord[it] }
 				val filledCount = 3 - nonFilledColumn.size
 
