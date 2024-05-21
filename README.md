@@ -16,6 +16,7 @@
 </div>
 
 [![forthebadge](https://forthebadge.com/images/badges/made-with-kotlin.svg)](https://forthebadge.com) [![forthebadge](https://forthebadge.com/images/badges/built-for-android.svg)](https://forthebadge.com) [![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](https://forthebadge.com)
+<br />
 [![Android](https://img.shields.io/badge/Android-%233DDC84.svg?&style=for-the-badge&logo=android&logoColor=white)](https://developer.android.com/) [![Kotlin](https://img.shields.io/badge/Kotlin-%230095D5.svg?&style=for-the-badge&logo=kotlin&logoColor=white)](https://kotlinlang.org/) [![Gradle](https://img.shields.io/badge/Gradle-%2302303A.svg?&style=for-the-badge&logo=gradle&logoColor=white)](https://gradle.org/) [![OpenCV](https://img.shields.io/badge/OpenCV-%23opencv.svg?&style=for-the-badge&logo=opencv&logoColor=white)](https://opencv.org/)
 
 <!-- TABLE OF CONTENTS -->
@@ -24,19 +25,12 @@
   <ol>
     <li>
       <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
     </li>
     <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
+      <a href="#features">Features</a>
     </li>
     <li><a href="#how-to-use">How To Use</a></li>
-    <li><a href="#Development">Development</a></li>
+    <li><a href="#development">Development</a></li>
     <li><a href="#contributors">Contributors</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
@@ -46,8 +40,8 @@
 # About The Project
 OMRekap adalah aplikasi rekapitulasi pemilihan umum yang dibuat untuk memudahkan proses rekapitulasi suara pada pemilihan umum.
 Aplikasi ini dibuat menggunakan bahasa pemrograman Kotlin dan menggunakan OpenCV untuk mendeteksi dan mengenali lembar suara.
+![Application](screenshots/screenshot.png)
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 # Features
 1. Mengambil foto kertas plano menggunakan kamera 📷 atau menggunakan galeri 🖼
@@ -55,9 +49,7 @@ Aplikasi ini dibuat menggunakan bahasa pemrograman Kotlin dan menggunakan OpenCV
 3. Mendeteksi dan mengenali lembar suara
 4. Menampilkan hasil rekapitulasi suara
 5. Menyimpan hasil rekapitulasi suara dalam bentuk foto 🖼 dan JSON 📃
-![Application](screenshots/screenshot.png)
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 # How To Use
 1. Navigasi ke folder apk
@@ -94,24 +86,18 @@ git clone https://gitlab.informatika.org/k-02-09/omrekap
 ./gradlew clean 
 ```
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 # Contributors
 <table>
-  <tbody>
     <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Altair1618"><img src="https://github.com/Altair1618" width="100px;" alt="Farhan Nabil Suryono"/><br /><sub><b>Farhan Nabil Suryono</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/issues?q=author%3ACompuIves" title="Bug reports">🐛</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=CompuIves" title="Code">💻</a> <a href="#design-CompuIves" title="Design">🎨</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=CompuIves" title="Documentation">📖</a> <a href="#infra-CompuIves" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/codesandbox/codesandbox-client/pulls?q=is%3Apr+reviewed-by%3ACompuIves" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=CompuIves" title="Tests">⚠️</a> <a href="#tool-CompuIves" title="Tools">🔧</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Enliven26"><img src="https://github.com/Enliven26" width="100px;" alt="Johanes Lee"/><br /><sub><b>Johanes Lee</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/issues?q=author%3ACompuIves" title="Bug reports">🐛</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=CompuIves" title="Code">💻</a> <a href="#design-CompuIves" title="Design">🎨</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=CompuIves" title="Documentation">📖</a> <a href="#infra-CompuIves" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/codesandbox/codesandbox-client/pulls?q=is%3Apr+reviewed-by%3ACompuIves" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=CompuIves" title="Tests">⚠️</a> <a href="#tool-CompuIves" title="Tools">🔧</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/dhanikanovlisa"><img src="https://github.com/dhanikanovlisa" width="100px;" alt="Dhanika Novlisariyanti"/><br /><sub><b>Dhanika Novlisariyanti</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/issues?q=author%3ACompuIves" title="Bug reports">🐛</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=CompuIves" title="Code">💻</a> <a href="#design-CompuIves" title="Design">🎨</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=CompuIves" title="Documentation">📖</a> <a href="#infra-CompuIves" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/codesandbox/codesandbox-client/pulls?q=is%3Apr+reviewed-by%3ACompuIves" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=CompuIves" title="Tests">⚠️</a> <a href="#tool-CompuIves" title="Tools">🔧</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Genvictus"><img src="https://github.com/Genvictus" width="100px;" alt="Johann Christian Kandani"/><br /><sub><b>Johann Christian Kandani</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/issues?q=author%3ACompuIves" title="Bug reports">🐛</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=CompuIves" title="Code">💻</a> <a href="#design-CompuIves" title="Design">🎨</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=CompuIves" title="Documentation">📖</a> <a href="#infra-CompuIves" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/codesandbox/codesandbox-client/pulls?q=is%3Apr+reviewed-by%3ACompuIves" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=CompuIves" title="Tests">⚠️</a> <a href="#tool-CompuIves" title="Tools">🔧</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Michaelu670"><img src="https://github.com/Michaelu670" width="100px;" alt="Michael Utama"/><br /><sub><b>Michael Utama</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/issues?q=author%3ACompuIves" title="Bug reports">🐛</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=CompuIves" title="Code">💻</a> <a href="#design-CompuIves" title="Design">🎨</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=CompuIves" title="Documentation">📖</a> <a href="#infra-CompuIves" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/codesandbox/codesandbox-client/pulls?q=is%3Apr+reviewed-by%3ACompuIves" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=CompuIves" title="Tests">⚠️</a> <a href="#tool-CompuIves" title="Tools">🔧</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://avatars.githubusercontent.com/u/91373980?v=4"><img src="https://github.com/Altair1618" width="100px;" alt="Farhan Nabil Suryono"/><br /><sub><b>Farhan Nabil Suryono</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/issues?q=author%3ACompuIves" title="Bug reports">🐛</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=CompuIves" title="Code">💻</a> <a href="#design-CompuIves" title="Design">🎨</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=CompuIves" title="Documentation">📖</a> <a href="#infra-CompuIves" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/codesandbox/codesandbox-client/pulls?q=is%3Apr+reviewed-by%3ACompuIves" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=CompuIves" title="Tests">⚠️</a> <a href="#tool-CompuIves" title="Tools">🔧</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://avatars.githubusercontent.com/u/89065724?v=4"><img src="https://github.com/Enliven26" width="100px;" alt="Johanes Lee"/><br /><sub><b>Johanes Lee</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/issues?q=author%3ACompuIves" title="Bug reports">🐛</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=CompuIves" title="Code">💻</a> <a href="#design-CompuIves" title="Design">🎨</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=CompuIves" title="Documentation">📖</a> <a href="#infra-CompuIves" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/codesandbox/codesandbox-client/pulls?q=is%3Apr+reviewed-by%3ACompuIves" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=CompuIves" title="Tests">⚠️</a> <a href="#tool-CompuIves" title="Tools">🔧</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://avatars.githubusercontent.com/u/110590843?v=4"><img src="https://github.com/dhanikanovlisa" width="100px;" alt="Dhanika Novlisariyanti"/><br /><sub><b>Dhanika Novlisariyanti</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/issues?q=author%3ACompuIves" title="Bug reports">🐛</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=CompuIves" title="Code">💻</a> <a href="#design-CompuIves" title="Design">🎨</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=CompuIves" title="Documentation">📖</a> <a href="#infra-CompuIves" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/codesandbox/codesandbox-client/pulls?q=is%3Apr+reviewed-by%3ACompuIves" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=CompuIves" title="Tests">⚠️</a> <a href="#tool-CompuIves" title="Tools">🔧</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://avatars.githubusercontent.com/u/92362538?v=4"><img src="https://github.com/Genvictus" width="100px;" alt="Johann Christian Kandani"/><br /><sub><b>Johann Christian Kandani</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/issues?q=author%3ACompuIves" title="Bug reports">🐛</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=CompuIves" title="Code">💻</a> <a href="#design-CompuIves" title="Design">🎨</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=CompuIves" title="Documentation">📖</a> <a href="#infra-CompuIves" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/codesandbox/codesandbox-client/pulls?q=is%3Apr+reviewed-by%3ACompuIves" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=CompuIves" title="Tests">⚠️</a> <a href="#tool-CompuIves" title="Tools">🔧</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://avatars.githubusercontent.com/u/91373980?v=4"><img src="https://github.com/Michaelu670" width="100px;" alt="Michael Utama"/><br /><sub><b>Michael Utama</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/issues?q=author%3ACompuIves" title="Bug reports">🐛</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=CompuIves" title="Code">💻</a> <a href="#design-CompuIves" title="Design">🎨</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=CompuIves" title="Documentation">📖</a> <a href="#infra-CompuIves" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/codesandbox/codesandbox-client/pulls?q=is%3Apr+reviewed-by%3ACompuIves" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=CompuIves" title="Tests">⚠️</a> <a href="#tool-CompuIves" title="Tools">🔧</a></td>
   </tbody>
 </table>
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 # Acknowledgments
 * [OpenCV](https://opencv.org/)
 * [Kotlin](https://kotlinlang.org/)
 * [Android](https://developer.android.com/)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
