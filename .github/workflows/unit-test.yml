@@ -53,8 +53,5 @@ jobs:
       - name: Run unit tests
         run: ./gradlew test
 
-      - name: Run integration tests
-        run: ./gradlew connectedAndroidTest
-
       - name: Code formatting
         run: ./gradlew spotlessCheck

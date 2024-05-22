@@ -21,10 +21,18 @@ import org.opencv.core.Mat
 import org.opencv.imgproc.Imgproc
 import java.time.Instant
 
+/**
+ * ViewModel for image data processing in Result page
+ */
 class ImageDataViewModel : ViewModel() {
 	private val _data = MutableLiveData<ImageSaveData?>()
 	val data = _data as LiveData<ImageSaveData?>
 
+	/**
+	 * Process the image data with OMR detection
+	 * @param data image data to be processed
+	 * @param circleTemplateLoader loader for circle template
+	 */
 	fun processImage(
 		data: ImageSaveData,
 		circleTemplateLoader: CircleTemplateLoader,
@@ -86,11 +94,12 @@ class ImageDataViewModel : ViewModel() {
 				for ((section, value) in it) {
 					stringKeyResult[pageContent[section]!!] = value
 
-					annotatedImage = ImageAnnotationHelper.annotateOMR(
-						annotatedImage,
-						contourOMRHelper.getSectionPosition(section),
-						value
-					)
+					annotatedImage =
+						ImageAnnotationHelper.annotateOMR(
+							annotatedImage,
+							contourOMRHelper.getSectionPosition(section),
+							value,
+						)
 					Log.d("Result", "${pageContent[section]}: $value")
 				}
 			}

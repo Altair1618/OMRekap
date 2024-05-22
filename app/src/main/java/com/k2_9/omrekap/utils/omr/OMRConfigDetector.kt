@@ -13,6 +13,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.opencv.core.Mat
 
+/**
+ * Detector for OMR configuration
+ */
 object OMRConfigDetector {
 	private lateinit var loadedConfig: OMRBaseConfiguration
 	private var job: Job? = null
@@ -20,6 +23,8 @@ object OMRConfigDetector {
 	/**
 	 * Initialize and load the detection configuration data.
 	 * Make sure to run this before detecting configurations
+	 * @param context application context
+	 * @throws Exception if failed to load the configuration
 	 */
 	fun loadConfiguration(context: Context) {
 		if (!this::loadedConfig.isInitialized) {

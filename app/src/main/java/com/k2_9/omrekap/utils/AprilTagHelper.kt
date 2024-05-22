@@ -74,6 +74,11 @@ object AprilTagHelper {
 		return (idList to corners)
 	}
 
+	/**
+	 * Annotate the detected april tag and its ID to the image
+	 * @param imageBitmap image to be annotated
+	 * @return annotated image in OpenCV's Mat type
+	 */
 	fun annotateImage(imageBitmap: Bitmap): Mat {
 		val res = getAprilTagId(imageBitmap)
 		val cornerPoints = res.second
@@ -81,6 +86,11 @@ object AprilTagHelper {
 		return ImageAnnotationHelper.annotateAprilTag(prepareImage(imageBitmap), cornerPoints, ids)
 	}
 
+	/**
+	 * Prepare detector with given dictionary
+	 * @param detectorDictionary dictionary to be used for detection
+	 * @return prepared ArucoDetector
+	 */
 	private fun prepareDetector(detectorDictionary: Dictionary): ArucoDetector {
 		// initialize detector parameters
 		val detectorParameters = DetectorParameters()
@@ -88,6 +98,11 @@ object AprilTagHelper {
 		return ArucoDetector(detectorDictionary, detectorParameters)
 	}
 
+	/**
+	 * Prepare image for ArucoDetector with preprocessing
+	 * @param imageBitmap image to be prepared
+	 * @return prepared image in OpenCV's Mat type
+	 */
 	private fun prepareImage(imageBitmap: Bitmap): Mat {
 		// transform to OpenCV Mat data
 		val imageMat = Mat()
