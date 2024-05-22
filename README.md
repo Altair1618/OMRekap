@@ -58,8 +58,8 @@ Aplikasi ini dibuat menggunakan bahasa pemrograman Kotlin dan menggunakan OpenCV
 4. Lakukan instalasi file .apk tersebut pada perangkat Android.
 
 Sebagai alternatif, langkah-langkah berikut juga dapat dilakukan dalam instalasi aplikasi ini.
-1. Akses halaman https://gitlab.informatika.org/k-02-09/omrekap.git  
-2. Unduh source code berupa .zip atau .rar dari rilis tersebut.
+1. Akses repository pada [GitLab](https://gitlab.informatika.org/k-02-09/omrekap.git) atau [GitHub](https://github.com/Altair1618/OMRekap)
+2. Unduh hasil release terbaru pada repository.
 3. Buka proyek tersebut menggunakan Android Studio.
 4. Lakukan build dan jalankan aplikasi.
 
