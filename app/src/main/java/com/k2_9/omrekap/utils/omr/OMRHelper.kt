@@ -111,12 +111,14 @@ abstract class OMRHelper(private val config: OMRHelperConfig) {
 	): List<ContourInfo?> {
 		val mutableContourInfos = contourInfos.toMutableList()
 		val uniqueContourInfos = mutableListOf<ContourInfo?>()
+		val filledIntensitiesCopy = filledIntensities.toMutableList()
 
 		// Group by overlapping contour infos and choose the one with the highest intensity
 		for (i in 0 until mutableContourInfos.size - 1) {
 			if (mutableContourInfos[i].isColumnOverlapping(mutableContourInfos[i + 1])) {
-				if (filledIntensities[i] > filledIntensities[i + 1]) {
+				if (filledIntensitiesCopy[i] > filledIntensitiesCopy[i + 1]) {
 					mutableContourInfos[i + 1] = mutableContourInfos[i]
+					filledIntensitiesCopy[i + 1] = filledIntensitiesCopy[i]
 				}
 				continue
 			} else {
