@@ -10,7 +10,6 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.RequiresApi
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.k2_9.omrekap.data.models.ImageSaveData
 import kotlinx.coroutines.Dispatchers
