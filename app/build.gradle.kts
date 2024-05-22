@@ -54,9 +54,6 @@ dependencies {
 	implementation("androidx.camera:camera-extensions:${cameraxVersion}")
 
 	// JSON
-//	implementation("com.squareup.moshi:moshi:1.15.1")
-//	implementation("com.squareup.moshi:moshi-adapters:1.15.1")
-//	implementation("com.squareup.moshi:moshi-kotlin:1.15.1")
 	implementation("com.google.code.gson:gson:2.10.1")
 
 	// OpenCV

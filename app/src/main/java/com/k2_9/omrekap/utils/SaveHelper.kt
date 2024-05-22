@@ -8,7 +8,10 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import androidx.annotation.RequiresApi
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.k2_9.omrekap.data.models.ImageSaveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -23,6 +26,8 @@ import java.util.Locale
  * Helper class for saving images and JSON data
  */
 object SaveHelper {
+	private val gson = GsonBuilder().setPrettyPrinting().create()
+
 	/**
 	 * Save the image and JSON data to the device
 	 * @param context the application context
@@ -200,7 +205,7 @@ object SaveHelper {
 
 		val jsonFile = File(fileDir, fileName)
 		val fileOutputStream = FileOutputStream(jsonFile)
-		fileOutputStream.write(data.toString().toByteArray())
+		fileOutputStream.write(gson.toJson(data).toByteArray())
 		fileOutputStream.flush()
 		fileOutputStream.close()
 	}
@@ -226,13 +231,13 @@ object SaveHelper {
 		if (uri != null) {
 			val stream = context.contentResolver.openOutputStream(uri)
 			if (stream != null) {
-				stream.write(data.toString().toByteArray())
+				stream.write(gson.toJson(data).toByteArray())
 				stream.close()
 			} else {
-				// TODO: Handle the case where the stream is null
+				Log.e("SaveHelper", "Failed to open stream")
 			}
 		} else {
-			// TODO: Handle the case where the uri is null
+			Log.e("SaveHelper", "Failed to create uri")
 		}
 	}
 }
