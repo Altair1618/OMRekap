@@ -10,9 +10,10 @@ import org.opencv.core.Mat
  */
 class TemplateMatchingOMRHelperConfig(
 	omrCropper: OMRCropper,
+	columnCount: Int,
 	templateLoader: CircleTemplateLoader?,
 	similarityThreshold: Float,
-) : OMRHelperConfig(omrCropper) {
+) : OMRHelperConfig(omrCropper, columnCount) {
 	var template: Mat?
 		private set
 		get() = field?.clone()

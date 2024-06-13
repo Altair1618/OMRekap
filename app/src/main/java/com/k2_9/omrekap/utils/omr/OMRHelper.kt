@@ -78,7 +78,8 @@ abstract class OMRHelper(private val config: OMRHelperConfig) {
 			throw DetectionError("Filled circles are not detected correctly")
 		}
 
-		val columnHeight = config.omrCropper.config.omrSectionSize.second // Define the column height based on your image
+		val columnHeight =
+			config.omrCropper.config.omrSectionSize.second // Define the column height based on your image
 
 		val result = mutableListOf<Int>()
 
@@ -130,15 +131,16 @@ abstract class OMRHelper(private val config: OMRHelperConfig) {
 			uniqueContourInfos.add(mutableContourInfos.last())
 		}
 
-		assert(uniqueContourInfos.size <= 3)
+		assert(uniqueContourInfos.size <= config.columnCount)
 
 		val sectionWidth = config.omrCropper.config.omrSectionSize.first
-		val finalContourInfos = arrayOfNulls<ContourInfo>(3)
+		val finalContourInfos = arrayOfNulls<ContourInfo>(config.columnCount)
 
 		uniqueContourInfos.forEach { contourInfo ->
 			if (contourInfo != null) {
 				val centerX = contourInfo.center.first
-				val columnIndex = floor((centerX.toDouble() / sectionWidth) * 3).toInt()
+				val columnIndex =
+					floor((centerX.toDouble() / sectionWidth) * config.columnCount).toInt()
 				finalContourInfos[columnIndex] = contourInfo
 			}
 		}

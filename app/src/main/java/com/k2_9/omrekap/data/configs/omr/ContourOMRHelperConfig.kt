@@ -12,13 +12,14 @@ package com.k2_9.omrekap.data.configs.omr
  */
 class ContourOMRHelperConfig(
 	omrCropper: OMRCropper,
+	columnCount: Int,
 	minRadius: Int,
 	maxRadius: Int,
 	minAspectRatio: Float,
 	maxAspectRatio: Float,
 	darkPercentageThreshold: Float,
 	darkIntensityThreshold: Int,
-) : OMRHelperConfig(omrCropper) {
+) : OMRHelperConfig(omrCropper, columnCount) {
 	var minRadius: Int
 		private set
 	var maxRadius: Int

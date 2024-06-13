@@ -7,6 +7,7 @@
         "THIRD": "Ganjar Pranowo"
       },
       "contourOMRHelperConfig": {
+        "columnCount": 3,
         "darkIntensityThreshold": 150,
         "darkPercentageThreshold": 0.7,
         "maxAspectRatio": 1.5,
@@ -38,6 +39,7 @@
         }
       },
       "templateMatchingOMRHelperConfig": {
+        "columnCount": 3,
         "similarityThreshold": 0.7,
         "templateLoader": null,
         "omrCropper": {
@@ -60,6 +62,73 @@
             "omrSectionSize": {
               "first": 120,
               "second": 205
+            }
+          }
+        }
+      }
+    },
+    "162": {
+      "contents": {
+        "FIRST": "Anies Rasyid Baswedan",
+        "SECOND": "Prabowo Subianto",
+        "THIRD": "Ganjar Pranowo"
+      },
+      "contourOMRHelperConfig": {
+        "columnCount": 5,
+        "darkIntensityThreshold": 150,
+        "darkPercentageThreshold": 0.7,
+        "maxAspectRatio": 1.5,
+        "maxRadius": 25,
+        "minAspectRatio": 0.5,
+        "minRadius": 12,
+        "omrCropper": {
+          "config": {
+            "image": null,
+            "omrSectionPosition": {
+              "FIRST": {
+                "first": 702,
+                "second": 296
+              },
+              "SECOND": {
+                "first": 702,
+                "second": 588
+              },
+              "THIRD": {
+                "first": 702,
+                "second": 880
+              }
+            },
+            "omrSectionSize": {
+              "first": 140,
+              "second": 215
+            }
+          }
+        }
+      },
+      "templateMatchingOMRHelperConfig": {
+        "columnCount": 5,
+        "similarityThreshold": 0.7,
+        "templateLoader": null,
+        "omrCropper": {
+          "config": {
+            "image": null,
+            "omrSectionPosition": {
+              "FIRST": {
+                "first": 702,
+                "second": 296
+              },
+              "SECOND": {
+                "first": 702,
+                "second": 588
+              },
+              "THIRD": {
+                "first": 702,
+                "second": 880
+              }
+            },
+            "omrSectionSize": {
+              "first": 140,
+              "second": 215
             }
           }
         }

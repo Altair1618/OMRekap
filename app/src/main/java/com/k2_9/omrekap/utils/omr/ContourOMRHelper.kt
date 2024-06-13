@@ -56,7 +56,8 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 		val contoursWithIntensities = filledContours.zip(filledIntensities)
 
 		// Sort contours and intensities based on the x-coordinate of bounding rectangles
-		val sortedContoursWithIntensities = contoursWithIntensities.sortedBy { (contour, _) -> Imgproc.boundingRect(contour).x }
+		val sortedContoursWithIntensities =
+			contoursWithIntensities.sortedBy { (contour, _) -> Imgproc.boundingRect(contour).x }
 
 		// Unzip sorted contours and intensities
 		val (sortedContours, sortedIntensities) = sortedContoursWithIntensities.unzip()
@@ -108,8 +109,8 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 
 		val contourInfos = getContourInfo(filledContours, filledIntensities)
 
-		if (contourInfos.size != 3) {
-			throw DetectionError("Failed to detect 3 filled circle")
+		if (contourInfos.size != config.columnCount) {
+			throw DetectionError("Failed to detect ${config.columnCount} filled circle")
 		}
 
 		return contourInfosToNumbers(contourInfos)
@@ -212,7 +213,7 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 		val darkestRows = mutableListOf<Int?>()
 
 		// Loop through each column
-		for (col in 0 until 3) {
+		for (col in 0 until config.columnCount) {
 			// Get contours for the current column and sort by rows
 			val colContours =
 				contoursSorted.subList(col * 10, (col + 1) * 10)
@@ -241,12 +242,17 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 	 */
 	private fun completeMissingContours(contours: List<MatOfPoint>): List<MatOfPoint> {
 		val sortedContours = contours.sortedBy { Imgproc.boundingRect(it).y }
-		val columnMap = Array(3) { mutableListOf<MatOfPoint>() }
-		val rectColumnMap = Array(3) { mutableListOf<Rect>() }
+		val columnMap = Array(config.columnCount) { mutableListOf<MatOfPoint>() }
+		val rectColumnMap = Array(config.columnCount) { mutableListOf<Rect>() }
 		val sortedRects = sortedContours.map { Imgproc.boundingRect(it) }
 
 		fun getColumnIndex(index: Int): Int {
-			return floor((max(0.0, sortedRects[index].x.toDouble()) / config.omrCropper.config.omrSectionSize.first.toDouble()) * 3.0).toInt()
+			return floor(
+				(max(
+					0.0,
+					sortedRects[index].x.toDouble()
+				) / config.omrCropper.config.omrSectionSize.first.toDouble()) * config.columnCount.toDouble()
+			).toInt()
 		}
 
 		for ((idx, rect) in sortedRects.withIndex()) {
@@ -255,7 +261,7 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 			rectColumnMap[columnIndex].add(rect)
 		}
 
-		val averageX = DoubleArray(3)
+		val averageX = DoubleArray(config.columnCount)
 
 		for ((idx, columns) in columnMap.withIndex()) {
 			if (columns.isEmpty()) {
@@ -266,7 +272,7 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 		}
 
 		val result = mutableListOf<MatOfPoint>()
-		val fillRecord = booleanArrayOf(false, false, false)
+		val fillRecord = BooleanArray(config.columnCount) { false }
 		var ySum = 0.0
 		var radiusSum = 0.0
 		var lowestY = -1
@@ -281,8 +287,8 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 			val currentLowestY = getLowestY(idx)
 
 			if (fillRecord[columnIndex] || (lowestY != -1 && (sortedRects[idx].y + sortedRects[idx].height / 2) > lowestY)) {
-				val nonFilledColumn = (0 until 3).filter { !fillRecord[it] }
-				val filledCount = 3 - nonFilledColumn.size
+				val nonFilledColumn = (0 until config.columnCount).filter { !fillRecord[it] }
+				val filledCount = config.columnCount - nonFilledColumn.size
 
 				if (filledCount == 0) {
 					lowestY = currentLowestY
@@ -301,7 +307,10 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 			} else {
 				result.add(contour)
 				ySum += sortedRects[idx].y + sortedRects[idx].height.toDouble() / 2
-				radiusSum += max(sortedRects[idx].width.toDouble(), sortedRects[idx].height.toDouble()) / 2
+				radiusSum += max(
+					sortedRects[idx].width.toDouble(),
+					sortedRects[idx].height.toDouble()
+				) / 2
 				fillRecord[columnIndex] = true
 				idx++
 				lowestY = max(lowestY, currentLowestY)
@@ -316,8 +325,8 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 			}
 		}
 
-		val nonFilledColumn = (0 until 3).filter { !fillRecord[it] }
-		val filledCount = 3 - nonFilledColumn.size
+		val nonFilledColumn = (0 until config.columnCount).filter { !fillRecord[it] }
+		val filledCount = config.columnCount - nonFilledColumn.size
 
 		if (filledCount > 0) {
 			val y = ySum / filledCount
@@ -371,7 +380,7 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 			}
 		}
 
-		if (filteredContours.size < 30) {
+		if (filteredContours.size < config.columnCount * 10) {
 			Log.d(
 				"ContourOMRHelper",
 				"Detected ${filteredContours.size} contours, attempting to complete missing contours",
@@ -420,14 +429,14 @@ class ContourOMRHelper(private val config: ContourOMRHelperConfig) : OMRHelper(c
 
 		val contours = getAllContours()
 
-		return if (contours.size != 30) {
+		return if (contours.size != config.columnCount * 10) {
 			Log.d(
 				"ContourOMRHelper",
 				"Some circles are not detected, considering only filled circles",
 			)
 			predictForFilledCircle(contours)
 		} else {
-			Log.d("ContourOMRHelper", "All 30 circles are detected")
+			Log.d("ContourOMRHelper", "All ${config.columnCount * 10} circles are detected")
 			compareAll(contours)
 		}
 	}
